@@ -1,4 +1,3 @@
-// import "./navbar";
 
 import { Header, SideBar } from "@/app/components";
 
