@@ -23,7 +23,7 @@ export default function SideBar() {
   //   }
 
   return (
-    <section className="w-10 sm:w-11 md:w-14 xl:w-20 2xl:w-32 h-screen bg-gradient-to-b from-[#110D1F] //hidden// sm:block relative">
+    <section className="w-10 sm:w-11 md:w-14 xl:w-20 2xl:w-32 h-screen bg-gradient-to-b from-[#110D1F] //hidden// sm:block relative shrink-0">
       <Image
         className="object-cover w-full h-full absolute"
         src={Sideimg.src}

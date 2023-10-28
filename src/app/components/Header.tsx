@@ -15,13 +15,13 @@ export default function Header() {
           className="flex sm:w-[89px] sm:h-11 md:w-28 md:h-14 xl:h-20 xl:w-40 2xl:h-32 2xl:w-64"
         >
           <div className="flex items-center relative">
-            <img src="bell.svg" className="w-[21px]"/>
+            <img src={Logo.src}className="w-[21px]"/>
             <div
               className="w-[6px] h-[6px] bg-[#E95A3A] rounded-full absolute top-[10px] left-[12px]"
             ></div>
           </div>
           <img src="notif.svg" className="p-2 2xl:p-4" />
-          <img src="profile.svg" className="p-2 2xl:p-4" />
+          <img src={Logo.src} className="p-2 2xl:p-4" />
         </nav>  */}
     </header>
   );
