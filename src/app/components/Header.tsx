@@ -5,7 +5,7 @@ import Nav from "@/app/utils/Navbar.svg";
 export default function Header() {
   return (
     <header className="text-white flex justify-between w-full absolute z-10">
-      <nav className="flex sm:w-11 sm:h-11 md:w-14 md:h-14 lg:w-[72px] lg:h-[72px] xl:w-20 xl:h-20 2xl:w-32 2xl:h-32 relative">
+      <nav className="flex sm:w-11 sm:h-11 md:w-14 md:h-14 lg:w-[72px] lg:h-[72px] xl:w-[88px] xl:h-[88px] 2xl:w-32 2xl:h-32 relative">
         {/* <Image className="p-2 2xl:p-4" src={Logo.src} fill={true} alt="Logo"/>
         <Image className="p-2 sm:hidden" src={Nav.src} fill={true} alt="Humburg"/> */}
         <img src={Logo.src} className="p-2 2xl:p-4" />

@@ -18,7 +18,7 @@ export default function NavbarIcons({
   return (
     <>
         <Image
-          className={`sm:w-5 md:w-6 lg:w-8 xl:w-8 2xl:w-14 brightness-200 ${className}`}
+          className={`sm:w-5 md:w-6 lg:w-8 xl:w-10 2xl:w-14 brightness-200 ${className}`}
           src={Srcfile}
           width={18}
           height={18}
@@ -26,7 +26,7 @@ export default function NavbarIcons({
         />
         {pathname === path && (
           <Image
-            className="w-[30px] h-[30px] sm:w-[32px] sm:h-[32px] md:w-[37px] md:h-[37px] lg:w-[50px] lg:h-[50px] xl:w-[48px] xl:h-[48px] 2xl:w-[85px] 2xl:h-[85px]"
+            className="w-[30px] h-[30px] sm:w-[32px] sm:h-[32px] md:w-[37px] md:h-[37px] lg:w-[50px] lg:h-[50px] xl:w-[56px] xl:h-[56px] 2xl:w-[85px] 2xl:h-[85px]"
             src={Rectangle.src}
             width={30}
             height={30}
