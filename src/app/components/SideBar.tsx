@@ -23,7 +23,7 @@ export default function SideBar() {
   //   }
 
   return (
-    <section className="w-10 sm:w-11 md:w-14 xl:w-20 2xl:w-32 h-screen bg-gradient-to-b from-[#110D1F] //hidden// sm:block relative shrink-0">
+    <section className="w-10 sm:w-11 md:w-14 lg:w-[72px] xl:w-20 2xl:w-32 h-screen bg-gradient-to-b from-[#110D1F] //hidden// sm:block relative shrink-0">
       <Image
         className="object-cover w-full h-full absolute"
         src={Sideimg.src}
@@ -31,7 +31,7 @@ export default function SideBar() {
         width={0}
         height={0}
       />
-      <div className="flex flex-col items-center gap-10 xl:gap-12 2xl:gap-20 pt-20 sm:pt-24 md:pt-24 xl:pt-36 2xl:pt-72">
+      <div className="flex flex-col items-center gap-10 xl:gap-12 2xl:gap-20 pt-20 sm:pt-24 md:pt-24 lg:pt-32 xl:pt-36 2xl:pt-72">
         <div className="relative">
           <Link href="/dashboard">
             <NavbarIcons
@@ -71,9 +71,9 @@ export default function SideBar() {
           </Link>
         </div>
       </div>
-      <div className="flex justify-center pt-40 sm:pt-36 md:pt-32 xl:pt-60 2xl:pt-96 brightness-200">
+      <div className="flex justify-center pt-40 sm:pt-36 md:pt-32 lg:pt-40 xl:pt-60 2xl:pt-96 brightness-200">
         <Image
-          className="sm:w-5 md:w-6 xl:w-8 2xl:w-14"
+          className="sm:w-5 md:w-6 lg:w-8 xl:w-8 2xl:w-14"
           src={Logout.src}
           width={18}
           height={18}

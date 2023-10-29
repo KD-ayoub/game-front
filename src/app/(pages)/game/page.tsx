@@ -6,7 +6,7 @@ export default function Game() {
       <div className="h-[80px] w-[80px] rounded-full fixed top-0 right-0 bg-gradient-to-b from-[#323138] via-[#E95A3A] to-[#60C58D] blur-3xl "></div>
       <Header />
       <SideBar />
-      <div className=" grow overflow-y-auto mt-[41px] flex justify-center items-center">
+      <div className=" grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 flex justify-center items-center">
         {/* <div className="h-[200px] w-[70px] bg-red-500"></div> */}
       </div>
     </main>
