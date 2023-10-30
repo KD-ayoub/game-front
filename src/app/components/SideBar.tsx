@@ -14,16 +14,17 @@ import Sideimg from "@/app/assets/svg/sideimg.svg";
 
 import NavbarIcons from "./NavbarIcons";
 
-export default function SideBar() {
-  const [ClickIndex, setClickIndex] = useState(-1);
-
-  //   function handlClick(Index: number) {
-  //     setClickIndex(Index);
-  //     console.log(Index);
-  //   }
+export default function SideBar({
+  isHumburgClicked,
+}: {
+  isHumburgClicked: boolean;
+}) {
+  const hidden = isHumburgClicked ? "hidden" : "";
 
   return (
-    <section className="w-10 sm:w-11 md:w-14 lg:w-[72px] xl:w-24 2xl:w-32 h-screen bg-gradient-to-b from-[#110D1F] //hidden// sm:block relative shrink-0">
+    <section
+      className={`w-10 sm:w-11 md:w-14 lg:w-[72px] xl:w-24 2xl:w-32 h-screen bg-gradient-to-b from-[#110D1F] ${hidden} sm:block relative shrink-0`}
+    >
       <Image
         className="object-cover w-full h-full absolute"
         src={Sideimg.src}

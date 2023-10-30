@@ -1,15 +1,25 @@
 import Image from "next/image";
 import Logo from "@/app/assets/svg/logo.svg";
 import Nav from "@/app/assets/svg/Navbar.svg";
+import { Humburgtype } from "../types/humburgtype";
+import { useEffect } from "react";
 
-export default function Header() {
+export default function Header({
+  isHumburgClicked,
+  setisHumburgClicked,
+}: Humburgtype) {
+
+  function handlClick() {
+    setisHumburgClicked(!isHumburgClicked);
+  }
+
   return (
     <header className="text-white flex justify-between w-full absolute z-10">
       <nav className="flex sm:w-11 sm:h-11 md:w-14 md:h-14 lg:w-[72px] lg:h-[72px] xl:w-[88px] xl:h-[88px] 2xl:w-32 2xl:h-32 relative">
-        {/* <Image className="p-2 2xl:p-4" src={Logo.src} fill={true} alt="Logo"/>
-        <Image className="p-2 sm:hidden" src={Nav.src} fill={true} alt="Humburg"/> */}
+        {/* <Image className="p-2 2xl:p-4" src={Logo.src} width={41} height={41} alt="Logo"/>
+        <Image className="p-2 sm:hidden" src={Nav.src} width={34} height={41} alt="Humburg"/> */}
         <img src={Logo.src} className="p-2 2xl:p-4" />
-        <img src={Nav.src} className="p-2 sm:hidden" />
+        <img src={Nav.src} className="p-2 sm:hidden" onClick={handlClick} />
       </nav>
       {/* <nav
           className="flex sm:w-[89px] sm:h-11 md:w-28 md:h-14 xl:h-20 xl:w-40 2xl:h-32 2xl:w-64"
