@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import Rectangle from "@/app/utils/rectangle.svg";
+import Rectangle from "@/app/assets/svg/rectangle.svg";
 
 export default function NavbarIcons({
   Srcfile,

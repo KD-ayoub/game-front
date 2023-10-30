@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Logo from "@/app/utils/logo.svg";
-import Nav from "@/app/utils/Navbar.svg";
+import Logo from "@/app/assets/svg/logo.svg";
+import Nav from "@/app/assets/svg/Navbar.svg";
 
 export default function Header() {
   return (

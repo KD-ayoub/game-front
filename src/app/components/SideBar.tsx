@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-import Dashboard from "@/app/utils/dashboard.svg";
-import Gamecont from "@/app/utils/gamecont.svg";
-import Messages from "@/app/utils/messages.svg";
-import User from "@/app/utils/user.svg";
-import Settings from "@/app/utils/settings.svg";
-import Logout from "@/app/utils/logout.svg";
-import Sideimg from "@/app/utils/sideimg.svg";
+import Dashboard from "@/app/assets/svg/dashboard.svg";
+import Gamecont from "@/app/assets/svg/gamecont.svg";
+import Messages from "@/app/assets/svg/messages.svg";
+import User from "@/app/assets/svg/user.svg";
+import Settings from "@/app/assets/svg/settings.svg";
+import Logout from "@/app/assets/svg/logout.svg";
+import Sideimg from "@/app/assets/svg/sideimg.svg";
 
 import NavbarIcons from "./NavbarIcons";
 
