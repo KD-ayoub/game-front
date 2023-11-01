@@ -1,0 +1,19 @@
+
+  [
+    {
+      "id": 1,
+      "message": "hkaddour sent you a message",
+      "read": false
+    },
+    {
+      "id": 2,
+      "message": "akadi sent you a message",
+      "read": true
+    },
+    {
+      "id": 3,
+      "message": "yaskour sent you a message",
+      "read": true
+    }
+  ]
+

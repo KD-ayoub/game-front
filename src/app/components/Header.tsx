@@ -7,16 +7,19 @@ import Bell from "@/app/assets/svg/bell.svg";
 import { Humburgtype } from "../types/humburgtype";
 import { useEffect, useState } from "react";
 
+// this is only for testing need to merge with backend
+import getData from "./getData";
+import { Notification } from "../types/notificationtype";
+///////
+
 export default function Header({
   isHumburgClicked,
   setisHumburgClicked,
 }: Humburgtype) {
   const [showDropdownNotif, setshowDropdownNotif] = useState(false);
-  const [notifications, setnotifications] = useState([
-    { id: 1, message: "hkaddour sent you a message", read: false },
-    { id: 1, message: "akadi sent you a message", read: true },
-    { id: 1, message: "yaskour sent you a message", read: true },
-  ]);
+  const [notificationData, setnotificationData] = useState<Array<Notification>>(
+    []
+  ); /// this need to be merged with backend
 
   function handlClick() {
     setisHumburgClicked(!isHumburgClicked);
@@ -27,7 +30,25 @@ export default function Header({
     setshowDropdownNotif(!showDropdownNotif);
   }
 
-  const isNotificationRead = notifications.some( (notif) => !notif.read );
+  useEffect(() => {
+    async function fetchdata() {
+      setnotificationData(await getData());
+    }
+    fetchdata();
+  }, []);
+
+  const unreadNotif = notificationData.some((data) => !data.read);
+  function markNotifAsRead(notifId: number) {
+    setnotificationData(
+      notificationData.map((obj) => {
+        if (obj.id === notifId) {
+          return { ...obj, read: true };
+        }
+        return obj;
+      })
+    );
+  }
+
   return (
     <>
       <header className="text-white flex justify-between w-full absolute z-10">
@@ -47,16 +68,20 @@ export default function Header({
               height={20}
               alt="Bell logo"
             />
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 lg:w-3 lg:h-3 xl:h-3.5 xl:w-3.5 2xl:w-4 2xl:h-4 bg-[#E95A3A] rounded-full absolute top-[5px] md:top-[8px] lg:top-[11px] xl:top-3 2xl:top-6 left-[16px] sm:left-[18px] md:left-[22px] lg:left-[30px] xl:left-[34px] 2xl:left-[50px]"></span>
+            {unreadNotif && (
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 lg:w-3 lg:h-3 xl:h-3.5 xl:w-3.5 2xl:w-4 2xl:h-4 bg-[#E95A3A] rounded-full absolute top-[5px] md:top-[8px] lg:top-[11px] xl:top-3 2xl:top-6 left-[16px] sm:left-[18px] md:left-[22px] lg:left-[30px] xl:left-[34px] 2xl:left-[50px]"></span>
+            )}
           </div>
           {showDropdownNotif && (
             <div className="absolute top-[43px] md:top-[52px] lg:top-[72px] xl:top-[85px] 2xl:top-32 right-6 sm:right-[104px] md:right-32 lg:right-56 xl:right-60 2xl:right-[352px] w-52 md:w-64 lg:w-80 xl:w-[400px] 2xl:w-[500px] bg-[#15131D] rounded-xl //before:absolute before:bg-[#15131D] before:content-[''] before:w-4 before:h-4 before:-top-1 before:right-3 before:rotate-45//">
               <ul className="flex flex-col gap-1 pl-2 ">
-                <li>hkaddour sent you a message</li>
-                <li>Notif A</li>
-                <li>Notif A</li>
-                <li>Notif A</li>
-                <li>Notif A</li>
+                {notificationData.map((data) => {
+                  return (
+                    <li key={data.id} onClick={() => markNotifAsRead(data.id)}>
+                      {data.message}
+                    </li>
+                  ); //read more in /utils/needwork.md
+                })}
               </ul>
             </div>
           )}
