@@ -89,7 +89,7 @@ export default function Header({
               </ul>
             </div>
           )}
-          <div className="w-[29.6px] h-[29.6px] sm:w-32 sm:h-[33.6px] bg-red-500 rounded-full  relative">
+          <div className="w-[29.6px] h-[29.6px] sm:w-32 sm:h-[33.6px] bg-[#110D1F] rounded-full  relative">
             <div className="flex absolute top-[1px] left-[1px] gap-1 items-center">
               <Image
                 className="sm:w-[32px] sm:h-[32px]"
@@ -99,7 +99,7 @@ export default function Header({
                 alt="profile image"
               />
               <div>
-                <p className="flex">rghouzra<Image src={Polygon.src} width={15} height={15} alt="Polygon"/></p>
+                <p className="flex gap-1">akadi<Image src={Polygon.src} width={10} height={10} alt="Polygon"/></p>
               </div>
             </div>
           </div>
