@@ -1,9 +1,13 @@
 "use client";
 
 import Image from "next/image";
+
 import Logo from "@/app/assets/svg/logo.svg";
 import Nav from "@/app/assets/svg/Navbar.svg";
 import Bell from "@/app/assets/svg/bell.svg";
+import Profilepic from "@/app/assets/svg/profile.svg";
+import Polygon from "@/app/assets/svg/polygon.svg";
+
 import { Humburgtype } from "../types/humburgtype";
 import { useEffect, useState } from "react";
 
@@ -56,7 +60,7 @@ export default function Header({
           <img src={Logo.src} className="p-2 2xl:p-4" />
           <img src={Nav.src} className="p-2 sm:hidden" onClick={handlClick} />
         </nav>
-        <nav className="flex items-center gap-1 sm:w-[170px] sm:h-11 md:w-48 md:h-14 lg:h-[72px] lg:w-72 xl:h-[88px] xl:w-80 2xl:h-32 2xl:w-[480px]">
+        <nav className="flex items-center gap-2 sm:w-[170px] sm:h-11 md:w-48 md:h-14 lg:h-[72px] lg:w-72 xl:h-[88px] xl:w-80 2xl:h-32 2xl:w-[480px]">
           <div
             className="w-[29.6px] h-[29.6px] sm:w-[33.6px] sm:h-[33.6px] md:w-10 md:h-10 lg:w-14 lg:h-14 xl:w-16 xl:h-16 2xl:w-24 2xl:h-24 bg-[#11F] rounded-full flex justify-center items-center relative "
             onClick={handlDropdownNotif}
@@ -85,7 +89,20 @@ export default function Header({
               </ul>
             </div>
           )}
-          <div>ergrgsg</div>
+          <div className="w-[29.6px] h-[29.6px] sm:w-32 sm:h-[33.6px] bg-red-500 rounded-full  relative">
+            <div className="flex absolute top-[1px] left-[1px] gap-1 items-center">
+              <Image
+                className="sm:w-[32px] sm:h-[32px]"
+                width={29}
+                height={29}
+                src={Profilepic.src}
+                alt="profile image"
+              />
+              <div>
+                <p className="flex">rghouzra<Image src={Polygon.src} width={15} height={15} alt="Polygon"/></p>
+              </div>
+            </div>
+          </div>
         </nav>
       </header>
     </>
