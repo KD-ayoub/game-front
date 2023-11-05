@@ -1,5 +1,6 @@
 "use client";
 
+import { NeuePlakFont, NeuePlakFontBold } from "../utils/NeuePlakFont";
 import Image from "next/image";
 
 import Logo from "@/app/assets/svg/logo.svg";
@@ -89,17 +90,28 @@ export default function Header({
               </ul>
             </div>
           )}
-          <div className="w-[29.6px] h-[29.6px] sm:w-32 sm:h-[33.6px] bg-[#110D1F] rounded-full  relative">
-            <div className="flex absolute top-[1px] left-[1px] gap-1 items-center">
+          <div className="w-[29.6px] h-[29.6px] sm:w-32 sm:h-[33.6px] md:w-36 md:h-10 lg:h-14 lg:w-56 xl:h-16 xl:w-64 2xl:h-24 2xl:w-96 bg-[#110D1F] rounded-full  relative">
+            <div className="flex absolute top-[1px] md:top-[3px] lg:top-[5px] xl:top-[6px] 2xl:top-[9px] left-[1px] md:left-1 lg:left-[5px] 2xl:left-[9px] gap-1 lg:gap-4 items-center">
               <Image
-                className="sm:w-[32px] sm:h-[32px]"
+                className="sm:w-[32px] sm:h-[32px] md:w-[34px] md:h-[34px] lg:w-[46px] lg:h-[46px] xl:w-[52px] xl:h-[52px] 2xl:w-[75px] 2xl:h-[75px] "
                 width={29}
                 height={29}
                 src={Profilepic.src}
                 alt="profile image"
               />
-              <div>
-                <p className="flex gap-1">akadi<Image src={Polygon.src} width={10} height={10} alt="Polygon"/></p>
+              <div className="hidden sm:block">
+                <p
+                  className={`flex items-center gap-1 lg:gap-3 2xl:gap-5 ${NeuePlakFont.className} text-[17px] lg:text-[23px] xl:text-[28px] 2xl:text-[42px] `}
+                >
+                  akadiret
+                  <Image
+                    className="lg:w-3 lg:h-3 xl:w-4 xl:h-4 2xl:w-6 2xl:h-6"
+                    src={Polygon.src}
+                    width={10}
+                    height={10}
+                    alt="Polygon"
+                  />
+                </p>
               </div>
             </div>
           </div>
