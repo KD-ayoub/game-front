@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+	provider = "postgresql"
+	url      = env("DATABASE_URL")
+}
+
+
+model User {
+	id					String      @id @default(uuid())
+	name				String
+	is_active			Boolean
+	last_activity		DateTime
+	
+	games				Int			@default(0)
+	win					Int			@default(0)
+	lose				Int			@default(0)
+	
+	// relationship with frienship
+	user				Friendship[] @relation("user")
+	friends				Friendship[] @relation("friends")
+	// relationship with profile
+	profile				Profile?
+
+	// relationship with game_history
+	player_history		games_history[] @relation("player")
+	opponent_history	games_history[] @relation("opponent")
+
+	// relationship with message
+	messages			message[]
+}
+
+model Friendship {
+	id					Int      @id @default(autoincrement())
+	createdAt			DateTime @default(now())
+
+	user				User @relation("user", fields: [userId], references: [id])
+	userId				String
+
+	friend				User @relation("friends", fields: [friendId], references: [id])
+  	friendId			String
+}
+
+
+model Profile {
+	userID				String @unique
+	User				User @relation(fields: [userID],references: [id])
+	photo_path			String
+	friend_number		Int @default(0)
+	level				Float @default(0)
+	level_desc			String @default("Noobie")
+	total_profit		Float	@default(0)
+}
+
+
+model games_history{
+	id					String	@id @default(uuid())
+	player_id			String
+	Player				User @relation("player",fields: [player_id],references: [id])
+	opponent_id			String
+	opponent			User @relation("opponent",fields: [opponent_id],references: [id])
+
+	coin				Int
+	date				DateTime @default(now())
+	result				Boolean
+}
+
+
+model message{
+	id					String	@id @default(uuid())
+	SenderID			String
+	User				User	@relation(fields: [SenderID],references: [id])
+
+	message_content		String
+	timeStamp			DateTime
+	convo_id			String
+	convo				conversation @relation(fields: [convo_id],references: [convo_id])
+}
+
+model conversation{
+	convo_id			String	@id @default(uuid())
+	convo_type			Boolean
+	convo_name			String
+	created_at			DateTime @default(now())
+
+	// relationship with message
+	messages			message[]
+	// relationship with participants
+	participants		participants[]
+}
+
+model participants{
+	participant_id			String	@id @default(uuid())
+	convo_id				String
+	convo					conversation	@relation(fields: [convo_id],references: [convo_id])
+}
