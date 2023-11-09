@@ -14,7 +14,7 @@ services:
     build : ./backend/
     image: nestjs
     ports:
-      - "3000:3000"
+      - "3001:3001"
     networks:
         - hidden
     depends_on:
@@ -23,7 +23,7 @@ services:
     build: ./frontend
     image: nextjs
     ports: 
-      - "8000:3000"
+      - "3000:3000"
     networks:
       - hidden
     volumes:
