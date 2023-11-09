@@ -19,7 +19,19 @@ services:
         - hidden
     depends_on:
       - database
+  nextjs:
+    build: ./frontend
+    image: nextjs
+    ports: 
+      - "8000:3000"
+    networks:
+      - hidden
+    volumes:
+      - ./frontend:/home/app
+      - frontend_node:/home/app/node_modules
 
+volumes:
+  frontend_node:
 
 networks:
   hidden:
