@@ -6,20 +6,36 @@ services:
 
     environment:
       - POSTGRES_USER=younes
-      - POSTGRES_PASSWORD=1234
+      - POSTGRES_PASSWORD=1234 
       - POSTGRES_DB=db
+    ports:
+      - "5432:5432"
     networks:
         - hidden
   nestjs:
     build : ./backend/
     image: nestjs
     ports:
-      - "3000:3000"
+      - "3001:3001"
     networks:
         - hidden
     depends_on:
       - database
+    volumes:
+      - ./backend:/root/src/app
+  nextjs:
+    build: ./frontend
+    image: nextjs
+    ports: 
+      - "3000:3000"
+    networks:
+      - hidden
+    volumes:
+      - ./frontend:/home/app
+      - frontend_node:/home/app/node_modules
 
+volumes:
+  frontend_node:
 
 networks:
   hidden:
