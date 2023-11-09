@@ -6,7 +6,7 @@ services:
 
     environment:
       - POSTGRES_USER=younes
-      - POSTGRES_PASSWORD=1234
+      - POSTGRES_PASSWORD=1234 
       - POSTGRES_DB=db
     networks:
         - hidden
