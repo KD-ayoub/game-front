@@ -21,6 +21,8 @@ services:
         - hidden
     depends_on:
       - database
+    volumes:
+      - ./backend:/root/src/app
   nextjs:
     build: ./frontend
     image: nextjs
