@@ -24,16 +24,10 @@ export class AuthService {
 
 	async createUser(details: UserDetails)
 	{
-		console.log("create user");
 		const user = this.prisma.user.create({
 			data: {
-				full_name:  details.usual_full_name,
-				intra_42_id: details.id,
-				is_active :  false,
-				last_activity: new Date(),
 			}
 		});
-		console.log("hey");
 	}
 
 	findUser()
