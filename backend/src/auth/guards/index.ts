@@ -5,12 +5,8 @@ import { AuthGuard } from '@nestjs/passport';
 export class FT_GUARD extends AuthGuard('42') {
   async canActivate(context: ExecutionContext)
   {
-	  //console.log("------------ in guard ------------------");
-      const activate =  (await super.canActivate(context)) as boolean; // i changed here
-	  //console.log(activate);
-	  //console.log("-------------------------");
+      const activate =  (await super.canActivate(context)) as boolean;
 	  const request = context.switchToHttp().getRequest();
-	  console.log(request);
 	  await super.logIn(request);
 	  return activate;
   }

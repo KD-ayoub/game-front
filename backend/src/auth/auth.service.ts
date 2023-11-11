@@ -7,7 +7,6 @@ export class AuthService {
 	constructor(private prisma : PrismaService){}
 	async validateUser(details: User)
 	{
-
 		const user = await this.prisma.user.findUnique({
 			where: {
 				intra_42_id: details.intra_42_id,
@@ -15,7 +14,6 @@ export class AuthService {
 		});
 		if (user)
 		{
-			console.log(user);
 			return user;
 		}
 
