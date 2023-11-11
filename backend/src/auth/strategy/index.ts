@@ -3,6 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { AuthService } from "../auth.service";
 import { Strategy, VerifyCallback } from "passport-42";
 import { UserDetails } from "src/utils/types";
+import { User } from "@prisma/client";
 
 @Injectable()
 export class FT_Strategy extends PassportStrategy(Strategy, '42') {
@@ -15,19 +16,16 @@ export class FT_Strategy extends PassportStrategy(Strategy, '42') {
     }
 
     async validate(accessToken: string, refreshToken: string, profile: any){
-		console.log(profile._json.id);
-		console.log(profile._json.login);
-		console.log(profile._json.usual_full_name);
-		console.log(profile._json.email);
-		console.log(profile._json.image.link);
-		const details : UserDetails = {
-			email: profile._json.email,
-			usual_full_name: profile._json.usual_full_name,
-			id: profile._json.id,
-			login: profile._json.login,
-			image: profile._json.image.link
+		const details : User = {
+			full_name: profile._json.usual_full_name,
+			intra_42_id: profile._json.id,
+			is_active: false,
+			last_activity: new Date(),
+			win: 0,
+			lose: 0,
+			games:0,
+			id: "",
 		};
-		await this.authService.validateUser(details);
-		 //i need to store the user data from here
+		return await this.authService.validateUser(details);
     }
 }

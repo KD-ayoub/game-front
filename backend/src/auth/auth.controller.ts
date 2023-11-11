@@ -1,33 +1,29 @@
-import { Controller ,Get, Res, UseGuards} from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { FT_GUARD } from './guards';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { AuthenticatedGuard, FT_GUARD } from './guards';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
-
-
-  @UseGuards(FT_GUARD)
-  @Get('42/login')
-  login()
-  {
-	  return ;
-  }
-
-  @Get('42/redirect')
-  @UseGuards(FT_GUARD)
-  redirect(@Res() res: Response)
-  {
-	  res.send(200);
-  }
-
-  @UseGuards(FT_GUARD)
-  @Get('42/test')
-  test()
-  {
-	  console.log("test");
-	  return {test: "test"};
-  }
+	@Get('42/login')
+	@UseGuards(FT_GUARD)
+	login() {
+	  return;
+	}
+	
+	@Get('42/redirect')
+	@UseGuards(FT_GUARD)
+	redirect(@Res() res: Response) {
+	  res.redirect('/auth/42/status');
+	}
+	
+	@Get('42/status')
+	@UseGuards(AuthenticatedGuard)
+	status(@Req() req: Request) {
+	  return req.user;
+	}
+	
+	@Get('42/logout')
+	@UseGuards(AuthenticatedGuard)
+	logout(@Req() req: Request) {
+	}
 }
