@@ -19,3 +19,11 @@ export class AuthenticatedGuard implements CanActivate {
     return req.isAuthenticated();
   }
 }
+
+@Injectable()
+export class first_timeGuard implements CanActivate{
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const req = context.switchToHttp().getRequest();
+    return req.isAuthenticated();
+  }
+}

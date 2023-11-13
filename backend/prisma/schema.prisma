@@ -15,6 +15,8 @@ model User {
 	id						String      @id @default(uuid())
 	full_name				String
 	intra_42_id				Int @unique
+	nickname				String
+	first_time				Boolean @default(true)
 
 	is_active				Boolean
 	last_activity			DateTime
@@ -52,7 +54,11 @@ model Friendship {
 model Profile {
 	userID					String @unique
 	User					User @relation(fields: [userID],references: [id])
+
 	photo_path				String
+	email					String
+	two_fa					Boolean
+
 	friend_number			Int @default(0)
 	level					Float @default(0)
 	level_desc				String @default("Noobie")

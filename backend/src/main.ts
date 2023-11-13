@@ -8,7 +8,7 @@ async function bootstrap() {
   app.use(session({
 	  cookie: {
 		  //maxAge: 60000 * 60 * 24,
-		  maxAge: 60000,
+		  maxAge: 60000 * 60 * 24,
 	  },
 	  secret: process.env.SESSION_SECRET,
 	  resave: false,
@@ -16,6 +16,7 @@ async function bootstrap() {
   }));
   app.use(passport.initialize());
   app.use(passport.session());
+  app.setGlobalPrefix('');
   await app.listen(3001);
 }
 

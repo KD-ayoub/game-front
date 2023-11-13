@@ -2,8 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { AuthService } from "../auth.service";
 import { Strategy, VerifyCallback } from "passport-42";
-import { UserDetails } from "src/utils/types";
-import { User } from "@prisma/client";
+import {intra_api_info} from "src/utils/types";
 
 @Injectable()
 export class FT_Strategy extends PassportStrategy(Strategy, '42') {
@@ -16,15 +15,12 @@ export class FT_Strategy extends PassportStrategy(Strategy, '42') {
     }
 
     async validate(accessToken: string, refreshToken: string, profile: any){
-		const details : User = {
+		const details : intra_api_info = {
 			full_name: profile._json.usual_full_name,
 			intra_42_id: profile._json.id,
-			is_active: false,
-			last_activity: new Date(),
-			win: 0,
-			lose: 0,
-			games:0,
-			id: "",
+			login: profile._json.login,
+			email: profile._json.email,
+			image: profile._json.image.link
 		};
 		return await this.authService.validateUser(details);
     }
