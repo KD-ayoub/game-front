@@ -9,6 +9,10 @@
 /coverage
 
 # next.js
+<<<<<<< HEAD
+=======
+node_modules/
+>>>>>>> profile_backend
 /frontend/.next/
 /out/
 
@@ -33,3 +37,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 /frontend/next-env.d.ts
+
+# note
+note.txt

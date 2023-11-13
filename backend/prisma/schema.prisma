@@ -10,13 +10,13 @@ datasource db {
 	url      = env("DATABASE_URL")
 }
 
-
 model User {
 	id						String      @id @default(uuid())
 	full_name				String
 	intra_42_id				Int @unique
 	nickname				String
 	first_time				Boolean @default(true)
+	fac_auth	Boolean
 
 	is_active				Boolean
 	last_activity			DateTime
@@ -30,6 +30,7 @@ model User {
 	friends					Friendship[] @relation("friends")
 	// relationship with profile
 	profile					Profile?
+	achievement		achievement?
 
 	// relationship with game_history
 	player_history			games_history[] @relation("player")
@@ -43,11 +44,11 @@ model Friendship {
 	id						Int      @id @default(autoincrement())
 	createdAt				DateTime @default(now())
 
-	user					User @relation("user", fields: [userId], references: [id])
-	userId					String
+	userId				String
+	user				User @relation("user", fields: [userId], references: [id])
 
-	friend					User @relation("friends", fields: [friendId], references: [id])
-  	friendId				String
+	friendId			String
+	friend				User @relation("friends", fields: [friendId], references: [id])
 }
 
 
@@ -57,7 +58,6 @@ model Profile {
 
 	photo_path				String
 	email					String
-	two_fa					Boolean
 
 	friend_number			Int @default(0)
 	level					Float @default(0)
@@ -73,28 +73,49 @@ model games_history{
 	opponent_id				String
 	opponent				User @relation("opponent",fields: [opponent_id],references: [id])
 
-	coin					Int
 	date					DateTime @default(now())
 	result					Boolean
+	userID				String @unique
+	User				User @relation(fields: [userID],references: [id])
+
+	photo_path			String	@default("default_img")
+	friend_number		Int @default(0)
+	level				Float @default(0)
+	//level_desc			String @default("Noobie")
+	//total_profit		Float	@default(0)
 }
 
 
-model message{
-	id						String	@id @default(uuid())
-	SenderID				String
-	User					User	@relation(fields: [SenderID],references: [id])
 
-	message_content			String
-	timeStamp				DateTime
-	convo_id				String
-	convo					conversation @relation(fields: [convo_id],references: [convo_id])
+model achievement {
+	id	String @id @default(uuid())
+	user_id		String @unique
+	user			User @relation(fields:[user_id],references:[id])
+
+	kickstart		Boolean
+	social		Boolean
+	first_game		Boolean
+	level_1		Boolean
+	level_5		Boolean
 }
 
-model conversation{
-	convo_id				String	@id @default(uuid())
-	convo_type				Boolean
-	convo_name				String
-	created_at				DateTime @default(now())
+model message {
+	id					String	@id @default(uuid())
+	SenderID			String
+	User				User	@relation(fields: [SenderID],references: [id])
+
+	message_content		String
+	timeStamp			DateTime
+	convo_id			String
+	convo				conversation @relation(fields: [convo_id],references: [convo_id])
+}
+
+
+model conversation {
+	convo_id			String	@id @default(uuid())
+	convo_type			Boolean
+	convo_name			String
+	created_at			DateTime @default(now())
 
 	// relationship with message
 	messages				message[]
@@ -102,7 +123,7 @@ model conversation{
 	participants			participants[]
 }
 
-model participants{
+model participants {
 	participant_id			String	@id @default(uuid())
 	convo_id				String
 	convo					conversation	@relation(fields: [convo_id],references: [convo_id])
