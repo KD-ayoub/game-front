@@ -20,17 +20,16 @@ export class AuthService {
 
 	async createUser(details: intra_api_info)
 	{
-		//const user = await this.prisma.user.create({
-		//	data : {
-		//		nickName: details.login,
-		//		full_name:  details.full_name,
-		//		intra_42_id: details.intra_42_id,
-		//		is_active :  "online",
-		//		last_activity: new Date(),
-		//	}
-		//});
-		//return user;
-		return 0;
+		const user = await this.prisma.user.create({
+			data : {
+				nickName: details.login,
+				full_name:  details.full_name,
+				intra_42_id: details.intra_42_id,
+				is_active :  "online",
+				last_activity: new Date(),
+			}
+		});
+		return user;
 	}
 
 	async findUser(details: intra_api_info)
@@ -45,6 +44,7 @@ export class AuthService {
 
 	async signup(details: any,profile_data: signup)
 	{
+		// i need to work on 2fa
 		const user: user_request = {
 			full_name: details.full_name,
 			login: details.login,
@@ -74,14 +74,12 @@ export class AuthService {
 		
 		if (response.first_time == true)
 		{
-			//const found_profile = await this.prisma.profile.create({
-			//	data:{
-			//		userID: user.id,
-			//		photo_path: profile_data.image,
-			//		two_fa: profile_data._2fa,
-			//		email: profile_data.email,
-			//	}
-			//})
+			const found_profile = await this.prisma.profile.create({
+				data:{
+					userID: user.id,
+					photo_path: profile_data.image,
+				}
+			})
 
 		}
 		return response;

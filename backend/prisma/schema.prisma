@@ -17,12 +17,12 @@ model User {
 	nickName				String @unique
 
 
-	fac_auth	Boolean
+	fac_auth				Boolean @default(false)
 	last_activity			DateTime
 
 	first_time				Boolean @default(true)
 
-	is_active		String	@default("offline")
+	is_active				String	@default("offline")
 	
 	games					Int			@default(0)
 	win						Int			@default(0)

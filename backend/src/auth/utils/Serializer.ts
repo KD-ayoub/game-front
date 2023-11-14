@@ -15,14 +15,13 @@ export class SessionSerializer extends PassportSerializer{
 	async deserializeUser(user: intra_api_info, done: (err: Error, user: any)=> void)
 	{
 		const userDB = await this.authService.findUser(user);
-		//const found : server_response = {
-		//	full_name: userDB.full_name,
-		//	id: userDB.id,
-		//	intra_42_id: userDB.intra_42_id,
-		//	login: userDB.nickname,
-		//	first_time: userDB.first_time,
-		//}
-		//return userDB ? done(null,found):  done(null, null);
-		return true;
+		const found : server_response = {
+			full_name: userDB.full_name,
+			id: userDB.id,
+			intra_42_id: userDB.intra_42_id,
+			login: userDB.nickName,
+			first_time: userDB.first_time,
+		}
+		return userDB ? done(null,found):  done(null, null);
 	}
 }
