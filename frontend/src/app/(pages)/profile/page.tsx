@@ -1,6 +1,14 @@
 "use client";
 
-import { Header, SideBar, ProfileInfo, StatusGame, Achievements, GameHistory } from "@/app/components";
+import {
+  Header,
+  SideBar,
+  ProfileInfo,
+  StatusGame,
+  Achievements,
+  GameHistory,
+  Friends,
+} from "@/app/components";
 import { NeuePlakFont, NeuePlakFontBold } from "../../utils/NeuePlakFont";
 import { useState } from "react";
 
@@ -21,14 +29,23 @@ export default function Profile() {
       >
         <div className="w-full h-full">
           <div
-            className={`ml-[10px] text-[20px] ${NeuePlakFontBold.className} `}
+            className={`ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className} `}
           >
             Profile
           </div>
-          <ProfileInfo />
-          <StatusGame />
-          <Achievements />
-          <GameHistory />
+          <div className="md:w-full md:h-full">
+            <div className="md:flex md:items-center">
+              <ProfileInfo />
+              <div className="md:flex md:flex-col md:h-1/2 md:basis-1/2 lg:gap-5">
+                <StatusGame />
+                <Achievements />
+              </div>
+            </div>
+            <div className="lg:flex">
+              <GameHistory />
+              <Friends />
+            </div>
+          </div>
         </div>
       </div>
     </main>
