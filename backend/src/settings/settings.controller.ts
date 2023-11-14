@@ -1,8 +1,10 @@
-import { Controller, Get, Put, Delete, Body, Headers } from '@nestjs/common';
+import { Controller, Get, Put, Delete, Body, Headers, UseGuards } from '@nestjs/common';
 import { SettingsService } from './settings.service';
+import { AuthenticatedGuard } from '../auth/guards';
 import { SettingsDto } from './dto';
 
 @Controller('settings')
+@UseGuards(AuthenticatedGuard)
 //here Guard to check if that user auth to access the settings of that user only not other user
 //here check if the user sends the user header 
 export class SettingsController {
