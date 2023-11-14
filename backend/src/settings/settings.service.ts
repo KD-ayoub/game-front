@@ -1,6 +1,6 @@
 import { Injectable, ConflictException, ForbiddenException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from 'prisma/prisma.service';
 import { SettingsDto } from './dto';
 
 @Injectable()
@@ -22,14 +22,14 @@ export class SettingsService {
       },
       select: {
         id: true,
-        name: true,
+        full_name: true,
         nickName: true,
         fac_auth: true
       }
     });
     const data = await {
       id: commingData.id,
-      name: commingData.name,
+      name: commingData.full_name,
       nickName: commingData.nickName,
       fac_auth: commingData.fac_auth,
       photo_path: img.photo_path
@@ -44,13 +44,13 @@ export class SettingsService {
           id: userId,
         },
         data: {
-          name: data.name,
+          full_name: data.name,
           nickName: data.nickName,
           fac_auth: data.fac_auth
         },
         select: {
           id: true,
-          name: true,
+          full_name: true,
           nickName: true,
           fac_auth: true
         }

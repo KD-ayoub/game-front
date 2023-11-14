@@ -12,30 +12,40 @@ services:
       - "5432:5432"
     networks:
         - hidden
-  nestjs:
-    build : ./backend/
-    image: nestjs
-    ports:
-      - "3001:3001"
-    networks:
-        - hidden
-    depends_on:
-      - database
-    volumes:
-      - ./backend:/root/src/app
-  nextjs:
-    build: ./frontend
-    image: nextjs
-    ports: 
-      - "3000:3000"
-    networks:
-      - hidden
-    volumes:
-      - ./frontend:/home/app
-      - frontend_node:/home/app/node_modules
+          # nestjs:
+          #   build : ./backend/.
+          #   image: nestjs
+          #   ports:
+          #     - "3001:3001"
+          #   networks:
+          #       - hidden
+          #   depends_on:
+          #     - database
+          #   volumes:
+          #     - ./backend:/root/src/app
 
-volumes:
-  frontend_node:
+        # nextjs:
+        #   build: ./frontend
+        #volumes:
+        #  - ./backend:/root/src/backend
+        #  nextjs:
+        #    build: ./frontend/.
+        #    image: nextjs
+        #    ports: 
+        #      - "3000:3000"
+        #    networks:
+        #      - hidden
+        #    volumes:
+        #      - ./frontend:/home/app
+        #      - frontend_node:/home/app/node_modules
+        #    depends_on:
+        #      - nestjs
+        #        volumes:
+        #          - ./frontend:/home/app
+        #          - frontend_node:/home/app/node_modules
+        #
+        #volumes:
+        #  frontend_node:
 
 networks:
   hidden:

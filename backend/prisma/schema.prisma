@@ -14,12 +14,15 @@ model User {
 	id						String      @id @default(uuid())
 	full_name				String
 	intra_42_id				Int @unique
-	nickname				String
-	first_time				Boolean @default(true)
-	fac_auth	Boolean
+	nickName				String @unique
 
-	is_active				Boolean
+
+	fac_auth	Boolean
 	last_activity			DateTime
+
+	first_time				Boolean @default(true)
+
+	is_active		String	@default("offline")
 	
 	games					Int			@default(0)
 	win						Int			@default(0)
@@ -56,36 +59,27 @@ model Profile {
 	userID					String @unique
 	User					User @relation(fields: [userID],references: [id])
 
-	photo_path				String
-	email					String
+	photo_path				String @default("defautl_img")
 
 	friend_number			Int @default(0)
 	level					Float @default(0)
-	level_desc				String @default("Noobie")
-	total_profit			Float	@default(0)
 }
 
 
 model games_history{
 	id						String	@id @default(uuid())
+
 	player_id				String
 	Player					User @relation("player",fields: [player_id],references: [id])
+
 	opponent_id				String
 	opponent				User @relation("opponent",fields: [opponent_id],references: [id])
 
+
+	xp_level	Int
 	date					DateTime @default(now())
 	result					Boolean
-	userID				String @unique
-	User				User @relation(fields: [userID],references: [id])
-
-	photo_path			String	@default("default_img")
-	friend_number		Int @default(0)
-	level				Float @default(0)
-	//level_desc			String @default("Noobie")
-	//total_profit		Float	@default(0)
 }
-
-
 
 model achievement {
 	id	String @id @default(uuid())

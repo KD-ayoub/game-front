@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class ProfileService {
@@ -20,7 +20,7 @@ export class ProfileService {
       throw new NotFoundException();
     const data = await {
       id: user.id,
-      name: user.name,
+      full_name: user.full_name,
       nickName: user.nickName,
       is_active: user.is_active,
       last_activity: user.last_activity,
@@ -52,7 +52,7 @@ export class ProfileService {
       },
       select: {
         id: true,
-        name: true,
+        full_name: true,
         nickName: true,
       }
     });
@@ -68,7 +68,7 @@ export class ProfileService {
       throw new NotFoundException();
     const data = await {
       id: opponent.id,
-      name: opponent.name,
+      full_name: opponent.full_name,
       nickName: opponent.nickName,
       photo_path: profile.photo_path,
     };
@@ -124,7 +124,7 @@ export class ProfileService {
     const commingData = await this.prisma.user.findMany({
       select: {
         id: true,
-        name: true,
+        full_name: true,
         nickName: true,
       }
     });
