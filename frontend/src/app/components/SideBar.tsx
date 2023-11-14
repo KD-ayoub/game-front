@@ -58,8 +58,8 @@ export default function SideBar({
           </Link>
         </div>
         <div className="relative">
-          <Link href="/user">
-            <NavbarIcons Srcfile={User.src} alt="User" path="/user" />
+          <Link href="/profile">
+            <NavbarIcons Srcfile={User.src} alt="User" path="/profile" />
           </Link>
         </div>
         <div className="relative">

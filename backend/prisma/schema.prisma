@@ -10,68 +10,90 @@ datasource db {
 	url      = env("DATABASE_URL")
 }
 
-
 model User {
-	id					String      @id @default(uuid())
-	name				String
-	is_active			Boolean
-	last_activity		DateTime
+	id						String      @id @default(uuid())
+	full_name				String
+	intra_42_id				Int @unique
+	nickName				String @unique
+
+
+	fac_auth	Boolean
+	last_activity			DateTime
+
+	first_time				Boolean @default(true)
+
+	is_active		String	@default("offline")
 	
-	games				Int			@default(0)
-	win					Int			@default(0)
-	lose				Int			@default(0)
+	games					Int			@default(0)
+	win						Int			@default(0)
+	lose					Int			@default(0)
 	
 	// relationship with frienship
-	user				Friendship[] @relation("user")
-	friends				Friendship[] @relation("friends")
+	user					Friendship[] @relation("user")
+	friends					Friendship[] @relation("friends")
 	// relationship with profile
-	profile				Profile?
+	profile					Profile?
+	achievement		achievement?
 
 	// relationship with game_history
-	player_history		games_history[] @relation("player")
-	opponent_history	games_history[] @relation("opponent")
+	player_history			games_history[] @relation("player")
+	opponent_history		games_history[] @relation("opponent")
 
 	// relationship with message
-	messages			message[]
+	messages				message[]
 }
 
 model Friendship {
-	id					Int      @id @default(autoincrement())
-	createdAt			DateTime @default(now())
+	id						Int      @id @default(autoincrement())
+	createdAt				DateTime @default(now())
 
-	user				User @relation("user", fields: [userId], references: [id])
 	userId				String
+	user				User @relation("user", fields: [userId], references: [id])
 
+	friendId			String
 	friend				User @relation("friends", fields: [friendId], references: [id])
-  	friendId			String
 }
 
 
 model Profile {
-	userID				String @unique
-	User				User @relation(fields: [userID],references: [id])
-	photo_path			String
-	friend_number		Int @default(0)
-	level				Float @default(0)
-	level_desc			String @default("Noobie")
-	total_profit		Float	@default(0)
+	userID					String @unique
+	User					User @relation(fields: [userID],references: [id])
+
+	photo_path				String @default("defautl_img")
+
+	friend_number			Int @default(0)
+	level					Float @default(0)
 }
 
 
 model games_history{
-	id					String	@id @default(uuid())
-	player_id			String
-	Player				User @relation("player",fields: [player_id],references: [id])
-	opponent_id			String
-	opponent			User @relation("opponent",fields: [opponent_id],references: [id])
+	id						String	@id @default(uuid())
 
-	coin				Int
-	date				DateTime @default(now())
-	result				Boolean
+	player_id				String
+	Player					User @relation("player",fields: [player_id],references: [id])
+
+	opponent_id				String
+	opponent				User @relation("opponent",fields: [opponent_id],references: [id])
+
+
+	xp_level	Int
+	date					DateTime @default(now())
+	result					Boolean
 }
 
+model achievement {
+	id	String @id @default(uuid())
+	user_id		String @unique
+	user			User @relation(fields:[user_id],references:[id])
 
-model message{
+	kickstart		Boolean
+	social		Boolean
+	first_game		Boolean
+	level_1		Boolean
+	level_5		Boolean
+}
+
+model message {
 	id					String	@id @default(uuid())
 	SenderID			String
 	User				User	@relation(fields: [SenderID],references: [id])
@@ -82,19 +104,20 @@ model message{
 	convo				conversation @relation(fields: [convo_id],references: [convo_id])
 }
 
-model conversation{
+
+model conversation {
 	convo_id			String	@id @default(uuid())
 	convo_type			Boolean
 	convo_name			String
 	created_at			DateTime @default(now())
 
 	// relationship with message
-	messages			message[]
+	messages				message[]
 	// relationship with participants
-	participants		participants[]
+	participants			participants[]
 }
 
-model participants{
+model participants {
 	participant_id			String	@id @default(uuid())
 	convo_id				String
 	convo					conversation	@relation(fields: [convo_id],references: [convo_id])
