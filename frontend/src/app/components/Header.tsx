@@ -17,7 +17,7 @@ import { Humburgtype } from "../types/humburgtype";
 import { useEffect, useState } from "react";
 
 // this is only for testing need to merge with backend
-import getData from "./getData";
+import getData from "../api/getData";
 import { Notification } from "../types/notificationtype";
 ///////
 
