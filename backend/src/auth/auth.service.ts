@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { profile } from 'console';
 import { PrismaService } from 'prisma/prisma.service';
 import {intra_api_info, server_response, signup, user_request } from "src/utils/types"
 
@@ -44,13 +45,23 @@ export class AuthService {
 
 	async signup(details: any,profile_data: signup)
 	{
-		// i need to work on 2fa
 		const user: user_request = {
 			full_name: details.full_name,
 			login: details.login,
 			id: details.id,
 			intra_42_id: details.intra_42_id,
 			first_time: details.first_time
+		}
+
+		if (user.first_time == true)
+		{
+			const found_profile = await this.prisma.profile.create({
+				data:{
+					userID: user.id,
+					photo_path: profile_data.image,
+				}
+			})
+
 		}
 
 		const found_user = await this.prisma.user.update({
@@ -72,16 +83,6 @@ export class AuthService {
 			intra_42_id: found_user.intra_42_id
 		}
 		
-		if (response.first_time == true)
-		{
-			const found_profile = await this.prisma.profile.create({
-				data:{
-					userID: user.id,
-					photo_path: profile_data.image,
-				}
-			})
-
-		}
 		return response;
 	}
 }

@@ -22,7 +22,5 @@ export type signup = {
 	full_name: string,
 	login: string,
 	image: string,
-	_2fa: boolean,
-	email: string
 }
 

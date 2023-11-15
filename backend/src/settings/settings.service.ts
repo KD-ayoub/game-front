@@ -1,13 +1,15 @@
-import { Injectable, ConflictException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, ForbiddenException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { SettingsDto } from './dto';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class SettingsService {
   constructor(private prisma: PrismaService) {}
 
   async getSettingsData(userId: string): Promise<{}> {
+
     const img = await this.prisma.profile.findUnique({
       where: {
         userID: userId,
@@ -27,6 +29,8 @@ export class SettingsService {
         fac_auth: true
       }
     });
+	if (!img || !commingData)
+		throw new NotFoundException();
     const data = await {
       id: commingData.id,
       name: commingData.full_name,

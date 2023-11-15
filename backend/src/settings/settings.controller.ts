@@ -1,7 +1,9 @@
-import { Controller, Get, Put, Delete, Body, Headers, UseGuards } from '@nestjs/common';
+import { Controller, Get, Put, Delete, Body, Headers, UseGuards , Req } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { SettingsService } from './settings.service';
 import { AuthenticatedGuard } from '../auth/guards';
 import { SettingsDto } from './dto';
+import { intra_api_info, server_response, user_request } from 'src/utils/types';
 
 @Controller('settings')
 @UseGuards(AuthenticatedGuard)
@@ -11,18 +13,18 @@ export class SettingsController {
   constructor(private SettingsService: SettingsService) {}
 
   @Get()
-  getSettings(@Headers('user') userId: string): Promise<{}> {
-    return this.SettingsService.getSettingsData(userId);
+  getSettings(@Req() req: any) {
+    return this.SettingsService.getSettingsData(req.user.id);
   }
 
   @Put()
-  changeSettings(@Headers('user') userId: string, @Body() data: SettingsDto): Promise<{}> {
+  changeSettings(@Req() req: any, @Body() data: SettingsDto): Promise<{}> {
     //maybe here send all data of the user that got changed so the user stores them in the browser
-    return this.SettingsService.changeSettingsData(userId, data);
+    return this.SettingsService.changeSettingsData(req.user.id,data);
   }
   
   @Delete()
-  deleteAccount(@Headers('user') userId: string): Promise<any> {
-    return this.SettingsService.deleteAccountData(userId);
+  deleteAccount(@Req() req: any): Promise<any> {
+    return this.SettingsService.deleteAccountData(req.user.id);
   }
 }
