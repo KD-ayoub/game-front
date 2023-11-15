@@ -9,10 +9,7 @@
 /coverage
 
 # next.js
-<<<<<<< HEAD
-=======
 node_modules/
->>>>>>> profile_backend
 /frontend/.next/
 /out/
 
