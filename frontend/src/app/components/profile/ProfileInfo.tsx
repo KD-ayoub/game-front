@@ -27,7 +27,7 @@ export default function ProfileInfo() {
   }, []);
   console.log(dataprofile);
   return (
-    <div className="m-3 mt-2 lg:mr-[100px] md:flex-grow md:basis-1/2">
+    <div className="m-3 mt-2 md:ml-5 lg:ml-10 2xl:ml-16 lg:mr-[100px] md:flex-grow md:basis-1/2">
       <div className="w-auto h-[222px] md:h-[185px] lg:h-[222px] xl:h-[265px] 2xl:h-[320px] relative">
         <Image
           className="object-cover rounded-[20px]"
@@ -50,13 +50,14 @@ export default function ProfileInfo() {
             <p
               className={`text-center md:text-left md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px] ${NeuePlakFontBold.className}`}
             >
-              {dataprofile.full_name}
+              Hicham Kaddouri
+              {/* {dataprofile.full_name} */}
             </p>
             {/* fetch fullname, adjust font size*/}
             <p
               className={`${NeuePlakFont.className} text-center md:text-left text-[12px] lg:text-[16px] xl:text-[18px] 2xl:text-[24px] text-[#E95A3A]`}
             >
-              {`@${dataprofile.nickName}`}
+              {`@Noobie`}
             </p>
           </div>
 
@@ -64,7 +65,7 @@ export default function ProfileInfo() {
             <div className="flex justify-around items-center">
               <div className="flex flex-col items-center">
                 <p className={`${NeuePlakFontBold.className} text-[14px] `}>
-                  {dataprofile.friend_number}
+                  500
                 </p>
                 <p
                   className={`${NeuePlakFontBold.className} text-[12px] text-[#717273] `}
@@ -74,7 +75,7 @@ export default function ProfileInfo() {
               </div>
               <div className="flex flex-col items-center">
                 <p className={`${NeuePlakFontBold.className} text-[14px]`}>
-                  {dataprofile.level}
+                  18
                 </p>
                 <p
                   className={`${NeuePlakFontBold.className} text-[12px] text-[#717273]`}
@@ -86,7 +87,7 @@ export default function ProfileInfo() {
                 <p
                   className={`${NeuePlakFont.className} text-[14px] text-[#E95A3A]`}
                 >
-                  {dataprofile.is_active}
+                  at game
                 </p>
                 <p
                   className={`${NeuePlakFontBold.className} text-[12px] text-[#717273]`}
@@ -109,7 +110,7 @@ export default function ProfileInfo() {
             <p
               className={`${NeuePlakFont.className} text-[16px] lg:text-[18px] xl:text-[22px] 2xl:text-[30px] text-[#E95A3A]`}
             >
-              {dataprofile.is_active}
+              at game
             </p>
             <div className="md:w-full md:h-10">
               <p
@@ -125,7 +126,7 @@ export default function ProfileInfo() {
               <p
                 className={`${NeuePlakFont.className} text-[9px] lg:text-[11px] xl:text-[14px] 2xl:text-[20px] text-end`}
               >
-                {`Level ${dataprofile.level}`}
+                {`Level 18`}
               </p>
               <div className="md:flex md:justify-between">
                 <div className="flex flex-col justify-start">
@@ -137,7 +138,7 @@ export default function ProfileInfo() {
                   <p
                     className={`${NeuePlakFont.className} md:text-[10px] lg:text-[14px] xl:text-[18px] 2xl:text-[24px] md:text-center`}
                   >
-                    {dataprofile.friend_number}
+                    500
                   </p>
                 </div>
                 <button
