@@ -44,7 +44,6 @@ export class AuthService {
 
 	async signup(details: any,profile_data: signup)
 	{
-		// i need to work on 2fa
 		const user: user_request = {
 			full_name: details.full_name,
 			login: details.login,
