@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { LoggerMiddleware } from './common/utils/logger';
 import { ProfileModule } from './profile/profile.module';
 import { SettingsModule } from './settings/settings.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports:
@@ -13,7 +14,8 @@ import { SettingsModule } from './settings/settings.module';
 	  	PrismaModule,
 	  	PassportModule.register({session: true}),
 	  	ProfileModule,
-	  	SettingsModule
+	  	SettingsModule,
+			GameModule
   ],
 })
 
