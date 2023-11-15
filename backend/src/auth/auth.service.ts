@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { profile } from 'console';
 import { PrismaService } from 'prisma/prisma.service';
 import {intra_api_info, server_response, signup, user_request } from "src/utils/types"
 
