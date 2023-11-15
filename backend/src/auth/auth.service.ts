@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import {intra_api_info, server_response, signup, user_request } from "src/utils/types"
 
@@ -44,6 +44,7 @@ export class AuthService {
 
 	async signup(details: any,profile_data: signup)
 	{
+		try {
 		const user: user_request = {
 			full_name: details.full_name,
 			login: details.login,
@@ -83,5 +84,9 @@ export class AuthService {
 		}
 		
 		return response;
+			
+		} catch (error) {
+			throw new ConflictException('Crediantials already taken.');
+		}
 	}
 }
