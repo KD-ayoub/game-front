@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { profile } from 'console';
 import { PrismaService } from 'prisma/prisma.service';
 import {intra_api_info, server_response, signup, user_request } from "src/utils/types"
 
@@ -52,6 +53,17 @@ export class AuthService {
 			first_time: details.first_time
 		}
 
+		if (user.first_time == true)
+		{
+			const found_profile = await this.prisma.profile.create({
+				data:{
+					userID: user.id,
+					photo_path: profile_data.image,
+				}
+			})
+
+		}
+
 		const found_user = await this.prisma.user.update({
 			where:{
 				id: user.id,
@@ -71,16 +83,6 @@ export class AuthService {
 			intra_42_id: found_user.intra_42_id
 		}
 		
-		if (response.first_time == true)
-		{
-			const found_profile = await this.prisma.profile.create({
-				data:{
-					userID: user.id,
-					photo_path: profile_data.image,
-				}
-			})
-
-		}
 		return response;
 	}
 }
