@@ -12,7 +12,6 @@ export class ProfileController {
 
   @Get('main')
   getMain(@Param('id') id: any): Promise<{}> {
-    console.log('aiight');
     return this.ProfileService.getMainData(id);
   }
 

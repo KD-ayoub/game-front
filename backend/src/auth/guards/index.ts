@@ -1,4 +1,4 @@
-import { Injectable, ExecutionContext , CanActivate } from '@nestjs/common';
+import { Injectable, ExecutionContext , CanActivate, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from 'prisma/prisma.service';
 
@@ -35,9 +35,13 @@ export class first_timeGuard implements CanActivate{
 				}
 			})
 			if (user.first_time)
-				return false;
+			{
+				throw new HttpException('first_time',HttpStatus.FORBIDDEN);
+			}
 			if (user.fac_auth) // 2fa
-				return true;
+			{
+				throw new HttpException('2fa',HttpStatus.FORBIDDEN);
+			}
 		}
 		return req.isAuthenticated();
 	}
