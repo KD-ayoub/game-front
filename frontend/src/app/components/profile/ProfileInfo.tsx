@@ -8,6 +8,7 @@ import getProfileInfo from "@/app/api/getProfileInfo";
 import { MainProfileType } from "@/app/types/mainprofiletype";
 
 export default function ProfileInfo() {
+  const [Isloaded, setIsloaded] = useState(true);
   const [dataprofile, setdataProfile] = useState<MainProfileType>({
     id: "",
     full_name: "",
@@ -22,9 +23,13 @@ export default function ProfileInfo() {
   useEffect(() => {
     async function fetchdata() {
       setdataProfile(await getProfileInfo());
+      setIsloaded(false);
     }
     fetchdata();
   }, []);
+  if (Isloaded) {
+    return <p>Loading...</p>
+  }
   console.log(dataprofile);
   return (
     <div className="m-3 mt-2 md:ml-5 lg:ml-10 2xl:ml-16 lg:mr-[100px] md:flex-grow md:basis-1/2">
@@ -50,14 +55,13 @@ export default function ProfileInfo() {
             <p
               className={`text-center md:text-left md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px] ${NeuePlakFontBold.className}`}
             >
-              Hicham Kaddouri
-              {/* {dataprofile.full_name} */}
+              {dataprofile.full_name}
             </p>
             {/* fetch fullname, adjust font size*/}
             <p
               className={`${NeuePlakFont.className} text-center md:text-left text-[12px] lg:text-[16px] xl:text-[18px] 2xl:text-[24px] text-[#E95A3A]`}
             >
-              {`@Noobie`}
+              {`@${dataprofile.nickName}`}
             </p>
           </div>
 
@@ -65,7 +69,7 @@ export default function ProfileInfo() {
             <div className="flex justify-around items-center">
               <div className="flex flex-col items-center">
                 <p className={`${NeuePlakFontBold.className} text-[14px] `}>
-                  500
+                  {dataprofile.friend_number}
                 </p>
                 <p
                   className={`${NeuePlakFontBold.className} text-[12px] text-[#717273] `}
@@ -75,7 +79,7 @@ export default function ProfileInfo() {
               </div>
               <div className="flex flex-col items-center">
                 <p className={`${NeuePlakFontBold.className} text-[14px]`}>
-                  18
+                  {dataprofile.level}
                 </p>
                 <p
                   className={`${NeuePlakFontBold.className} text-[12px] text-[#717273]`}
@@ -87,7 +91,7 @@ export default function ProfileInfo() {
                 <p
                   className={`${NeuePlakFont.className} text-[14px] text-[#E95A3A]`}
                 >
-                  at game
+                  {dataprofile.is_active}
                 </p>
                 <p
                   className={`${NeuePlakFontBold.className} text-[12px] text-[#717273]`}
@@ -110,7 +114,7 @@ export default function ProfileInfo() {
             <p
               className={`${NeuePlakFont.className} text-[16px] lg:text-[18px] xl:text-[22px] 2xl:text-[30px] text-[#E95A3A]`}
             >
-              at game
+              {dataprofile.is_active}
             </p>
             <div className="md:w-full md:h-10">
               <p
@@ -126,7 +130,7 @@ export default function ProfileInfo() {
               <p
                 className={`${NeuePlakFont.className} text-[9px] lg:text-[11px] xl:text-[14px] 2xl:text-[20px] text-end`}
               >
-                {`Level 18`}
+                {`Level ${dataprofile.level}`}
               </p>
               <div className="md:flex md:justify-between">
                 <div className="flex flex-col justify-start">
@@ -138,7 +142,7 @@ export default function ProfileInfo() {
                   <p
                     className={`${NeuePlakFont.className} md:text-[10px] lg:text-[14px] xl:text-[18px] 2xl:text-[24px] md:text-center`}
                   >
-                    500
+                    {dataprofile.friend_number}
                   </p>
                 </div>
                 <button
