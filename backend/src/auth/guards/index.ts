@@ -6,18 +6,28 @@ import { PrismaService } from 'prisma/prisma.service';
 export class FT_GUARD extends AuthGuard('42') {
   async canActivate(context: ExecutionContext)
   {
-      const activate =  (await super.canActivate(context)) as boolean;
-	  const request = context.switchToHttp().getRequest();
-	  await super.logIn(request);
-	  return activate;
+	  try {
+      	const activate =  (await super.canActivate(context)) as boolean;
+	  	const request = context.switchToHttp().getRequest();
+	  	await super.logIn(request);
+	  	return activate;
+	  	
+	  } catch (error) {
+		throw new HttpException('invalid token',HttpStatus.BAD_REQUEST);
+	  }
   }
 }
 
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
-    return req.isAuthenticated();
+	  try {
+    	const req = context.switchToHttp().getRequest();
+    	return req.isAuthenticated();
+	  	
+	  } catch (error) {
+		throw new HttpException('invalid token',HttpStatus.BAD_REQUEST);
+	  }
   }
 }
 
