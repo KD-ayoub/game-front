@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Headers } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { AuthenticatedGuard } from '../auth/guards';
 
@@ -11,8 +11,8 @@ export class ProfileController {
   constructor(private ProfileService: ProfileService) {}
 
   @Get('main')
-  getMain(@Param('id') id: any): Promise<{}> {
-    console.log('aiight');
+  getMain(@Param('id') id: any, @Headers('Cookie') cookie: string): Promise<{}> {
+    console.log('hey ', cookie);
     return this.ProfileService.getMainData(id);
   }
 
