@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, RequestMethod } from '@nestjs/common';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import * as cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,13 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
   app.setGlobalPrefix('');
+
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: [RequestMethod.ALL.toString()],
+  });
+  //app.use(cors());
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true
