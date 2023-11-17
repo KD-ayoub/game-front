@@ -10,11 +10,41 @@ import {
   Friends,
 } from "@/app/components";
 import { NeuePlakFont, NeuePlakFontBold } from "../../utils/NeuePlakFont";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import getProfileInfo from "@/app/api/getProfileInfo";
+import { MainProfileType } from "@/app/types/mainprofiletype";
+import { StatusGameType } from "@/app/types/statusGameType";
+import getStatusGame from "@/app/api/getStatusGame";
 
 export default function Profile() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
+
+  const [Isloaded, setIsloaded] = useState(true);
+  const [dataprofile, setdataProfile] = useState<MainProfileType>({
+    id: "",
+    full_name: "",
+    nickName: "",
+    is_active: "",
+    last_activity: "",
+    photo_path: "",
+    friend_number: 0,
+    level: 0,
+  });
+  const [dataStatusGame, setdataStatusGame] = useState<StatusGameType>({
+    games: 0,
+    win: 0,
+    lose: 0
+  });
+
+  useEffect(() => {
+    async function fetchdata() {
+      setdataProfile(await getProfileInfo());
+      setdataStatusGame(await getStatusGame());
+      setIsloaded(false);
+    }
+    fetchdata();
+  }, []);
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -35,9 +65,9 @@ export default function Profile() {
           </div>
           <div className="md:w-full md:h-full">
             <div className="md:flex md:items-center">
-              <ProfileInfo />
+              <ProfileInfo Isloaded={Isloaded} dataprofile={dataprofile} />
               <div className="md:flex md:flex-col md:h-1/2 md:basis-1/2 lg:gap-5">
-                <StatusGame />
+                <StatusGame Isloaded={Isloaded} dataStatusGame={dataStatusGame} />
                 <Achievements />
               </div>
             </div>

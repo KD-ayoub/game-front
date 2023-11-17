@@ -4,37 +4,34 @@ import Image from "next/image";
 import { NeuePlakFont, NeuePlakFontBold } from "../../utils/NeuePlakFont";
 import BgProfileinfo from "@/app/assets/svg/bgProfileinfo.svg";
 import ProfileImg from "@/app/assets/svg/profileimg.svg";
-import getProfileInfo from "@/app/api/getProfileInfo";
 import { MainProfileType } from "@/app/types/mainprofiletype";
 
-export default function ProfileInfo() {
-  const [Isloaded, setIsloaded] = useState(true);
-  const [dataprofile, setdataProfile] = useState<MainProfileType>({
-    id: "",
-    full_name: "",
-    nickName: "",
-    is_active: "",
-    last_activity: "",
-    photo_path: "",
-    friend_number: 0,
-    level: 0,
-  });
-
-  useEffect(() => {
-    async function fetchdata() {
-      setdataProfile(await getProfileInfo());
-      setIsloaded(false);
-    }
-    fetchdata();
-  }, []);
+export default function ProfileInfo({
+  Isloaded,
+  dataprofile,
+}: {
+  Isloaded: boolean;
+  dataprofile: MainProfileType;
+}) {
   if (Isloaded) {
-    return <p>Loading...</p>
+    return (
+      <p>Loading...</p>
+    )
   }
-  console.log(dataprofile);
+
   return (
     <div className="m-3 mt-2 md:ml-5 lg:ml-10 2xl:ml-16 lg:mr-[100px] md:flex-grow md:basis-1/2">
-      <div className="w-auto h-[222px] md:h-[185px] lg:h-[222px] xl:h-[265px] 2xl:h-[320px] relative">
-        <Image
+      <div className="w-auto h-[222px] md:h-[185px] lg:h-[222px] xl:h-[265px] 2xl:h-[320px] relative bg-[#110D1F]">
+        {/* <div className="md:flex-grow md:basis-1/2 w-auto h-[222px] md:h-[185px] lg:h-[222px] xl:h-[265px] 2xl:h-[320px] relative bg-[#110D1F] rounded-[20px] animate-pulse">
+        <div className="absolute top-[20%] md:top-[35%] -translate-y-1/2 -translate-x-1/2 left-1/2 md:left-[50px] lg:left-[70px] xl:left-[80px] 2xl:left-[122px] ">
+          <div className="w-[60px] h-[60px] md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 2xl:w-36 2xl:h-36 rounded-full bg-[#302B43]"></div>
+        </div>
+        <div className="absolute top-[35%] md:top-[65%] md:left-[3%] w-full h-10 flex justify-center items-center md:justify-start">
+          <div className="w-[75%] h-7 rounded-xl bg-[#302B43]"></div>
+        </div>
+        <div className="absolute top-[55%] md:top-[65%] md:left-[3%] w-full p-2 h-20 rounded-[20px] bg-[#302B43] md:hidden"></div>
+        <div className="hidden md:block md:w-[70%] md:h-24 md:absolute md:left-[27%] 2xl:left-[22%] md:top-3 p-2 h-20 xl:h-32 rounded-[20px] bg-[#302B43] "></div> </div> Loading.... */}
+         <Image
           className="object-cover rounded-[20px]"
           src={BgProfileinfo.src}
           alt="bg profile info"
@@ -57,7 +54,7 @@ export default function ProfileInfo() {
             >
               {dataprofile.full_name}
             </p>
-            {/* fetch fullname, adjust font size*/}
+            {/* fetch fullname, adjust font size */}
             <p
               className={`${NeuePlakFont.className} text-center md:text-left text-[12px] lg:text-[16px] xl:text-[18px] 2xl:text-[24px] text-[#E95A3A]`}
             >
@@ -153,7 +150,7 @@ export default function ProfileInfo() {
               </div>
             </div>
           </div>
-        </div>
+        </div> 
       </div>
     </div>
   );

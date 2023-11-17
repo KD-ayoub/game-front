@@ -8,6 +8,12 @@ export default function GameHistory() {
     <div className="m-3 mt-2 md:ml-5 lg:ml-10 2xl:ml-16 lg:mr-[60px] lg:basis-1/2">
       <div className={`${NeuePlakFontBold.className} md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[45px]`}>Game History</div>
       <div className="w-auto h-[280px] lg:h-[350px] xl:h-[500px] 2xl:h-[800px] bg-gradient-to-b from-[#110D1F] via-[#110D1F] to-[#2d2a38] rounded-[25px] pl-1 ">
+        {/* <div className="w-full h-9 flex justify-between border-b-[1px] animate-pulse">
+          <div className="w-10 sm:w-20 md:w-28 h-full bg-[#302B43] rounded-[10px]"></div>
+          <div className="w-10 sm:w-20 md:w-28 h-full bg-[#302B43] rounded-[10px]"></div>
+          <div className="w-10 sm:w-20 md:w-28 h-full bg-[#302B43] rounded-[10px]"></div>
+          <div className="w-10 sm:w-20 md:w-28 h-full bg-[#302B43] rounded-[10px]"></div>
+        </div>  Loading...*/}
         <div className="overflow-x-auto overflow-y-auto max-h-[280px] lg:max-h-[350px] xl:max-h-[500px] 2xl:max-h-[800px]">
           <table className="w-full">
             <thead className="border-b-[1px]">
@@ -49,7 +55,7 @@ export default function GameHistory() {
                 <td className={`${NeuePlakFont.className} text-[9px] sm:text-[11px] md:text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[30px] pl-5 text-[#EF443B]`}>-20xp</td>
                 <td className={`${NeuePlakFont.className} text-[9px] sm:text-[11px] md:text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[30px] pl-5 text-[#717273]`}>14 minutes ago</td>
               </tr>
-            </tbody> */}
+      </tbody> */}
           </table>
         </div>
         {/* <div>
