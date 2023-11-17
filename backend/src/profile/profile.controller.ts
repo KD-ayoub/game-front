@@ -1,4 +1,5 @@
-import { Controller, Get, Param, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Headers, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { ProfileService } from './profile.service';
 import { AuthenticatedGuard } from '../auth/guards';
 
@@ -25,7 +26,7 @@ export class ProfileController {
   getOtherUser(@Param('id') id: any): Promise<any> {
     return this.ProfileService.getOtherUserData(id);
   }
-  
+
   @Get('status_game')
   getStatusGame(@Param('id') id: any): Promise<{}> {
     return this.ProfileService.getStatusGameData(id);
@@ -44,5 +45,10 @@ export class ProfileController {
   @Get('get_all_users')
   getAllUsers(@Param('id') id: any): Promise<{}> {
     return this.ProfileService.getAllUsersData(id);
+  }
+
+  @Post('add_friend')
+  addFriend(@Param('id') idUserDb: any, @Req() idUserToAdd: any): Promise<{}> {
+    return this.ProfileService.addFriendData(idUserDb, idUserToAdd.user.id);
   }
 }

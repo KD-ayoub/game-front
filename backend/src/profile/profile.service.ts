@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
@@ -126,6 +126,25 @@ export class ProfileService {
         id: true,
         full_name: true,
         nickName: true,
+      }
+    });
+    return commingData;
+  }
+
+  async addFriendData(idUserDb: string, idUserToAdd: string): Promise<{}> {
+    const count = await this.prisma.friendship.count({
+      where: {
+        userId: idUserToAdd,
+        friendId: idUserDb
+      }
+    });
+    if (count)
+      throw new ConflictException();
+    const commingData = await this.prisma.friendship.create({
+      data: {
+        createdAt: new Date(),
+        userId: idUserToAdd,
+        friendId: idUserDb
       }
     });
     return commingData;

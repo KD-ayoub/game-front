@@ -24,7 +24,6 @@ async function bootstrap() {
     credentials: true,
     methods: [RequestMethod.ALL.toString()],
   });
-  //app.use(cors());
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true
