@@ -14,7 +14,13 @@ import { useState, useEffect } from "react";
 import getProfileInfo from "@/app/api/getProfileInfo";
 import { MainProfileType } from "@/app/types/mainprofiletype";
 import { StatusGameType } from "@/app/types/statusGameType";
+import { AchievementType } from "@/app/types/achievementtype";
+import { FriendsType } from "@/app/types/friendstype";
+import { GamesHistoryType } from "@/app/types/gameshistorytype";
 import getStatusGame from "@/app/api/getStatusGame";
+import getAchievement from "@/app/api/getAchievement";
+import getFriends from "@/app/api/getFriends";
+import getGamesHistory from "@/app/api/getGamesHistory";
 
 export default function Profile() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -36,11 +42,24 @@ export default function Profile() {
     win: 0,
     lose: 0
   });
-
+  const [dataAchievement, setdataAchievement] = useState<AchievementType>({
+    id: '',
+    user_id: '',
+    kickstart: false,
+    social: false,
+    first_game: false,
+    level_1: false,
+    level_5: false
+  });
+  const [dataFriends, setdataFriends] = useState<Array<FriendsType>>([]);
+  const [dataGamesHistory, setdataGamesHistory] = useState<Array<GamesHistoryType>>([]);
   useEffect(() => {
     async function fetchdata() {
       setdataProfile(await getProfileInfo());
       setdataStatusGame(await getStatusGame());
+      setdataAchievement(await getAchievement());
+      setdataFriends(await getFriends());
+      setdataGamesHistory(await getGamesHistory());
       setIsloaded(false);
     }
     fetchdata();
@@ -68,12 +87,12 @@ export default function Profile() {
               <ProfileInfo Isloaded={Isloaded} dataprofile={dataprofile} />
               <div className="md:flex md:flex-col md:h-1/2 md:basis-1/2 lg:gap-5">
                 <StatusGame Isloaded={Isloaded} dataStatusGame={dataStatusGame} />
-                <Achievements />
+                <Achievements Isloaded={Isloaded} dataAchievement={dataAchievement} />
               </div>
             </div>
             <div className="lg:flex">
-              <GameHistory />
-              <Friends />
+              <GameHistory Isloaded={Isloaded} dataGamesHistory={dataGamesHistory} />
+              <Friends Isloaded={Isloaded} dataFriends={dataFriends} />
             </div>
           </div>
         </div>
