@@ -63,7 +63,7 @@ model Profile {
 
 	friend_number			Int @default(0)
 	level					Float @default(0)
-	TwoFac_pass				String
+	TwoFac_pass				String?
 }
 
 

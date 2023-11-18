@@ -13,7 +13,7 @@ export class FT_GUARD extends AuthGuard('42') {
 	  	return activate;
 	  	
 	  } catch (error) {
-		throw new HttpException('invalid token',HttpStatus.BAD_REQUEST);
+		  //console.log(error)
 	  }
   }
 }
@@ -50,6 +50,14 @@ export class first_timeGuard implements CanActivate{
 			}
 			if (user.fac_auth) // 2fa
 			{
+				//console.log(req.session);
+				// get the 2fa from cookie and check it with the database pass
+				console.log(req.session.passport.user);
+				const profile = await this.prisma.profile.findUnique({
+					where: {
+						userID: user.id,
+					}
+				})
 				throw new HttpException('2fa',HttpStatus.FORBIDDEN);
 			}
 		}

@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthenticatedGuard, FT_GUARD, first_timeGuard } from './guards';
 import { AuthService } from './auth.service';
-import { intra_api_info, signup, user_request } from 'src/utils/types';
+import { intra_api_info, server_response, signup, user_request } from 'src/utils/types';
 import { resolve } from 'path';
+import { session } from 'passport';
+import { SessionData } from 'express-session';
 
 @Controller('auth')
 export class AuthController {
@@ -62,8 +64,18 @@ export class AuthController {
 
 
 	@Post('2fa')
-	_2fa(@Req() req: Request,@Body() body: signup)
+	_2fa(@Req() req: Request,@Body() body: signup,@Session() session: any)
 	{
-		return req.user;
+		// get the user and check if 2fa enabled
+		const user = session.passport.user;
+		user.blan = "hey";
+		req.session.save((err) => {
+			if (err)
+			{
+				console.error(err);
+				return;
+			}
+			return req.user;
+		})
 	}
 }
