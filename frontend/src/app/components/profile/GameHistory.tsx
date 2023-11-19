@@ -63,7 +63,7 @@ export default function GameHistory({
                   const level = data.xp_level < 0 ? `${data.xp_level}xp` : `+${data.xp_level}xp`;
                   const date = moment(data.date);
                   return (
-                    <tr className="text-center even:bg-[#0C0914] ">
+                    <tr key={data.id} className="text-center even:bg-[#0C0914] ">
                       <td
                         className={`flex ${NeuePlakFont.className} text-[14px] sm:text-[18px] lg:text-[22px] xl:text-[24px] 2xl:text-[35px] p-2 xl:p-3 2xl:p-5 gap-1 md:gap-5 items-center`}
                       >

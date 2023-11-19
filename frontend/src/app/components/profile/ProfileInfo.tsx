@@ -31,7 +31,7 @@ export default function ProfileInfo({
   const textsize = dataprofile.full_name.length >= 23 ? "text-[12px]" : "";
   return (
     <div className="m-3 mt-2 md:ml-5 lg:ml-10 2xl:ml-16 lg:mr-[100px] md:flex-grow md:basis-1/2">
-      <div className="w-auto h-[222px] md:h-[185px] lg:h-[222px] xl:h-[265px] 2xl:h-[320px] relative bg-[#110D1F]">
+      <div className="w-auto h-[222px] md:h-[185px] lg:h-[222px] xl:h-[265px] 2xl:h-[320px] rounded-[20px] relative bg-[#110D1F]">
         <Image
           className="object-cover rounded-[20px]"
           src={BgProfileinfo.src}
@@ -98,6 +98,7 @@ export default function ProfileInfo({
               </div>
             </div>
           </div>
+          {/* add follow and unfollow and challenge and block */}
           <div className="absolute top-[78%] w-full md:hidden">
             <div className="flex justify-center">
               <button
