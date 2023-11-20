@@ -6,6 +6,7 @@ import { LoggerMiddleware } from './common/utils/logger';
 import { ProfileModule } from './profile/profile.module';
 import { SettingsModule } from './settings/settings.module';
 import { GameModule } from './game/game.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports:
@@ -15,12 +16,13 @@ import { GameModule } from './game/game.module';
 	  	PassportModule.register({session: true}),
 	  	ProfileModule,
 	  	SettingsModule,
-			GameModule
+			GameModule,
+			GatewayModule
   ],
 })
 
 export class AppModule implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-    	consumer.apply(LoggerMiddleware).forRoutes('*');
-		}
+	configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+	}
 }

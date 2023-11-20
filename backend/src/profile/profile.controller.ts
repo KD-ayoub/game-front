@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards, Headers, Post, Req } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Headers, Post, Delete, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { ProfileService } from './profile.service';
 import { AuthenticatedGuard } from '../auth/guards';
@@ -50,5 +50,10 @@ export class ProfileController {
   @Post('add_friend')
   addFriend(@Param('id') idUserDb: any, @Req() idUserToAdd: any): Promise<{}> {
     return this.ProfileService.addFriendData(idUserDb, idUserToAdd.user.id);
+  }
+
+  @Delete('remove_friend')
+  removeFriend(@Param('id') idUserDb: any, @Req() idUserToAdd: any): Promise<{}> {
+    return this.ProfileService.removeFriendData(idUserDb, idUserToAdd.user.id);
   }
 }

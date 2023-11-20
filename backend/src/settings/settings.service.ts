@@ -29,8 +29,8 @@ export class SettingsService {
         fac_auth: true
       }
     });
-	if (!img || !commingData)
-		throw new NotFoundException();
+    if (!img || !commingData)
+      throw new NotFoundException();
     const data = await {
       id: commingData.id,
       name: commingData.full_name,
@@ -85,6 +85,7 @@ export class SettingsService {
   }
   
   async deleteAccountData(userId: string): Promise<any> {
+    //this one need more work exception and delete messages and shit
     const deleteProfile = await this.prisma.profile.deleteMany({
       where: {
         userID: userId

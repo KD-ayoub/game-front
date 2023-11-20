@@ -20,7 +20,7 @@ export class SettingsController {
   @Put()
   changeSettings(@Req() req: any, @Body() data: SettingsDto): Promise<{}> {
     //maybe here send all data of the user that got changed so the user stores them in the browser
-    return this.SettingsService.changeSettingsData(req.user.id,data);
+    return this.SettingsService.changeSettingsData(req.user.id, data);
   }
   
   @Delete()

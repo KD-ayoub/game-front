@@ -121,6 +121,12 @@ export class ProfileService {
   }
 
   async getAllUsersData(userId: string): Promise<{}> {
+    const img = await this.prisma.profile.findMany({
+      select: {
+        userID: true,
+        photo_path: true,
+      }
+    });
     const commingData = await this.prisma.user.findMany({
       select: {
         id: true,
@@ -128,10 +134,17 @@ export class ProfileService {
         nickName: true,
       }
     });
+    if (!img.length || !commingData.length)
+      throw new NotFoundException();
+    commingData.forEach((data) => {
+      data['photo_path'] = img.find((elem) => (elem.userID === data.id)).photo_path;
+    })
     return commingData;
   }
 
   async addFriendData(idUserDb: string, idUserToAdd: string): Promise<{}> {
+    if (idUserDb === idUserToAdd)
+      throw new ConflictException('User can\'t be friend with it\'s self');
     const count = await this.prisma.friendship.count({
       where: {
         userId: idUserToAdd,
@@ -139,14 +152,36 @@ export class ProfileService {
       }
     });
     if (count)
-      throw new ConflictException();
-    const commingData = await this.prisma.friendship.create({
-      data: {
-        createdAt: new Date(),
-        userId: idUserToAdd,
-        friendId: idUserDb
+      throw new ConflictException('Already friends');
+    const commingData = await this.prisma.friendship.createMany({
+      data: [
+        {
+          createdAt: new Date(),
+          userId: idUserToAdd,
+          friendId: idUserDb
+        },
+        {
+          createdAt: new Date(),
+          userId: idUserDb,
+          friendId: idUserToAdd
+        }
+      ]
+    });
+    return { status: "Success" };
+  }
+
+  async removeFriendData(idUserDb: string, idUserToAdd: string): Promise<{}> {
+    const search = await this.prisma.friendship.findMany();
+    search.forEach( async (data) =>  {
+      if (((data.userId === idUserDb) || (data.userId === idUserToAdd)) &&
+         ((data.friendId === idUserDb) || (data.friendId === idUserToAdd))) {
+        await this.prisma.friendship.delete({
+          where: {
+            id: data.id
+          }
+        });
       }
     });
-    return commingData;
+    return { status: 'Success' };
   }
 }
