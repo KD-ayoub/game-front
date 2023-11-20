@@ -12,6 +12,10 @@ export class SettingsDto {
   @IsBoolean()
   @IsOptional()
   fac_auth: boolean;
+  //fac: {
+  //  name: string,
+  //  age: boolean
+  //};
 
   @IsString()
   @IsOptional()
