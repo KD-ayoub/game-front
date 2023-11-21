@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { AuthenticatedGuard, FT_GUARD, first_timeGuard } from './guards';
 import { AuthService } from './auth.service';
 import { intra_api_info, signup, user_request } from 'src/utils/types';
+import { request } from 'http';
 
 @Controller('auth')
 export class AuthController {
@@ -19,9 +20,10 @@ export class AuthController {
 	// 42 api redirect to this page and this page send a cookie
 	@Get('/redirect')
 	@UseGuards(FT_GUARD)
-	redirect() {
+	redirect(@Req() req: Request) {
 		// return here if first time
-		return 1;
+		
+		return req.user;
 	}
 
 
