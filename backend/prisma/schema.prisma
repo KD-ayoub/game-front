@@ -63,7 +63,7 @@ model Profile {
 
 	friend_number			Int @default(0)
 	level					Float @default(0)
-	TwoFac_pass	String?
+	TwoFac_pass				String?
 }
 
 
@@ -122,4 +122,11 @@ model participants {
 	participant_id			String	@id @default(uuid())
 	convo_id				String
 	convo					conversation	@relation(fields: [convo_id],references: [convo_id])
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
 }
