@@ -13,23 +13,7 @@ import { useRouter } from "next/router";
 
 export default function Login() 
 {
-  const [isLoged, setIsLoged] = useState(false);
-  const router = useRouter();
-
-  const submit = async (e: SyntheticEvent) => 
-  {
-    e.preventDefault();
-
-    await fetch('http:://localhost:3001/auth/login', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        isLoged
-      })
-    });
-
-    await router.push('/login');
-  }
+  // handleclick !!
 
   return (
     <div className="flex  w-1/2 h-screen items-center justify-center  flex-col bg-gradient-radial">
@@ -39,8 +23,8 @@ export default function Login()
           Welcome Back again!
         </p>
         <p className="text-[#8E86A5]">We'are so excited to see you again!</p>
-          <Link  href="../../profile">
-        <button onClick={submit} className="border m-2 p-2 rounded-xl hover:bg-[#ff5555bb]">
+          <Link  href="localhost:3001/auth/login">
+        <button  className="border m-2 p-2 rounded-xl hover:bg-[#ff5555bb]">
             Log with Your <br />
             <img src={intra_logo.src} alt="42" className="inline" /> Intra
         </button>
