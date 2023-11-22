@@ -9,6 +9,7 @@ import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 import ProfileImg from "@/app/assets/svg/profileimg.svg";
 import TrashImg from "@/app/assets/svg/settings/trash.svg";
 import ChangeImg from "@/app/assets/svg/settings/change.svg";
+import Horizontal from "@/app/assets/svg/settings/horizontalred.svg";
 import Vertical from "@/app/assets/svg/settings/verticalred.svg";
 import Qrcode from "@/app/assets/svg/settings/qrcode.svg";
 
@@ -33,79 +34,77 @@ export default function Chat() {
           >
             Settings
           </div>
-          <div className="w-auto h-[900px] m-2 bg-gradient-to-b from-[#110D1F] via-[#110D1F] to-[#2d2a38] rounded-[20px]">
+          <div className="w-auto h-[2900px] m-2 bg-gradient-to-b from-[#110D1F] via-[#110D1F] to-[#2d2a38] rounded-[20px]">
             <div className="flex flex-col justify-center items-center">
               <Image
-                className="m-4"
+                className="m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44"
                 src={ProfileImg.src}
                 width={60}
                 height={60}
                 alt="settings image"
               />
-              <div className="flex justify-center gap-4">
-                <div className="w-[94px] flex gap-1 border-solid border rounded-[15px] justify-center">
+              <div className="flex justify-center gap-4 md:gap-12">
+                <div className="w-[94px] md:h-8 md:w-[100px] lg:w-[130px] xl:w-[170px] 2xl:w-[240px] lg:h-9 xl:h-12 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 border-solid border rounded-[15px] 2xl:rounded-[30px] justify-center items-center">
                   <Image
+                    className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9 "
                     src={TrashImg.src}
                     width={14}
                     height={14}
                     alt="trash icon"
                   />
-                  <p className={`${NeuePlakFont.className} text-[14px]`}>
+                  <p className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}>
                     Remove
                   </p>
                 </div>
-                <div className="w-[94px] flex gap-1 bg-[#E95A3A] rounded-[15px] justify-center">
+                <div className="w-[94px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[130px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
                   <Image
+                    className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
                     src={ChangeImg.src}
                     width={14}
                     height={14}
                     alt="trash icon"
                   />
-                  <p className={`${NeuePlakFont.className} text-[14px]`}>
+                  <p className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}>
                     Change
                   </p>
                 </div>
               </div>
             </div>
-            <div className="mt-5">
-              <p className={`${NeuePlakFont.className} ml-2`}>Edit Profile</p>
-              <div className="m-3">
+            <div className="mt-9 md:mt-16 2xl:mt-20">
+              {/* <p className={`${NeuePlakFont.className} ml-2 md:text-[18px]`}>Edit Profile</p> */}
+              <div className="m-3 sm:flex sm:gap-20 md:gap-32 justify-evenly">
                 <form>
-                  <label className={`${NeuePlakFont.className} text-[12px]`}>
-                    Full Name
-                    <input
-                      className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] h-8 w-[200px] pl-1`}
-                      type="text"
-                    />
-                  </label>
+                  <p className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px] `}>Full name</p>
+                  <input
+                    className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    type="text"
+                  />
                 </form>
                 <form>
-                  <label className={`${NeuePlakFont.className} text-[12px]`}>
-                    Nickname
-                    <input
-                      className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] h-8 w-[200px] pl-1`}
-                      type="text"
-                    />
-                  </label>
+                  <p className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px]`}>Nickname</p>
+                  <input
+                    className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    type="text"
+                  />
                 </form>
               </div>
             </div>
-            <p className={`${NeuePlakFont.className} ml-2`}>Security</p>
-            <div className="m-3">
-              <div>
-                <p className={`${NeuePlakFont.className}`}>
+            {/* <p className={`${NeuePlakFont.className} ml-2 md:text-[18px]`}>Security</p> */}
+            <div className="m-3 mt-9 md:m-11 lg:m-16 xl:m-40 flex flex-col md:flex-row justify-center items-center">
+              <div className="md:w-[70%] xl:p-20 2xl:p-[90px]">
+                <p className={`${NeuePlakFont.className} md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}>
                   Two-Factor Authentication
                 </p>
                 <p
-                  className={`${NeuePlakFont.className} text-[12px] text-[#A8A0C4]`}
+                  className={`${NeuePlakFont.className} text-[12px] md:text-[15px] lg:text-[18px] xl:text-[22px] 2xl:text-[30px] text-[#A8A0C4]`}
                 >
                   Protect your account with extra layer of security. Once
-                  configured, you’ll be required to enter both your password and
+                  configured, you'll be required to enter both your password and
                   an authentication code from your mobile phone in order to sign
                   in.
                 </p>
                 <button
-                  className={`w-[90px] h-[30px] rounded-[15px] ${NeuePlakFont.className} m-2 bg-[#E95A3A]`}
+                  className={`w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#E95A3A]`}
                 >
                   Enable
                 </button>
@@ -115,21 +114,37 @@ export default function Chat() {
                 Disable
             </button> switch with enable */}
               </div>
-              <div className="flex justify-center">
+              <div className="flex justify-center md:w-[10%]">
                 <Image
-                  src={Vertical.src}
+                  className="md:hidden"
+                  src={Horizontal.src}
                   width={119}
                   height={1}
+                  alt="horizontal red"
+                />
+                <Image
+                  className="hidden md:block xl:w-[5px] 2xl:w-[6px]"
+                  src={Vertical.src}
+                  width={2}
+                  height={119}
                   alt="vertical red"
                 />
               </div>
-              {/* <div className="m-5 flex justify-center items-center w-36 h-36 bg-slate-50">
-                <Image src={Qrcode.src} width={132} height={132} alt="Qr code"/>
-              </div> show qr code */}
+              <div className="m-5 flex justify-center items-center md:w-[20%] bg-slate-50">
+                <Image className="md:w-full md:h-full" src={Qrcode.src} width={132} height={132} alt="Qr code"/>
+              </div> 
             </div>
-            <div className="flex flex-col justify-center items-center">
-                <button className={`m-3 w-[160px] h-[30px] border-solid border rounded-[15px] ${NeuePlakFont.className} text-[14px] bg-[#15131D]`}>Save changes</button>
-                <button className={`m-3 w-[160px] h-[30px] ${NeuePlakFont.className} text-[14px] text-[#DA373C]`}>Delete account</button>
+            <div className="flex flex-col md:flex-row md:justify-evenly justify-center items-center">
+              <button
+                className={`m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 border-solid border rounded-[15px] lg:rounded-[20px] xl:rounded-[25px] 2xl:rounded-[30px] ${NeuePlakFont.className} text-[14px] md:text-[18px] lg:text-[20px] xl:text-[25px] 2xl:text-[32px] bg-[#15131D]`}
+              >
+                Save changes
+              </button>
+              <button
+                className={`m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 ${NeuePlakFont.className} text-[14px] md:text-[18px]  lg:text-[20px] xl:text-[25px] 2xl:text-[32px] text-[#DA373C]`}
+              >
+                Delete account
+              </button>
             </div>
           </div>
         </div>
