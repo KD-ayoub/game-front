@@ -3,13 +3,15 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { SettingsDto } from './dto';
 import { NotFoundError } from 'rxjs';
+import * as speakeasy from "speakeasy";
+import * as qrcode from 'qrcode';
 
 @Injectable()
 export class SettingsService {
+
   constructor(private prisma: PrismaService) {}
 
   async getSettingsData(userId: string): Promise<{}> {
-
     const img = await this.prisma.profile.findUnique({
       where: {
         userID: userId,
@@ -29,8 +31,8 @@ export class SettingsService {
         fac_auth: true
       }
     });
-	if (!img || !commingData)
-		throw new NotFoundException();
+    if (!img || !commingData)
+      throw new NotFoundException();
     const data = await {
       id: commingData.id,
       name: commingData.full_name,
@@ -41,8 +43,71 @@ export class SettingsService {
     return data;
   }
 
+  async checkIfQrCodeIsRight(userId: string, token: string): Promise<{}> {
+    const profile = await this.prisma.profile.findUnique({
+      where: {
+        userID: userId,
+      },
+      select: {
+        TwoFac_pass: true
+      }
+    });
+    let verify = speakeasy.totp.verify({
+      secret: profile.TwoFac_pass,
+      encoding: 'base32',
+      token
+    })
+    if (verify)
+      console.log('code correct');
+    else
+      console.log('code uncorrect');
+
+    return profile;
+  }
+
   async changeSettingsData(userId: string, data: SettingsDto): Promise<{}> {
     try {
+      let objFac;
+      let profile;
+
+      const facCheck = await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          fac_auth: true,
+        }
+      });
+      if (!facCheck.fac_auth && data.fac_auth) {
+        objFac = speakeasy.generateSecret();
+        profile = await this.prisma.profile.update({
+          where: {
+            userID: userId,
+          },
+          data: {
+            photo_path: data.photo_path,
+            TwoFac_pass: objFac.base32
+          },
+          select: {
+            photo_path: true,
+            TwoFac_pass: true
+          }
+        });
+      }
+      else {
+        profile = await this.prisma.profile.update({
+          where: {
+            userID: userId,
+          },
+          data: {
+            photo_path: data.photo_path,
+          },
+          select: {
+            photo_path: true,
+            TwoFac_pass: true
+          }
+        });
+      }
       const user = await this.prisma.user.update({
         where: {
           id: userId,
@@ -59,19 +124,35 @@ export class SettingsService {
           fac_auth: true
         }
       });
-      //if the user delete the img the frontend will send img: "default_img"
-      const img = await this.prisma.profile.update({
-        where: {
-          userID: userId,
-        },
-        data: {
-          photo_path: data.photo_path,
-        },
-        select: {
-          photo_path: true,
+      user['photo_path'] = await profile.photo_path;
+      if (data.fac_auth) {
+        try {
+          user['qr_code_url'] = await qrcode.toDataURL(profile.TwoFac_pass);
+        } catch (err) {
+          throw (err);
         }
-      })
-      user['photo_path'] = img.photo_path;
+      }
+
+
+
+      //if (facCheck.fac_auth) {
+      //  qrcode.toDataURL(this.objFac.otpauth_url, (err, data_url) => {
+      //    console.log('<img src=\"', data_url, '\">');
+      //  });
+      //  if (data.name) {
+      //    console.log('gg');
+      //    let verify = speakeasy.totp.verify({
+      //      secret: this.secret,
+      //      encoding: 'base32',
+      //      token: data.name
+      //    })
+      //    if (verify)
+      //      console.log('code correct');
+      //    else
+      //      console.log('code uncorrect');
+      //  }
+      //  //user['qr_code'] = await secret.;
+      //}
       return user;
     } catch (err) {
       //check which error code
@@ -85,6 +166,7 @@ export class SettingsService {
   }
   
   async deleteAccountData(userId: string): Promise<any> {
+    //this one need more work exception and delete messages and shit
     const deleteProfile = await this.prisma.profile.deleteMany({
       where: {
         userID: userId

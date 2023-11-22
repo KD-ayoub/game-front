@@ -6,18 +6,28 @@ import { PrismaService } from 'prisma/prisma.service';
 export class FT_GUARD extends AuthGuard('42') {
   async canActivate(context: ExecutionContext)
   {
-      const activate =  (await super.canActivate(context)) as boolean;
-	  const request = context.switchToHttp().getRequest();
-	  await super.logIn(request);
-	  return activate;
+	  try {
+      	const activate =  (await super.canActivate(context)) as boolean;
+	  	const request = context.switchToHttp().getRequest();
+	  	await super.logIn(request);
+	  	return activate;
+	  	
+	  } catch (error) {
+		  //console.log(error)
+	  }
   }
 }
 
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
-    return req.isAuthenticated();
+	  try {
+    	const req = context.switchToHttp().getRequest();
+    	return req.isAuthenticated();
+	  	
+	  } catch (error) {
+		throw new HttpException('invalid token',HttpStatus.BAD_REQUEST);
+	  }
   }
 }
 
@@ -40,6 +50,14 @@ export class first_timeGuard implements CanActivate{
 			}
 			if (user.fac_auth) // 2fa
 			{
+				//console.log(req.session);
+				// get the 2fa from cookie and check it with the database pass
+				console.log(req.session.passport.user);
+				const profile = await this.prisma.profile.findUnique({
+					where: {
+						userID: user.id,
+					}
+				})
 				throw new HttpException('2fa',HttpStatus.FORBIDDEN);
 			}
 		}

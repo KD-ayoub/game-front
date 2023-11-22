@@ -1,15 +1,9 @@
-import { Injectable } from '@nestjs/common';
 import { OnModuleInit } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { GatewayService } from '../gateway/gateway';
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 
-@Injectable()
-@WebSocketGateway(80)
-export class GameService implements OnModuleInit {
-	constructor(private prisma: PrismaService) {}
-
+@WebSocketGateway()
+export class GatewayService implements OnModuleInit {
 	onModuleInit() {
 		console.log('hey');
 		this.server.on('connection', (socket) => {
@@ -20,9 +14,9 @@ export class GameService implements OnModuleInit {
 	@WebSocketServer()
 	server: Server;
 
-	@SubscribeMessage('game')
+	@SubscribeMessage('newMessage')
 	onNewMessage(@MessageBody() body: any) {
 		console.log(body);
-		this.server.emit('onMessage', "Hadi f game")
+		this.server.emit('onMessage', "awili")
 	}
 }
