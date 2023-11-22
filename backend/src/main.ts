@@ -3,6 +3,7 @@ import { ValidationPipe, RequestMethod } from '@nestjs/common';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import * as cors from 'cors';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { PrismaService } from 'prisma/prisma.service';
 
@@ -33,7 +34,6 @@ async function bootstrap() {
     credentials: true,
     methods: [RequestMethod.ALL.toString()],
   });
-  //app.use(cors());
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true

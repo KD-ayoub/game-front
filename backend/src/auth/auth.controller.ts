@@ -1,11 +1,9 @@
-import { Body, Controller, Get, Post, Req, Res, Session, UseGuards } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, Get, Post, Req, Session, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 import { AuthenticatedGuard, FT_GUARD, first_timeGuard } from './guards';
 import { AuthService } from './auth.service';
-import { intra_api_info, server_response, signup, user_request } from 'src/utils/types';
+import { signup } from 'src/utils/types';
 import { resolve } from 'path';
-import { session } from 'passport';
-import { SessionData } from 'express-session';
 
 @Controller('auth')
 export class AuthController {
@@ -21,10 +19,10 @@ export class AuthController {
 	// 42 api redirect to this page and this page send a cookie
 	@Get('/redirect')
 	@UseGuards(FT_GUARD)
-	redirect() 
+	redirect(@Req() req: Request) 
 	{
 		// return here if first time
-		return 1;
+		return req.user;
 	}
 
 	// this route get user info for the first time	
@@ -52,7 +50,7 @@ export class AuthController {
 			}
 			resolve();
 		});
-	  return req.user;
+	  return {logout: "seccussfuly"};
 	}
 
 	@Get("/test")
