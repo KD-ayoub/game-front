@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Req, Session, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Session, UseGuards, Redirect } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthenticatedGuard, FT_GUARD, first_timeGuard } from './guards';
 import { AuthService } from './auth.service';
 import { signup } from 'src/utils/types';
 import { resolve } from 'path';
+
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +19,7 @@ export class AuthController {
 
 	// 42 api redirect to this page and this page send a cookie
 	@Get('/redirect')
+	@Redirect('http://localhost:3000/auth/good_login')
 	@UseGuards(FT_GUARD)
 	redirect(@Req() req: Request) 
 	{

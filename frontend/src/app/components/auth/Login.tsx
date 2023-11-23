@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import Image from "next/image";
 // import BlueAchiev from "@/app/assets/svg/blueachiev.svg";
 import intra_logo from "@/app/assets/svg/42_logo.svg";
@@ -13,7 +13,8 @@ import { useRouter } from "next/router";
 
 export default function Login() 
 {
-  // handleclick !!
+  
+
 
   return (
     <div className="flex  w-1/2 h-screen items-center justify-center  flex-col bg-gradient-radial">
@@ -23,7 +24,7 @@ export default function Login()
           Welcome Back again!
         </p>
         <p className="text-[#8E86A5]">We'are so excited to see you again!</p>
-          <Link  href="localhost:3001/auth/login">
+          <Link  href="http://localhost:3001/auth/login">
         <button  className="border m-2 p-2 rounded-xl hover:bg-[#ff5555bb]">
             Log with Your <br />
             <img src={intra_logo.src} alt="42" className="inline" /> Intra
