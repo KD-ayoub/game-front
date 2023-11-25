@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { GameService } from './game.service';
 import { AppGateway } from '../app.gateway';
 
@@ -7,9 +7,16 @@ export class GameController {
 	//constructor(private server: AppGateway) {}
 	constructor(private GameService: GameService) {}
 
-	@Get()
-	get(): string {
-		this.GameService.get();
-		return 'here logic of the game';
+	@Get('play_friend/:id')
+	playWithFriend(@Param('id') opponentId: string): string {
+		this.GameService.playWithFriend(opponentId);
+		return 'here logic to play with a friend';
+	}
+
+
+	@Get('play_random')
+	playRandom(): string {
+		this.GameService.playRandom();
+		return 'here logic to play with a random';
 	}
 }
