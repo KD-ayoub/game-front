@@ -12,6 +12,7 @@ export class SettingsController {
 
   @Get()
   getSettings(@Req() req: any) {
+    console.log("entred in get");
     return this.SettingsService.getSettingsData(req.user.id);
   }
 
@@ -20,7 +21,7 @@ export class SettingsController {
     //maybe here send all data of the user that got changed so the user stores them in the browser
     return this.SettingsService.changeSettingsData(req.user.id, data);
   }
-  
+
   @Delete()
   deleteAccount(@Req() req: any): Promise<any> {
     return this.SettingsService.deleteAccountData(req.user.id);

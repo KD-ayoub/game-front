@@ -16,23 +16,24 @@ export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
 
-  const [name, setName] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [name, setName] = useState("    ");
+  const [nickName, setNickname] = useState("testnick");
   const [selectedImage, setSelectedImage] = useState<File>();
   const [createObjectURL, setCreateObjectURL] = useState(`${ProfileImg.src}`);
+  const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
+  console.log(fullNameRegex.test("Saad hbi"));
 
   useEffect(() => {
     async function handlDataInput() {
       const response = await fetch("http://localhost:3001/settings", {
         method: 'PUT',
         headers: {
-          'Content-type': 'application/json',
-          'Cookie': 'connect.sid=s%3Aq_T2IbSrhHsYeK5_TWbZTraeyeOqqgr5.sInJeHINLGBZ3NbhzJbflFRkZkrbkQZuPnC83IzJRZU',
+          'Content-Type': 'application/json',
         },
         credentials: "include",
-        body: JSON.stringify({ name, nickname })
+        body: JSON.stringify({ name, nickName }),
       });
-      console.log("resss:",response);
+      console.log("resss:",await response.json());
     }
     handlDataInput();
     // async function handleImageChange() {
