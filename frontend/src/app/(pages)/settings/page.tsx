@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import React from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
 import { Header, SideBar } from "@/app/components";
@@ -13,9 +12,56 @@ import Horizontal from "@/app/assets/svg/settings/horizontalred.svg";
 import Vertical from "@/app/assets/svg/settings/verticalred.svg";
 import Qrcode from "@/app/assets/svg/settings/qrcode.svg";
 
-export default function Chat() {
+export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
+
+  const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [selectedImage, setSelectedImage] = useState<File>();
+  const [createObjectURL, setCreateObjectURL] = useState(`${ProfileImg.src}`);
+
+  useEffect(() => {
+    async function handlDataInput() {
+      const response = await fetch("http://localhost:3001/settings", {
+        method: 'PUT',
+        headers: {
+          'Content-type': 'application/json',
+          'Cookie': 'connect.sid=s%3Aq_T2IbSrhHsYeK5_TWbZTraeyeOqqgr5.sInJeHINLGBZ3NbhzJbflFRkZkrbkQZuPnC83IzJRZU',
+        },
+        credentials: "include",
+        body: JSON.stringify({ name, nickname })
+      });
+      console.log("resss:",response);
+    }
+    handlDataInput();
+    // async function handleImageChange() {
+    //     console.log("Fileimage:", selectedImage);
+    //     const formData = new FormData();
+    //     // console.log("file", image)
+    //     formData.append("profile", selectedImage ?? "https://placehold.co/400");
+    //     const response = await fetch("/api/upload", {
+    //       method: "POST",
+    //       body: formData
+    //     });
+    //     console.log("res:", response);
+    // }
+    // handleImageChange();
+  }, [])
+  /*const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewImage(reader.result as string);
+        console.log(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }; need to decide backend or front */
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -34,17 +80,17 @@ export default function Chat() {
           >
             Settings
           </div>
-          <div className="w-auto h-[2900px] m-2 bg-gradient-to-b from-[#110D1F] via-[#110D1F] to-[#2d2a38] rounded-[20px]">
+          <div className="w-auto h-auto m-2 bg-gradient-to-b from-[#110D1F] via-[#110D1F] to-[#2d2a38] rounded-[20px]">
             <div className="flex flex-col justify-center items-center">
               <Image
-                className="m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44"
-                src={ProfileImg.src}
+                className="m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44 rounded-full"
+                src={createObjectURL}
                 width={60}
                 height={60}
                 alt="settings image"
               />
               <div className="flex justify-center gap-4 md:gap-12">
-                <div className="w-[94px] md:h-8 md:w-[100px] lg:w-[130px] xl:w-[170px] 2xl:w-[240px] lg:h-9 xl:h-12 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 border-solid border rounded-[15px] 2xl:rounded-[30px] justify-center items-center">
+                <div className="w-[94px] md:h-8 md:w-[100px] lg:w-[130px] xl:w-[170px] 2xl:w-[240px] lg:h-9 xl:h-12 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 border-solid border rounded-[15px] 2xl:rounded-[30px] justify-center items-center cursor-pointer">
                   <Image
                     className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9 "
                     src={TrashImg.src}
@@ -52,39 +98,71 @@ export default function Chat() {
                     height={14}
                     alt="trash icon"
                   />
-                  <p className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}>
+                  <p
+                    className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}
+                  >
                     Remove
                   </p>
                 </div>
-                <div className="w-[94px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[130px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
-                  <Image
-                    className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
-                    src={ChangeImg.src}
-                    width={14}
-                    height={14}
-                    alt="trash icon"
-                  />
-                  <p className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}>
+                <label
+                  className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px] cursor-pointer`}
+                  htmlFor="profile-img"
+                >
+                  <div className="w-[94px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[130px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
+                    <Image
+                      className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
+                      src={ChangeImg.src}
+                      width={14}
+                      height={14}
+                      alt="trash icon"
+                    />
                     Change
-                  </p>
-                </div>
+                    <input
+                      className="hidden"
+                      type="file"
+                      accept="image/png, image/jpeg, image/jpg"
+                      id="profile-img"
+                      onChange={({ target }) => {
+                        if (target.files) {
+                          const file = target.files[0];
+                          setCreateObjectURL(URL.createObjectURL(file));
+                          setSelectedImage(file);
+                        }
+                      }}
+                    />
+                  </div>
+                </label>
               </div>
             </div>
             <div className="mt-9 md:mt-16 2xl:mt-20">
               {/* <p className={`${NeuePlakFont.className} ml-2 md:text-[18px]`}>Edit Profile</p> */}
               <div className="m-3 sm:flex sm:gap-20 md:gap-32 justify-evenly">
                 <form>
-                  <p className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px] `}>Full name</p>
+                  <p
+                    className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px] `}
+                  >
+                    Full name
+                  </p>
                   <input
                     className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
+                    id="full-name"
+                    maxLength={30}
+                    onChange={(event) => setName(event.target.value)}
                   />
                 </form>
                 <form>
-                  <p className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px]`}>Nickname</p>
+                  <p
+                    className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px]`}
+                  >
+                    Nickname
+                  </p>
                   <input
                     className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
+                    id="nick-name"
+                    maxLength={8}
+                    onChange={(event) => setNickname(event.target.value)}
                   />
                 </form>
               </div>
@@ -92,7 +170,9 @@ export default function Chat() {
             {/* <p className={`${NeuePlakFont.className} ml-2 md:text-[18px]`}>Security</p> */}
             <div className="m-3 mt-9 md:m-11 lg:m-16 xl:m-40 flex flex-col md:flex-row justify-center items-center">
               <div className="md:w-[70%] xl:p-20 2xl:p-[90px]">
-                <p className={`${NeuePlakFont.className} md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}>
+                <p
+                  className={`${NeuePlakFont.className} md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
+                >
                   Two-Factor Authentication
                 </p>
                 <p
@@ -131,8 +211,14 @@ export default function Chat() {
                 />
               </div>
               <div className="m-5 flex justify-center items-center md:w-[20%] bg-slate-50">
-                <Image className="md:w-full md:h-full" src={Qrcode.src} width={132} height={132} alt="Qr code"/>
-              </div> 
+                <Image
+                  className="md:w-full md:h-full"
+                  src={Qrcode.src}
+                  width={132}
+                  height={132}
+                  alt="Qr code"
+                />
+              </div>
             </div>
             <div className="flex flex-col md:flex-row md:justify-evenly justify-center items-center">
               <button
