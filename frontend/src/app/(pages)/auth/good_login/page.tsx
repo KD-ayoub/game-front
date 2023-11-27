@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { FormEvent } from "react";
 import default_avatar from "@/app/assets/svg/default_avatar.svg";
 import { NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
-
+import { Axios } from "axios";
 // export default function goodOK() {
 //   const [data, setData] = useState({});
 //   const [message, setMessage] = useState("");
@@ -33,18 +33,16 @@ import { NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 //   }, []);
 
 export default function Page() {
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
- 
-    const formData = new FormData(event.currentTarget)
-    const response = await fetch('/api/submit', {
-      method: 'POST',
-      body: formData,
-    })
- 
-    // Handle response if necessary
-    const data = await response.json()
-    // ...
+  const [data, setData] = useState({
+    full_name: "",
+    nickname: "",
+    path_avatar: "",
+  });
+
+  function handleSubmit(e) {
+    const newData = {...data};
+    newData[e.target.id] = e.target.value;
+    setData(newData);
   }
 
   return (
@@ -53,7 +51,10 @@ export default function Page() {
         <div
           className={`w-1/3 h-1/2 bg-[#15131D] border border-rgb-129-87-98 rounded-3xl  flex flex-col items-center justify-center ${NeuePlakFontBold.className} drop-shadow-2xl shadow-lg shadow-[#15131D]`}
         >
-          <form className="flex  flex-col items-center space-6 p-12" onSubmit={onSubmit}>
+          <form
+            className="flex  flex-col items-center space-6 p-12"
+            onSubmit={onSubmit}
+          >
             <div className="Avatar flex flex-col justify-center items-center space-y-3">
               <img
                 className="h-150 w-150 object-cover rounded-full"
@@ -65,15 +66,19 @@ export default function Page() {
                 <label className="block">
                   <span className="sr-only">Choose profile photo</span>
                   <input
+                    onChange={(e)=>handleSubmit(e)}
+                    value={data.path_avatar}
+                    id="path_avatar"
                     type="file"
+                    name="path_avatar"
                     accept="image/png, image/jpeg, image/jpg"
                     className="block w-full text-sm text-slate-500
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-full file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-violet-50 file:text-[#c9c8ca]
-                  hover:file:bg-[#ff5555bb]
-                  "
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-full file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-violet-50 file:text-[#c9c8ca]
+                      hover:file:bg-[#ff5555bb]
+                      "
                   />
                 </label>
               </div>
@@ -83,6 +88,10 @@ export default function Page() {
                 <label className="text-black pb-4">
                   <span className="text-white p-2">Full_Name</span>
                   <input
+                    onChange={(e)=>handleSubmit(e)}
+                    value={data.full_name}
+                    id="full_name"
+                    name="full_name"
                     type="text"
                     maxLength={30}
                     className="border border-gray-300 rounded-md"
@@ -93,6 +102,10 @@ export default function Page() {
                 <label className="text-black pb-4">
                   <span className="text-white p-2">Nickname</span>
                   <input
+                    onChange={(e)=>handleSubmit(e)}
+                    value={data.nickname}
+                    id="nickname"
+                    name="nickname"
                     type="text"
                     maxLength={8}
                     className="border border-gray-300 rounded-md"
@@ -101,7 +114,10 @@ export default function Page() {
               </div>
             </div>
             <div>
-              <button className="border m-2 p-2 shadow-lg shadow-[#ff5555bb] rounded-xl hover:bg-[#ff5555bb]" type="submit">
+              <button
+                className="border m-2 p-2 shadow-lg shadow-[#ff5555bb] rounded-xl hover:bg-[#ff5555bb]"
+                type="submit"
+              >
                 Save
               </button>
             </div>
