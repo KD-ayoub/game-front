@@ -11,19 +11,19 @@ import {
 } from "@/app/components";
 import { NeuePlakFont, NeuePlakFontBold } from "../../../utils/NeuePlakFont";
 import { useState, useEffect } from "react";
-import getProfileInfo from "@/app/api/getProfileInfo";
+import getProfileInfo from "@/app/api/Profile/getProfileInfo";
 import { MainProfileType } from "@/app/types/mainprofiletype";
 import { StatusGameType } from "@/app/types/statusGameType";
 import { AchievementType } from "@/app/types/achievementtype";
 import { FriendsType } from "@/app/types/friendstype";
 import { GamesHistoryType } from "@/app/types/gameshistorytype";
 import { AllUsersType } from "@/app/types/alluserstype";
-import getStatusGame from "@/app/api/getStatusGame";
-import getAchievement from "@/app/api/getAchievement";
-import getFriends from "@/app/api/getFriends";
-import getGamesHistory from "@/app/api/getGamesHistory";
+import getStatusGame from "@/app/api/Profile/getStatusGame";
+import getAchievement from "@/app/api/Profile/getAchievement";
+import getFriends from "@/app/api/Profile/getFriends";
+import getGamesHistory from "@/app/api/Profile/getGamesHistory";
 import { usePathname } from "next/navigation";
-import getAllUsers from "@/app/api/getAllUsers";
+import getAllUsers from "@/app/api/Profile/getAllUsers";
 
 export default function ProfileUser({ params }: { params: { nickname: string } }) {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);

@@ -2,40 +2,104 @@
 
 import React, { ChangeEvent, useEffect } from "react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Header, SideBar } from "@/app/components";
 import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
+import { SettingsType } from "@/app/types/settingsType";
 import ProfileImg from "@/app/assets/svg/profileimg.svg";
 import TrashImg from "@/app/assets/svg/settings/trash.svg";
 import ChangeImg from "@/app/assets/svg/settings/change.svg";
 import Horizontal from "@/app/assets/svg/settings/horizontalred.svg";
 import Vertical from "@/app/assets/svg/settings/verticalred.svg";
 import Qrcode from "@/app/assets/svg/settings/qrcode.svg";
+import getSettings from "@/app/api/Settings/getSettings";
+import PutSettings from "@/app/api/Settings/putSettings";
 
 export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
 
+  const [dataSettings, setDataSettings] = useState<SettingsType>({
+    id: "",
+    name: "",
+    nickName: "",
+    fac_auth: false,
+    photo_path: "",
+  });
   const [name, setName] = useState("    ");
   const [nickName, setNickname] = useState("testnick");
   const [selectedImage, setSelectedImage] = useState<File>();
   const [createObjectURL, setCreateObjectURL] = useState(`${ProfileImg.src}`);
-  const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
-  console.log(fullNameRegex.test("Saad hbi"));
+  const fullNamelementRef = useRef<HTMLInputElement>(null);
+  const nickNamelementRef = useRef<HTMLInputElement>(null);
+  // const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
+  // console.log(fullNameRegex.test("Saad hbi"));
 
-  useEffect(() => {
-    async function handlDataInput() {
-      const response = await fetch("http://localhost:3001/settings", {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: "include",
-        body: JSON.stringify({ name, nickName }),
-      });
-      console.log("resss:",await response.json());
+  function handlFullNameFocus() {
+    if (fullNamelementRef.current) {
+      const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
+      const old = `${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
+      fullNamelementRef.current.className = fullNameRegex.test(
+        fullNamelementRef.current.value
+      )
+        ? old
+        : fullNamelementRef.current.className.concat(" border border-red-600");
     }
-    handlDataInput();
+  }
+  function handlNickNameFocus() {
+    if (nickNamelementRef.current) {
+      const fullNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
+      console.log(fullNameRegex.test(nickNamelementRef.current.value));
+      const old = `${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
+      nickNamelementRef.current.className = fullNameRegex.test(
+        nickNamelementRef.current.value
+      )
+        ? old
+        : nickNamelementRef.current.className.concat(" border border-red-600");
+    }
+  }
+  function handlNameChange(event: ChangeEvent<HTMLInputElement>) {
+    const modifiedname = { ...dataSettings, name: event.target.value };
+    setDataSettings(modifiedname);
+  }
+  function handlNickNameChange(event: ChangeEvent<HTMLInputElement>) {
+    const modifiednickname = { ...dataSettings, nickName: event.target.value };
+    setDataSettings(modifiednickname);
+  }
+  async function handlSaveChanges() {
+    const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
+    const nickNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
+    if (fullNamelementRef.current && nickNamelementRef.current) {
+      if (
+        fullNameRegex.test(fullNamelementRef.current.value) &&
+        nickNameRegex.test(nickNamelementRef.current.value)
+      ) {
+        PutSettings(dataSettings);
+        console.log("save");
+      } else {
+        console.log("dont save");
+      }
+    }
+    // send put method
+  }
+  useEffect(() => {
+    async function fetcher() {
+      setDataSettings(await getSettings());
+    }
+    fetcher();
+
+    // async function handlDataInput() {
+    //   const response = await fetch("http://localhost:3001/settings", {
+    //     method: 'PUT',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     credentials: "include",
+    //     body: JSON.stringify({ name, nickName }),
+    //   });
+    //   console.log("resss:",await response.json());
+    // }
+    // handlDataInput();
     // async function handleImageChange() {
     //     console.log("Fileimage:", selectedImage);
     //     const formData = new FormData();
@@ -48,7 +112,8 @@ export default function Settings() {
     //     console.log("res:", response);
     // }
     // handleImageChange();
-  }, [])
+  }, []);
+  console.log("dataa", dataSettings);
   /*const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -145,11 +210,16 @@ export default function Settings() {
                     Full name
                   </p>
                   <input
+                    style={{ outline: "none" }}
                     className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
+                    ref={fullNamelementRef}
+                    value={dataSettings.name}
                     id="full-name"
                     maxLength={30}
-                    onChange={(event) => setName(event.target.value)}
+                    onChange={handlNameChange}
+                    onKeyUp={handlFullNameFocus}
+                    required
                   />
                 </form>
                 <form>
@@ -159,11 +229,16 @@ export default function Settings() {
                     Nickname
                   </p>
                   <input
+                    style={{ outline: "none" }}
                     className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
+                    ref={nickNamelementRef}
+                    value={dataSettings.nickName}
                     id="nick-name"
                     maxLength={8}
-                    onChange={(event) => setNickname(event.target.value)}
+                    onChange={handlNickNameChange}
+                    onKeyUp={handlNickNameFocus}
+                    required
                   />
                 </form>
               </div>
@@ -183,17 +258,30 @@ export default function Settings() {
                   configured, you'll be required to enter both your password and
                   an authentication code from your mobile phone in order to sign
                   in.
+                  {/* <strong className="text-red-500">Please scan the Qr</strong> */}
                 </p>
-                <button
-                  className={`w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#E95A3A]`}
-                >
-                  Enable
-                </button>
-                {/* <button
-                className={`w-[90px] h-[30px] rounded-[15px] ${NeuePlakFont.className} m-2 bg-[#4A4853]`}
-                >
-                Disable
-            </button> switch with enable */}
+                {!dataSettings.fac_auth && (
+                  <button
+                    className={`w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#E95A3A]`}
+                    onClick={() => {
+                      const modified = { ...dataSettings, fac_auth: true };
+                      setDataSettings(modified);
+                    }}
+                  >
+                    Enable
+                  </button>
+                )}
+                {dataSettings.fac_auth && (
+                  <button
+                    className={`w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#4A4853]`}
+                    onClick={() => {
+                      const modified = { ...dataSettings, fac_auth: false };
+                      setDataSettings(modified);
+                    }}
+                  >
+                    Disable
+                  </button>
+                )}
               </div>
               <div className="flex justify-center md:w-[10%]">
                 <Image
@@ -211,19 +299,22 @@ export default function Settings() {
                   alt="vertical red"
                 />
               </div>
-              <div className="m-5 flex justify-center items-center md:w-[20%] bg-slate-50">
-                <Image
-                  className="md:w-full md:h-full"
-                  src={Qrcode.src}
-                  width={132}
-                  height={132}
-                  alt="Qr code"
-                />
-              </div>
+              {dataSettings.fac_auth && (
+                <div className="m-5 flex justify-center items-center md:w-[20%] bg-slate-50">
+                  <Image
+                    className="md:w-full md:h-full"
+                    src={Qrcode.src}
+                    width={132}
+                    height={132}
+                    alt="Qr code"
+                  />
+                </div>
+              )}
             </div>
             <div className="flex flex-col md:flex-row md:justify-evenly justify-center items-center">
               <button
                 className={`m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 border-solid border rounded-[15px] lg:rounded-[20px] xl:rounded-[25px] 2xl:rounded-[30px] ${NeuePlakFont.className} text-[14px] md:text-[18px] lg:text-[20px] xl:text-[25px] 2xl:text-[32px] bg-[#15131D]`}
+                onClick={handlSaveChanges}
               >
                 Save changes
               </button>
