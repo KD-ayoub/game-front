@@ -13,7 +13,7 @@ export class SettingsDto {
   @IsOptional()
   fac_auth: boolean;
 
-  @IsString()
-  @IsOptional()
-  photo_path: string;
+  //@IsString()
+  //@IsOptional()
+  //photo_path: string;
 };

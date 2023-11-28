@@ -5,11 +5,11 @@ import { SettingsDto } from './dto';
 import { NotFoundError } from 'rxjs';
 import * as speakeasy from "speakeasy";
 import * as qrcode from 'qrcode';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class SettingsService {
-
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private cloudinaryService: CloudinaryService) {}
 
   async getSettingsData(userId: string): Promise<{}> {
     const img = await this.prisma.profile.findUnique({
@@ -43,6 +43,7 @@ export class SettingsService {
     return data;
   }
 
+  //take it off
   async checkIfQrCodeIsRight(userId: string, token: string): Promise<{}> {
     const profile = await this.prisma.profile.findUnique({
       where: {
@@ -65,6 +66,35 @@ export class SettingsService {
     return profile;
   }
 
+  async changeSettingsImage(file: Express.Multer.File, userId: string): Promise<{}> {
+    try {
+      const upload = await this.cloudinaryService.uploadFile(file);
+      const profile = await this.prisma.profile.update({
+        where: {
+          userID: userId,
+        },
+        data: {
+          photo_path: upload.secure_url,
+        },
+        select: {
+          photo_path: true,
+        }
+      });
+      const data = await {
+        photo_path: profile.photo_path
+      };
+      return data;
+    } catch(err) {
+      console.log(err);
+      //if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      //  if (err.code === 'P2002') {
+      //    throw new ForbiddenException('Credentials already taken');
+      //  }
+      //}
+      throw err;
+    }
+  }
+
   async changeSettingsData(userId: string, data: SettingsDto): Promise<{}> {
     try {
       let objFac;
@@ -85,7 +115,7 @@ export class SettingsService {
             userID: userId,
           },
           data: {
-            photo_path: data.photo_path,
+            //photo_path: data.photo_path,
             TwoFac_pass: objFac.base32
           },
           select: {
@@ -100,7 +130,7 @@ export class SettingsService {
             userID: userId,
           },
           data: {
-            photo_path: data.photo_path,
+            //photo_path: data.photo_path,
           },
           select: {
             photo_path: true,
@@ -124,7 +154,7 @@ export class SettingsService {
           fac_auth: true
         }
       });
-      user['photo_path'] = await profile.photo_path;
+      //user['photo_path'] = await profile.photo_path;
       if (data.fac_auth) {
         try {
           user['qr_code_url'] = await qrcode.toDataURL(profile.TwoFac_pass);

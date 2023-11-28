@@ -7,6 +7,7 @@ import { ProfileModule } from './profile/profile.module';
 import { SettingsModule } from './settings/settings.module';
 import { GameModule } from './game/game.module';
 import { AppGateway } from './app.gateway';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports:
@@ -16,6 +17,7 @@ import { AppGateway } from './app.gateway';
 	  	PassportModule.register({session: true}),
 	  	ProfileModule,
 	  	SettingsModule,
+			CloudinaryModule,
 			GameModule
   ],
 })
