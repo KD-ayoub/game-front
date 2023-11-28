@@ -74,13 +74,14 @@ export default function Settings() {
         fullNameRegex.test(fullNamelementRef.current.value) &&
         nickNameRegex.test(nickNamelementRef.current.value)
       ) {
+        // send put method
         PutSettings(dataSettings);
         console.log("save");
       } else {
+        // make toast error
         console.log("dont save");
       }
     }
-    // send put method
   }
   useEffect(() => {
     async function fetcher() {
