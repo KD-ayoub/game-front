@@ -62,13 +62,16 @@ export class SettingsService {
 
   async changeSettingsImage(file: Express.Multer.File, userId: string): Promise<{}> {
     try {
-      const upload = await this.cloudinaryService.uploadFile(file);
+      let upload;
+
+      if (file)
+        upload = await this.cloudinaryService.uploadFile(file);
       const profile = await this.prisma.profile.update({
         where: {
           userID: userId,
         },
         data: {
-          photo_path: upload.secure_url,
+          photo_path: (file) ? upload.secure_url : "default_img",
         },
         select: {
           photo_path: true,
@@ -78,7 +81,7 @@ export class SettingsService {
         photo_path: profile.photo_path
       };
     } catch(err) {
-      throw new BadRequestException('Image no sent');
+      throw new BadRequestException();
     }
   }
 
