@@ -27,11 +27,13 @@ export class SettingsController {
   @Put('update_image')
   @UseInterceptors(FileInterceptor('file'))
   changeImageSettings(@UploadedFile() file: Express.Multer.File, @Req() req: any): Promise<{}>{
+    //here remove image if file is empty
     return this.SettingsService.changeSettingsImage(file, req.user.id);
   }
   
   @Put('update_data')
   changeSettings(@Req() req: any, @Body() data: SettingsDto): Promise<{}> {
+    //wtf here pipe not working
     return this.SettingsService.changeSettingsData(req.user.id, data);
   }
 
