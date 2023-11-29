@@ -1,6 +1,6 @@
 export type SettingsType = {
     id: string,
-    name: string,
+    full_name: string,
     nickName: string,
     fac_auth: boolean,
     photo_path: string,

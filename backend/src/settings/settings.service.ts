@@ -1,15 +1,15 @@
-import { Injectable, NotFoundException, ConflictException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { SettingsDto } from './dto';
 import { NotFoundError } from 'rxjs';
 import * as speakeasy from "speakeasy";
 import * as qrcode from 'qrcode';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class SettingsService {
-
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private cloudinaryService: CloudinaryService) {}
 
   async getSettingsData(userId: string): Promise<{}> {
     const img = await this.prisma.profile.findUnique({
@@ -33,16 +33,11 @@ export class SettingsService {
     });
     if (!img || !commingData)
       throw new NotFoundException();
-    const data = await {
-      id: commingData.id,
-      name: commingData.full_name,
-      nickName: commingData.nickName,
-      fac_auth: commingData.fac_auth,
-      photo_path: img.photo_path
-    };
-    return data;
+    commingData['photo_path'] = await img.photo_path;
+    return commingData;
   }
 
+  //take it off
   async checkIfQrCodeIsRight(userId: string, token: string): Promise<{}> {
     const profile = await this.prisma.profile.findUnique({
       where: {
@@ -65,6 +60,28 @@ export class SettingsService {
     return profile;
   }
 
+  async changeSettingsImage(file: Express.Multer.File, userId: string): Promise<{}> {
+    try {
+      const upload = await this.cloudinaryService.uploadFile(file);
+      const profile = await this.prisma.profile.update({
+        where: {
+          userID: userId,
+        },
+        data: {
+          photo_path: upload.secure_url,
+        },
+        select: {
+          photo_path: true,
+        }
+      });
+      return {
+        photo_path: profile.photo_path
+      };
+    } catch(err) {
+      throw new BadRequestException('Image no sent');
+    }
+  }
+
   async changeSettingsData(userId: string, data: SettingsDto): Promise<{}> {
     try {
       let objFac;
@@ -85,25 +102,19 @@ export class SettingsService {
             userID: userId,
           },
           data: {
-            photo_path: data.photo_path,
             TwoFac_pass: objFac.base32
           },
           select: {
-            photo_path: true,
             TwoFac_pass: true
           }
         });
       }
       else {
-        profile = await this.prisma.profile.update({
+        profile = await this.prisma.profile.findUnique({
           where: {
             userID: userId,
           },
-          data: {
-            photo_path: data.photo_path,
-          },
           select: {
-            photo_path: true,
             TwoFac_pass: true
           }
         });
@@ -124,7 +135,6 @@ export class SettingsService {
           fac_auth: true
         }
       });
-      user['photo_path'] = await profile.photo_path;
       if (data.fac_auth) {
         try {
           user['qr_code_url'] = await qrcode.toDataURL(profile.TwoFac_pass);
@@ -132,27 +142,6 @@ export class SettingsService {
           throw (err);
         }
       }
-
-
-
-      //if (facCheck.fac_auth) {
-      //  qrcode.toDataURL(this.objFac.otpauth_url, (err, data_url) => {
-      //    console.log('<img src=\"', data_url, '\">');
-      //  });
-      //  if (data.name) {
-      //    console.log('gg');
-      //    let verify = speakeasy.totp.verify({
-      //      secret: this.secret,
-      //      encoding: 'base32',
-      //      token: data.name
-      //    })
-      //    if (verify)
-      //      console.log('code correct');
-      //    else
-      //      console.log('code uncorrect');
-      //  }
-      //  //user['qr_code'] = await secret.;
-      //}
       return user;
     } catch (err) {
       //check which error code

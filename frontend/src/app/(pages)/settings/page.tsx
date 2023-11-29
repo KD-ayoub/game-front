@@ -15,6 +15,7 @@ import Qrcode from "@/app/assets/svg/settings/qrcode.svg";
 import getSettings from "@/app/api/Settings/getSettings";
 import PutSettings from "@/app/api/Settings/putSettings";
 import { CldImage } from "next-cloudinary";
+import PutImage from "@/app/api/Settings/putImage";
 
 export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -22,14 +23,14 @@ export default function Settings() {
 
   const [dataSettings, setDataSettings] = useState<SettingsType>({
     id: "",
-    name: "",
+    full_name: "",
     nickName: "",
     fac_auth: false,
     photo_path: "",
   });
   const [respSettings, setRespSettings] = useState<SettingsType>({
     id: "",
-    name: "",
+    full_name: "",
     nickName: "",
     fac_auth: false,
     photo_path: "",
@@ -78,6 +79,13 @@ export default function Settings() {
     URL.revokeObjectURL(createObjectURL)
     setCreateObjectURL(`${ProfileImg.src}`);
   }
+  async function handlImageChange() {
+    console.log("Fileimage:", selectedImage);
+        const formData = new FormData();
+        formData.append("file", selectedImage);
+        console.log("file sent", formData);
+        PutImage(formData);
+  }
   async function handlSaveChanges() {
     const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
     const nickNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
@@ -89,6 +97,7 @@ export default function Settings() {
         // send put method
         const twofa = await PutSettings(dataSettings);
         setDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
+        handlImageChange();
         console.log("save");
       } else {
         // make toast error
@@ -204,7 +213,7 @@ export default function Settings() {
                     className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
                     ref={fullNamelementRef}
-                    value={dataSettings.name}
+                    value={dataSettings.full_name}
                     id="full-name"
                     maxLength={30}
                     onChange={handlNameChange}

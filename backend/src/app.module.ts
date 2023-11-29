@@ -6,7 +6,8 @@ import { LoggerMiddleware } from './common/utils/logger';
 import { ProfileModule } from './profile/profile.module';
 import { SettingsModule } from './settings/settings.module';
 import { GameModule } from './game/game.module';
-import { GatewayModule } from './gateway/gateway.module';
+import { AppGateway } from './app.gateway';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports:
@@ -16,8 +17,8 @@ import { GatewayModule } from './gateway/gateway.module';
 	  	PassportModule.register({session: true}),
 	  	ProfileModule,
 	  	SettingsModule,
-			GameModule,
-			GatewayModule
+			CloudinaryModule,
+			GameModule
   ],
 })
 
