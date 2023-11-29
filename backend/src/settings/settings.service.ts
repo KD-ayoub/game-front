@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { SettingsDto } from './dto';
@@ -33,14 +33,8 @@ export class SettingsService {
     });
     if (!img || !commingData)
       throw new NotFoundException();
-    const data = await {
-      id: commingData.id,
-      name: commingData.full_name,
-      nickName: commingData.nickName,
-      fac_auth: commingData.fac_auth,
-      photo_path: img.photo_path
-    };
-    return data;
+    commingData['photo_path'] = await img.photo_path;
+    return commingData;
   }
 
   //take it off
@@ -80,18 +74,11 @@ export class SettingsService {
           photo_path: true,
         }
       });
-      const data = await {
+      return {
         photo_path: profile.photo_path
       };
-      return data;
     } catch(err) {
-      console.log(err);
-      //if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      //  if (err.code === 'P2002') {
-      //    throw new ForbiddenException('Credentials already taken');
-      //  }
-      //}
-      throw err;
+      throw new BadRequestException('Image no sent');
     }
   }
 
@@ -115,25 +102,19 @@ export class SettingsService {
             userID: userId,
           },
           data: {
-            //photo_path: data.photo_path,
             TwoFac_pass: objFac.base32
           },
           select: {
-            photo_path: true,
             TwoFac_pass: true
           }
         });
       }
       else {
-        profile = await this.prisma.profile.update({
+        profile = await this.prisma.profile.findUnique({
           where: {
             userID: userId,
           },
-          data: {
-            //photo_path: data.photo_path,
-          },
           select: {
-            photo_path: true,
             TwoFac_pass: true
           }
         });
@@ -154,7 +135,6 @@ export class SettingsService {
           fac_auth: true
         }
       });
-      //user['photo_path'] = await profile.photo_path;
       if (data.fac_auth) {
         try {
           user['qr_code_url'] = await qrcode.toDataURL(profile.TwoFac_pass);
@@ -162,27 +142,6 @@ export class SettingsService {
           throw (err);
         }
       }
-
-
-
-      //if (facCheck.fac_auth) {
-      //  qrcode.toDataURL(this.objFac.otpauth_url, (err, data_url) => {
-      //    console.log('<img src=\"', data_url, '\">');
-      //  });
-      //  if (data.name) {
-      //    console.log('gg');
-      //    let verify = speakeasy.totp.verify({
-      //      secret: this.secret,
-      //      encoding: 'base32',
-      //      token: data.name
-      //    })
-      //    if (verify)
-      //      console.log('code correct');
-      //    else
-      //      console.log('code uncorrect');
-      //  }
-      //  //user['qr_code'] = await secret.;
-      //}
       return user;
     } catch (err) {
       //check which error code

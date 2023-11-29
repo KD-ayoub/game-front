@@ -26,10 +26,7 @@ export class SettingsController {
 
   @Put('update_image')
   @UseInterceptors(FileInterceptor('file'))
-  changeImageSettings(@UploadedFile() file: Express.Multer.File, @Req() req: any): Promise<{}> {
-    //console.log(file);
-    //return this.cloudinaryService.uploadFile(file);
-    //return this.cloudinaryService.uploadFile(file);
+  changeImageSettings(@UploadedFile() file: Express.Multer.File, @Req() req: any): Promise<{}>{
     return this.SettingsService.changeSettingsImage(file, req.user.id);
   }
   
