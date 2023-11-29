@@ -9,6 +9,6 @@ export default async function PutSettings(data: SettingsType) {
         credentials: "include",
         body: JSON.stringify(data),
       });
-      console.log("resss:",await response.json());
-      return await response;
+      // console.log("resss:",await response.json());
+      return await response.json();
 }

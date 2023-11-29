@@ -14,6 +14,7 @@ import Vertical from "@/app/assets/svg/settings/verticalred.svg";
 import Qrcode from "@/app/assets/svg/settings/qrcode.svg";
 import getSettings from "@/app/api/Settings/getSettings";
 import PutSettings from "@/app/api/Settings/putSettings";
+import { CldImage } from "next-cloudinary";
 
 export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -26,8 +27,14 @@ export default function Settings() {
     fac_auth: false,
     photo_path: "",
   });
-  const [name, setName] = useState("    ");
-  const [nickName, setNickname] = useState("testnick");
+  const [respSettings, setRespSettings] = useState<SettingsType>({
+    id: "",
+    name: "",
+    nickName: "",
+    fac_auth: false,
+    photo_path: "",
+    qr_code_url: "",
+  });
   const [selectedImage, setSelectedImage] = useState<File>();
   const [createObjectURL, setCreateObjectURL] = useState(`${ProfileImg.src}`);
   const fullNamelementRef = useRef<HTMLInputElement>(null);
@@ -66,6 +73,11 @@ export default function Settings() {
     const modifiednickname = { ...dataSettings, nickName: event.target.value };
     setDataSettings(modifiednickname);
   }
+  function handlRemoveImage() {
+    console.log("image:",createObjectURL);
+    URL.revokeObjectURL(createObjectURL)
+    setCreateObjectURL(`${ProfileImg.src}`);
+  }
   async function handlSaveChanges() {
     const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
     const nickNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
@@ -75,7 +87,8 @@ export default function Settings() {
         nickNameRegex.test(nickNamelementRef.current.value)
       ) {
         // send put method
-        PutSettings(dataSettings);
+        const twofa = await PutSettings(dataSettings);
+        setDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
         console.log("save");
       } else {
         // make toast error
@@ -89,18 +102,6 @@ export default function Settings() {
     }
     fetcher();
 
-    // async function handlDataInput() {
-    //   const response = await fetch("http://localhost:3001/settings", {
-    //     method: 'PUT',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     credentials: "include",
-    //     body: JSON.stringify({ name, nickName }),
-    //   });
-    //   console.log("resss:",await response.json());
-    // }
-    // handlDataInput();
     // async function handleImageChange() {
     //     console.log("Fileimage:", selectedImage);
     //     const formData = new FormData();
@@ -115,20 +116,6 @@ export default function Settings() {
     // handleImageChange();
   }, []);
   console.log("dataa", dataSettings);
-  /*const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setPreviewImage(reader.result as string);
-        console.log(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  }; need to decide backend or front */
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -167,6 +154,7 @@ export default function Settings() {
                   />
                   <p
                     className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}
+                    onClick={handlRemoveImage}
                   >
                     Remove
                   </p>
@@ -193,6 +181,7 @@ export default function Settings() {
                         if (target.files) {
                           const file = target.files[0];
                           setCreateObjectURL(URL.createObjectURL(file));
+                          console.log("imagechange:",createObjectURL);
                           setSelectedImage(file);
                         }
                       }}
@@ -261,6 +250,13 @@ export default function Settings() {
                   in.
                   {/* <strong className="text-red-500">Please scan the Qr</strong> */}
                 </p>
+                {dataSettings.fac_auth && (
+                  <p
+                    className={`${NeuePlakFontBold.className} md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
+                  >
+                    Save Changes and Scan The Qr
+                  </p>
+                )}
                 {!dataSettings.fac_auth && (
                   <button
                     className={`w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#E95A3A]`}
@@ -300,11 +296,11 @@ export default function Settings() {
                   alt="vertical red"
                 />
               </div>
-              {dataSettings.fac_auth && (
+              {dataSettings.fac_auth && dataSettings.qr_code_url && (
                 <div className="m-5 flex justify-center items-center md:w-[20%] bg-slate-50">
                   <Image
                     className="md:w-full md:h-full"
-                    src={Qrcode.src}
+                    src={dataSettings.qr_code_url}
                     width={132}
                     height={132}
                     alt="Qr code"
