@@ -6,7 +6,7 @@ import { LoggerMiddleware } from './common/utils/logger';
 import { ProfileModule } from './profile/profile.module';
 import { SettingsModule } from './settings/settings.module';
 import { GameModule } from './game/game.module';
-import { AppGateway } from './app.gateway';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports:
@@ -16,7 +16,8 @@ import { AppGateway } from './app.gateway';
 	  	PassportModule.register({session: true}),
 	  	ProfileModule,
 	  	SettingsModule,
-			GameModule
+		GameModule,
+		ChatModule
   ],
 })
 

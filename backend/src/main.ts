@@ -15,7 +15,7 @@ async function bootstrap() {
 	  },
 	  secret: process.env.SESSION_SECRET,
 	  resave: true,
-	  saveUninitialized: true,
+	  saveUninitialized: false,
 	  store: new PrismaSessionStore(
 		  app.get(PrismaService),
 		  {
@@ -39,6 +39,7 @@ async function bootstrap() {
     whitelist: true
   }));
   await app.listen(3001);
+  console.log("hey");
 }
 
 bootstrap();

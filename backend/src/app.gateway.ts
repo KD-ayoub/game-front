@@ -33,10 +33,11 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async handleConnection(client: Socket, ...args: any[]) {
-		console.log(`${client.id} is connect size = ${this.socketUser.size}`);
+		//console.log(`${client.id} is connect size = ${this.socketUser.size}`);
 		const clientSocket = this.server.sockets.sockets.get(client.id);
 		const cookie = client.request.headers.cookie;
 		if (!cookie) {
+			console.log("no cookie");
 			clientSocket.disconnect();
 			return ;
 		}
@@ -48,6 +49,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			}
 		});
 		if (!sessionDb) {
+			console.log("no session");
 			clientSocket.disconnect();
 			return ;
 		}
@@ -60,7 +62,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	handleDisconnect(client: Socket) {
-		console.log('client just disconnect');
 		let findValue;
 		this.socketUser.forEach((value, key) => {
 			findValue = value === client.id ? client.id : "";
@@ -72,6 +73,28 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('newMessage')
 	onNewMessage(@MessageBody() body: any) {
 		console.log(body);
-		this.server.emit('onMessage', "awili")
+		this.server.emit('onMessage', body)
+	}
+
+	getKeyByValue(map: Map<any,any>,searchValue: any)
+	{
+		for (const [key, value] of this.socketUser.entries())
+		{
+			if (value == searchValue)
+			{
+				return key;
+			}
+		}
+	}
+
+	get_id_by_socketId(socketid : string)
+	{
+		return this.getKeyByValue(this.socketUser,socketid);
+	}
+
+
+	get_socketID_by_id(userid: string)
+	{
+		return this.socketUser.get(userid);
 	}
 }
