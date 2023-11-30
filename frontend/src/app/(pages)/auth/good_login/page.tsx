@@ -24,16 +24,14 @@ export default function Good_login() {
   // send data 
   function onSubmit(e:any) {
     e.preventDefault();
-    const data = new FormData();
-    data.append("full_name", info.full_name);
-    data.append("nickname", info.nickname);
+
     // data.append("path_avatar", info.path_avatar);
     fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(info),
       credentials: "include",
     })
       .then((res) => res.json())
