@@ -31,7 +31,10 @@ export class AuthController {
 	@Post('/signup')
 	@UseGuards(AuthenticatedGuard)
 	signup(@Req() req: Request,@Body() body: signup) {
-		console.log(body);
+		console.log("body : " , body);
+		if (!body || !body.full_name ||!body.nickname )
+			return {error : "sir t7wa gad l9lawi"};
+		//console.log("hey : ",body);
 	  return this.auth.signup(req.user,body);
 	}
 

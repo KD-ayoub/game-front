@@ -78,7 +78,7 @@ export class AuthService {
 					id: user.id,
 				},
 				data:{
-					nickName: profile_data.login,
+					nickName: profile_data.nickname,
 					full_name: profile_data.full_name,
 					first_time: false,
 				}
