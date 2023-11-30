@@ -32,8 +32,11 @@ export class SettingsController {
   }
   
   @Put('update_data')
-  changeSettings(@Req() req: any, @Body() data: SettingsDto): Promise<{}> {
+  changeSettings(@Req() req: any, @Body() data: SettingsDto): any {
     //wtf here pipe not working
+    //console.log(JSON.stringify(data));
+    if (!JSON.stringify(data) || JSON.stringify(data) === '{}')
+      return data;
     return this.SettingsService.changeSettingsData(req.user.id, data);
   }
 
