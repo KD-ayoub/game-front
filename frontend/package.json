@@ -9,12 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@redwoodjs/forms": "^6.4.0",
     "axios": "^1.6.2",
     "cross-fetch": "^4.0.0",
     "next": "13.5.4",
     "next-auth": "^4.24.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-toastify": "^9.1.3"
   },
   "devDependencies": {
     "@types/node": "20.9.1",

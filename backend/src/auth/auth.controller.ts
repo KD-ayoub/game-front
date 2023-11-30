@@ -31,9 +31,10 @@ export class AuthController {
 	@Post('/signup')
 	@UseGuards(AuthenticatedGuard)
 	signup(@Req() req: Request,@Body() body: signup) {
+		console.log(body);
 	  return this.auth.signup(req.user,body);
 	}
-	
+
 	// guards after checking 42 login and then check if first time and then check for 2fa
 	@Get('/status')
 	@UseGuards(first_timeGuard)

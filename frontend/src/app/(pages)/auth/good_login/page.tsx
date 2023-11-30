@@ -1,49 +1,46 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FormEvent } from "react";
 import default_avatar from "@/app/assets/svg/default_avatar.svg";
 import { NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
-import { Axios } from "axios";
-// export default function goodOK() {
-//   const [data, setData] = useState({});
-//   const [message, setMessage] = useState("");
+import { FieldErrors, useForm } from "@redwoodjs/forms";
+import { ToastContainer, toast } from "react-toastify";
 
-//   useEffect(() => {
-//     async function getInfoLogin() {
-//       const response = await fetch("http://localhost:3001/auth/status", {
-//         method: "POST",
-//         //mode: 'cors',
-//         headers: {
-//           //'Host':'http://localhost:3001',
-//           "Content-Type": "application/json",
-//           //'Access-Control-Allow-Origin': '*',
-//         },
-//         credentials: "include",
-//       });
-//       // const response = await fetch('./fakejson/mainprofile.json')
-//       if (!response.ok) {
-//         const ok = await response.json();
-//         setMessage(ok.message);
-//         console.log("error fetching data");
-//         return;
-//       }
-//       //await console.log(response);
-//     }
-//     getInfoLogin();
-//   }, []);
-
-export default function Page() {
-  const [data, setData] = useState({
+// sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+export default function Good_login() {
+  const url = "http://localhost:3001/auth/signup";
+  const [info, setInfo] = useState({
     full_name: "",
     nickname: "",
-    path_avatar: "",
+    // path_avatar: "",
   });
 
-  function handleSubmit(e) {
-    const newData = {...data};
-    newData[e.target.id] = e.target.value;
-    setData(newData);
+  function handleForm(e:any) {
+    const { id, value } = e.target; // Destructure id and value from the event target
+    const newInfo = { ...info, [id]: value }; // Update the newInfo object
+    setInfo(newInfo); // Update the state
+    console.log(newInfo);
   }
+
+  // send data 
+  function onSubmit(e:any) {
+    e.preventDefault();
+    const data = new FormData();
+    data.append("full_name", info.full_name);
+    data.append("nickname", info.nickname);
+    // data.append("path_avatar", info.path_avatar);
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res))
+      .catch((error) => console.error("Error:", error));
+  }
+
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -53,7 +50,7 @@ export default function Page() {
         >
           <form
             className="flex  flex-col items-center space-6 p-12"
-            onSubmit={onSubmit}
+            onSubmit={(e) => onSubmit(e)}
           >
             <div className="Avatar flex flex-col justify-center items-center space-y-3">
               <img
@@ -66,8 +63,8 @@ export default function Page() {
                 <label className="block">
                   <span className="sr-only">Choose profile photo</span>
                   <input
-                    onChange={(e)=>handleSubmit(e)}
-                    value={data.path_avatar}
+                    onChange={(e) => handleForm(e)}
+                    // value={info.path_avatar}
                     id="path_avatar"
                     type="file"
                     name="path_avatar"
@@ -88,8 +85,8 @@ export default function Page() {
                 <label className="text-black pb-4">
                   <span className="text-white p-2">Full_Name</span>
                   <input
-                    onChange={(e)=>handleSubmit(e)}
-                    value={data.full_name}
+                    onChange={(e) => handleForm(e)}
+                    value={info.full_name}
                     id="full_name"
                     name="full_name"
                     type="text"
@@ -102,14 +99,15 @@ export default function Page() {
                 <label className="text-black pb-4">
                   <span className="text-white p-2">Nickname</span>
                   <input
-                    onChange={(e)=>handleSubmit(e)}
-                    value={data.nickname}
+                    onChange={(e) => handleForm(e)}
+                    value={info.nickname}
                     id="nickname"
                     name="nickname"
                     type="text"
                     maxLength={8}
                     className="border border-gray-300 rounded-md"
                   />
+                  
                 </label>
               </div>
             </div>
@@ -120,6 +118,7 @@ export default function Page() {
               >
                 Save
               </button>
+               <ToastContainer />
             </div>
           </form>
         </div>
