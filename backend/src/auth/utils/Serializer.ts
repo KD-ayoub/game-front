@@ -10,6 +10,8 @@ export class SessionSerializer extends PassportSerializer{
 		super();
 	}
 	serializeUser(user, done: (err: Error, user: any)=> void) {
+		if (user.id)
+			this.authService.delete_old_sessions(user.id);
 		done(null,user);
 	}
 	async deserializeUser(user, done: (err: Error, user: any)=> void)

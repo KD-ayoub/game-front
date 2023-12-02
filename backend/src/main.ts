@@ -3,7 +3,6 @@ import { ValidationPipe, RequestMethod } from '@nestjs/common';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
-import * as cors from 'cors';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { PrismaService } from 'prisma/prisma.service';
 
@@ -39,7 +38,6 @@ async function bootstrap() {
     whitelist: true
   }));
   await app.listen(3001);
-  console.log("hey");
 }
 
 bootstrap();
