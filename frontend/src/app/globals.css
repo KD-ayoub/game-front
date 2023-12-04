@@ -25,3 +25,9 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+@layer utilities {
+  .bg-gradient-radial {
+    background: radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgb(129, 87, 98) 0%, rgba(19, 15, 31, 1) 58%);
+  }
+}

@@ -37,6 +37,7 @@
     "cookie-parser": "^1.4.6",
     "es-cookie": "^1.4.0",
     "express-session": "^1.17.3",
+    "mute-stream": "^1.0.0",
     "passport": "^0.6.0",
     "passport-42": "^1.2.6",
     "qrcode": "^1.5.3",
