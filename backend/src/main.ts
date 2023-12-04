@@ -3,7 +3,6 @@ import { ValidationPipe, RequestMethod } from '@nestjs/common';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
-import * as cors from 'cors';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { PrismaService } from 'prisma/prisma.service';
 
@@ -15,7 +14,7 @@ async function bootstrap() {
 	  },
 	  secret: process.env.SESSION_SECRET,
 	  resave: true,
-	  saveUninitialized: true,
+	  saveUninitialized: false,
 	  store: new PrismaSessionStore(
 		  app.get(PrismaService),
 		  {
@@ -32,7 +31,8 @@ async function bootstrap() {
   app.enableCors({
     origin: 'http://localhost:3000',
     credentials: true,
-    methods: [RequestMethod.ALL.toString()],
+    //methods: [RequestMethod.ALL.toString()],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   });
 
   app.useGlobalPipes(new ValidationPipe({

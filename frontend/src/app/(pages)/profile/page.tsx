@@ -10,11 +10,60 @@ import {
   Friends,
 } from "@/app/components";
 import { NeuePlakFont, NeuePlakFontBold } from "../../utils/NeuePlakFont";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import getProfileInfo from "@/app/api/Profile/getProfileInfo";
+import { MainProfileType } from "@/app/types/mainprofiletype";
+import { StatusGameType } from "@/app/types/statusGameType";
+import { AchievementType } from "@/app/types/achievementtype";
+import { FriendsType } from "@/app/types/friendstype";
+import { GamesHistoryType } from "@/app/types/gameshistorytype";
+import getStatusGame from "@/app/api/Profile/getStatusGame";
+import getAchievement from "@/app/api/Profile/getAchievement";
+import getFriends from "@/app/api/Profile/getFriends";
+import getGamesHistory from "@/app/api/Profile/getGamesHistory";
 
 export default function Profile() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
+
+  const [Isloaded, setIsloaded] = useState(true);
+  const [dataprofile, setdataProfile] = useState<MainProfileType>({
+    id: "",
+    full_name: "",
+    nickName: "",
+    is_active: "",
+    last_activity: "",
+    photo_path: "",
+    friend_number: 0,
+    level: 0,
+  });
+  const [dataStatusGame, setdataStatusGame] = useState<StatusGameType>({
+    games: 0,
+    win: 0,
+    lose: 0
+  });
+  const [dataAchievement, setdataAchievement] = useState<AchievementType>({
+    id: '',
+    user_id: '',
+    kickstart: false,
+    social: false,
+    first_game: false,
+    level_1: false,
+    level_5: false
+  });
+  const [dataFriends, setdataFriends] = useState<Array<FriendsType>>([]);
+  const [dataGamesHistory, setdataGamesHistory] = useState<Array<GamesHistoryType>>([]);
+  useEffect(() => {
+    async function fetchdata() {
+      setdataProfile(await getProfileInfo());
+      setdataStatusGame(await getStatusGame());
+      setdataAchievement(await getAchievement());
+      setdataFriends(await getFriends());
+      setdataGamesHistory(await getGamesHistory());
+      setIsloaded(false);
+    }
+    fetchdata();
+  }, []);
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -35,15 +84,15 @@ export default function Profile() {
           </div>
           <div className="md:w-full md:h-full">
             <div className="md:flex md:items-center">
-              <ProfileInfo />
+              <ProfileInfo Isloaded={Isloaded} dataprofile={dataprofile} />
               <div className="md:flex md:flex-col md:h-1/2 md:basis-1/2 lg:gap-5">
-                <StatusGame />
-                <Achievements />
+                <StatusGame Isloaded={Isloaded} dataStatusGame={dataStatusGame} />
+                <Achievements Isloaded={Isloaded} dataAchievement={dataAchievement} />
               </div>
             </div>
             <div className="lg:flex">
-              <GameHistory />
-              <Friends />
+              <GameHistory Isloaded={Isloaded} dataGamesHistory={dataGamesHistory} />
+              <Friends Isloaded={Isloaded} dataFriends={dataFriends} />
             </div>
           </div>
         </div>

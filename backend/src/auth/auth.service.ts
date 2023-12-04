@@ -34,7 +34,15 @@ export class AuthService {
 				intra_42_id: details.intra_42_id,
 				is_active :  "online",
 				last_activity: new Date(),
+			},
+			select: {
+				intra_42_id : true,
+				id: true,
+				nickName: true,
+				first_time: true,
+				full_name: true,
 			}
+
 		});
 		return user;
 	}
@@ -106,5 +114,16 @@ export class AuthService {
 			throw new ConflictException("nickname is already taken");
 		}
 			
+	}
+
+	async delete_old_sessions(id: string)
+	{
+		await this.prisma.session.deleteMany({
+			where: {
+				data: {
+					search: id 
+				}
+			}
+		});
 	}
 }
