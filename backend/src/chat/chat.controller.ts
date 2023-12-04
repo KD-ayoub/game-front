@@ -22,7 +22,6 @@ export class ChatController{
 	async conv(@Session() session: Record<string,any>)
 	{
 		return this.chatService.get_all_conv(session.passport.user.id);
-		//console.log(session.passport.user.id);
 	}
 
 	// block a friend
