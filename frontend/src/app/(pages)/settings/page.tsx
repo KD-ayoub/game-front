@@ -16,6 +16,8 @@ import getSettings from "@/app/api/Settings/getSettings";
 import PutSettings from "@/app/api/Settings/putSettings";
 import { CldImage } from "next-cloudinary";
 import PutImage from "@/app/api/Settings/putImage";
+import PutEmpty from "@/app/api/Settings/putEmpty";
+
 
 export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -82,6 +84,7 @@ export default function Settings() {
     }
     URL.revokeObjectURL(createObjectURL);
     setCreateObjectURL(`${ProfileImg.src}`);
+    PutEmpty();
     // send an empty json
   }
   function handlImageChange() {
