@@ -3,11 +3,18 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
 	provider = "postgresql"
 	url      = env("DATABASE_URL")
+}
+
+enum RoomType{
+	PRIVATE
+	PROTECTED
+	PUBLIC
 }
 
 model User {
@@ -38,9 +45,31 @@ model User {
 	// relationship with game_history
 	player_history			games_history[] @relation("player")
 	opponent_history		games_history[] @relation("opponent")
+	sendMessage				RoomMessage[]
 
-	// relationship with message
-	messages				message[]
+	// Define a relation to direct messages sent by the user
+  	sentDirectMessages DirectMessage[] @relation("SentDirectMessages")
+
+  	//// Define a relation to direct messages received by the user
+  	receivedDirectMessages DirectMessage[] @relation("ReceivedDirectMessages")
+
+  	//// Define a relation to rooms owned by the user
+  	ownedRooms   Room[] @relation("OwnedRooms")
+
+  	//// Define a relation to rooms where the user is an admin
+  	adminRooms   Room[] @relation("AdminRooms")
+
+  	//// Define a relation to rooms where the user is a member
+  	memberRooms  Room[] @relation("MemberRooms")
+
+  	//// Define a relation to rooms where the user is a muted
+  	muted  Room[] @relation("muted")
+
+  	//// Define a relation to rooms where the user is a banned
+	banned Room[]  @relation("banned")
+
+
+	// blocked users
 }
 
 model Friendship {
@@ -52,6 +81,7 @@ model Friendship {
 
 	friendId			String
 	friend				User @relation("friends", fields: [friendId], references: [id])
+	is_blocked 			Boolean @default(false)
 }
 
 
@@ -83,45 +113,79 @@ model games_history{
 }
 
 model achievement {
-	id	String @id @default(uuid())
+	id			String @id @default(uuid())
 	user_id		String @unique
-	user			User @relation(fields:[user_id],references:[id])
+	user		User @relation(fields:[user_id],references:[id])
 
-	kickstart		Boolean
+	kickstart	Boolean
 	social		Boolean
-	first_game		Boolean
+	first_game	Boolean
 	level_1		Boolean
 	level_5		Boolean
 }
 
-model message {
-	id					String	@id @default(uuid())
-	SenderID			String
-	User				User	@relation(fields: [SenderID],references: [id])
 
-	message_content		String
-	timeStamp			DateTime
-	convo_id			String
-	convo				conversation @relation(fields: [convo_id],references: [convo_id])
+// Define the RoomMessage entity
+model RoomMessage {
+  id         Int    @id @default(autoincrement())
+  content    String
+  roomId     String
+  createdAt  DateTime @default(now())
+
+
+  // Define a relation to the sender of the message
+  senderId   String
+  sender User @relation(fields: [senderId], references: [id])
+
+  // Define a relation to the room where the message is sent
+  room Room @relation(fields: [roomId], references: [id])
 }
 
 
-model conversation {
-	convo_id			String	@id @default(uuid())
-	convo_type			Boolean
-	convo_name			String
-	created_at			DateTime @default(now())
+// Define the DirectMessage entity
+model DirectMessage {
+  id         String      @id @default(uuid())
+  content    String
+  createdAt  DateTime @default(now())
 
-	// relationship with message
-	messages				message[]
-	// relationship with participants
-	participants			participants[]
+
+  // ... other direct message fields
+
+  // Define a relation to the sender of the direct message
+  senderId   String
+  sender   User @relation("SentDirectMessages", fields: [senderId], references: [id])
+
+  // Define a relation to the receiver of the direct message
+  receiverId String
+  receiver User @relation("ReceivedDirectMessages", fields: [receiverId], references: [id])
 }
 
-model participants {
-	participant_id			String	@id @default(uuid())
-	convo_id				String
-	convo					conversation	@relation(fields: [convo_id],references: [convo_id])
+// Define the Room entity
+model Room {
+  id       String      @id @default(uuid())
+  name     String
+  type     RoomType
+  password String?
+  // ... other room fields
+
+  // Define a relation to messages sent in the room
+  messages RoomMessage[]
+
+  //// Define a relation to the owner of the room
+  ownerId  String
+  owner   User    @relation("OwnedRooms", fields: [ownerId], references: [id])
+
+  //// Define a relation to admins of the room
+  admins  User[]  @relation("AdminRooms")
+
+  // Define a relation to members of the room
+  members User[]  @relation("MemberRooms")
+
+  // Define a relation to muted of the room
+  muted User[]  @relation("muted")
+
+  // Define a relation to muted of the room
+  banned User[]  @relation("banned")
 }
 
 model Session {

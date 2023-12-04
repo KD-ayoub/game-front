@@ -8,6 +8,7 @@ import { SettingsModule } from './settings/settings.module';
 import { GameModule } from './game/game.module';
 import { AppGateway } from './app.gateway';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports:
@@ -18,7 +19,8 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 	  	ProfileModule,
 	  	SettingsModule,
 			CloudinaryModule,
-			GameModule
+			GameModule,
+		ChatModule
   ],
 })
 
