@@ -40,6 +40,7 @@ export default function Settings() {
   const [createObjectURL, setCreateObjectURL] = useState(`${ProfileImg.src}`);
   const fullNamelementRef = useRef<HTMLInputElement>(null);
   const nickNamelementRef = useRef<HTMLInputElement>(null);
+  const fileinputRef = useRef<HTMLInputElement>(null);
   // const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
   // console.log(fullNameRegex.test("Saad hbi"));
 
@@ -76,15 +77,18 @@ export default function Settings() {
   }
   function handlRemoveImage() {
     console.log("image:",createObjectURL);
-    URL.revokeObjectURL(createObjectURL)
+    if (fileinputRef.current) {
+      fileinputRef.current.value = "";
+    }
+    URL.revokeObjectURL(createObjectURL);
     setCreateObjectURL(`${ProfileImg.src}`);
+    // send an empty json
   }
-  async function handlImageChange() {
-    console.log("Fileimage:", selectedImage);
-        const formData = new FormData();
-        formData.append("file", selectedImage);
-        console.log("file sent", formData);
-        PutImage(formData);
+  function handlImageChange() {
+    const formData = new FormData();
+    formData.append("file", selectedImage ?? "https");
+    formData.forEach((item) => {console.log("item:",item)});
+    PutImage(formData);
   }
   async function handlSaveChanges() {
     const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
@@ -186,9 +190,11 @@ export default function Settings() {
                       type="file"
                       accept="image/png, image/jpeg, image/jpg"
                       id="profile-img"
-                      onChange={({ target }) => {
-                        if (target.files) {
-                          const file = target.files[0];
+                      ref={fileinputRef}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        if (e.target.files) {
+                          const file = e.target.files[0];
                           setCreateObjectURL(URL.createObjectURL(file));
                           console.log("imagechange:",createObjectURL);
                           setSelectedImage(file);
