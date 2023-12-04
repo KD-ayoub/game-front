@@ -37,19 +37,4 @@ export class chatGateway
 		// if no socket found don't emit
 		this.appGateway.server.to(recieversocket_id).emit('chat',body);
 	}
-
-
-	// get message history  of direct messages
-	@SubscribeMessage("dm_history")
-	async get_dm_history(@MessageBody() body: get_history, @ConnectedSocket() client : Socket)
-	{
-		// get id of user by socket id
-		const user : string = this.appGateway.get_id_by_socketId(client.id)
-
-		let all_messages : message_history[]  = await this.chatService.get_all_dm_history(user,body.friend_id);
-
-		// get socket id of the reciever
-		this.appGateway.server.to(client.id).emit('history',all_messages);
-	}
-	
 }

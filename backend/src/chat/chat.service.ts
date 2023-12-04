@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { trace } from "console";
+import { WsException } from "@nestjs/websockets";
 import { PrismaService } from "prisma/prisma.service";
 
 @Injectable()
 export class chatService {
 	constructor(private prisma : PrismaService){}
 
-	async get_all_direct_messages(userid)
+	async get_all_direct_messages(userid: string)
 	{
 		const user = await this.prisma.user.findUnique({
 			where: {
@@ -22,27 +22,29 @@ export class chatService {
 
 	async create_a_direct_message(senderId: string,content : Direct_message)
 	{
-		await this.prisma.directMessage.create({
-			data: {
-				content : content.content.message_content,
-				senderId,
-				receiverId : content.recieverId,
-				createdAt: content.content.sended_at,
-			}
-		});
+		try {
+			await this.prisma.directMessage.create({
+				data: {
+					content : content.content.message_content,
+					senderId,
+					receiverId : content.recieverId,
+					createdAt: content.content.sended_at,
+				}
+			});
+			
+		} catch (error) {
+			console.log("hey")
+			 throw new WsException('invalid credentials.');
+		}
 	}
-
-	async get_room_name_dm(senderID,recieverID)
-	{
-		return senderID + recieverID;
-	}
-
 
 	async get_all_dm_history(senderID: string, recieverID :string)
 	{
 		let messagehistory : message_history[] = [];
+		let dm_history : any;
 
-		const dm_history = await this.prisma.directMessage.findMany({
+		try {
+			dm_history = await this.prisma.directMessage.findMany({
 			where:{
 				OR:[
 					{
@@ -89,6 +91,12 @@ export class chatService {
 			}
 
 		});
+			
+		} catch (error) {
+			// if error send empty array
+			return [];
+		}
+
 		for (let i : number = 0; i < dm_history.length; i++)
 		{
 			let node: message_history = {mine : false, sended_at: new Date(), content : '', name: '',picture: ''};
@@ -111,4 +119,42 @@ export class chatService {
 
 		return messagehistory;
 	}
+
+	async get_all_conv(id: string)
+	{
+		const conv = await this.prisma.directMessage.findMany({
+			where: {
+				OR:[
+					{
+						sender: {
+							id
+						}
+					},
+					{
+						receiver : {
+							id
+						},
+					}
+				]
+			},
+			select:{
+				content: true
+			}
+			//select:{
+			//	receiver:{
+			//		select:{
+			//			nickName : true
+			//		}
+			//	},
+			//	sender:{
+			//		select:{
+			//			nickName : true
+			//		}
+			//	}
+			//}
+		})
+		//console.log(conv);
+		return conv;
+	}
+
 }
