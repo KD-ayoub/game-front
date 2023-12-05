@@ -23,6 +23,10 @@ export class AuthenticatedGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
 	  try {
     	const req = context.switchToHttp().getRequest();
+		if (req.isAuthenticated())
+		{
+			// redirect to profile
+		}
     	return req.isAuthenticated();
 	  	
 	  } catch (error) {
@@ -46,13 +50,14 @@ export class first_timeGuard implements CanActivate{
 			})
 			if (user.first_time)
 			{
-				throw new HttpException('first_time',HttpStatus.FORBIDDEN);
+				const res = context.switchToHttp().getResponse();
+				res.redirect("http://google.com");
 			}
 			if (user.fac_auth) // 2fa
 			{
 				//console.log(req.session);
 				// get the 2fa from cookie and check it with the database pass
-				console.log(req.session.passport.user);
+				console.log("test : ",req.session.passport.user);
 				const profile = await this.prisma.profile.findUnique({
 					where: {
 						userID: user.id,
