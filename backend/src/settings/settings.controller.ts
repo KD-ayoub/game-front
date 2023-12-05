@@ -29,11 +29,20 @@ export class SettingsController {
     //here remove image if file is empty
     return this.SettingsService.changeSettingsImage(file, req.user.id);
   }
+  //maybe here add a delete endpoint for deleting the image
   
   @Put('update_data')
-  changeSettings(@Req() req: any, @Body() data: SettingsDto): Promise<{}> {
+  changeSettings(@Req() req: any, @Body() data: SettingsDto): any {
     //wtf here pipe not working
+    //console.log(JSON.stringify(data));
+    if (!JSON.stringify(data) || JSON.stringify(data) === '{}')
+      return data;
     return this.SettingsService.changeSettingsData(req.user.id, data);
+  }
+
+  @Delete('delete_image')
+  deleteImage(@Req() req: any): Promise<any> {
+    return this.SettingsService.deleteImageData(req.user.id);
   }
 
   @Delete()

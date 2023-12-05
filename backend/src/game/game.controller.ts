@@ -9,6 +9,7 @@ export class GameController {
 
 	@Get('play_friend/:id')
 	playWithFriend(@Param('id') opponentId: string): string {
+		//console.log('lll');
 		this.GameService.playWithFriend(opponentId);
 		return 'here logic to play with a friend';
 	}

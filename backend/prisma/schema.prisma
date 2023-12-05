@@ -90,6 +90,9 @@ model Profile {
 	User					User @relation(fields: [userID],references: [id])
 
 	photo_path				String @default("defautl_img")
+	//here id of the image it self
+	photoID						String	@default("default_img")
+
 
 	friend_number			Int @default(0)
 	level					Float @default(0)
