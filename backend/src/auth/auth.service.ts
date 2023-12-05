@@ -44,6 +44,11 @@ export class AuthService {
 			}
 
 		});
+		const profile = await this.prisma.profile.create({
+			data:{
+				userID: user.id,
+			}
+		})
 		return user;
 	}
 
@@ -112,6 +117,19 @@ export class AuthService {
 			throw new ConflictException("nickname is already taken");
 		}
 			
+	}
+
+	async find_if_2fa_enabled(id: string)
+	{
+		const user = await this.prisma.user.findUnique({
+			where : {
+				id
+			},
+			select:{
+				fac_auth: true
+			}
+		})
+		return user.fac_auth;
 	}
 
 	async delete_old_sessions(id: string)

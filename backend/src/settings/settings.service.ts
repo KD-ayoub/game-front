@@ -9,7 +9,7 @@ import * as qrcode from 'qrcode';
 @Injectable()
 export class SettingsService {
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {console.log("hey")}
 
   async getSettingsData(userId: string): Promise<{}> {
     const img = await this.prisma.profile.findUnique({
@@ -58,11 +58,9 @@ export class SettingsService {
       token
     })
     if (verify)
-      console.log('code correct');
+		return true;
     else
-      console.log('code uncorrect');
-
-    return profile;
+		return false
   }
 
   async changeSettingsData(userId: string, data: SettingsDto): Promise<{}> {
