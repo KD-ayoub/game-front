@@ -28,15 +28,7 @@ export default function Settings() {
     full_name: "",
     nickName: "",
     fac_auth: false,
-    photo_path: "",
-  });
-  const [respSettings, setRespSettings] = useState<SettingsType>({
-    id: "",
-    full_name: "",
-    nickName: "",
-    fac_auth: false,
-    photo_path: "",
-    qr_code_url: "",
+    photo_path: "default_img",
   });
   const [selectedImage, setSelectedImage] = useState<File>();
   const [createObjectURL, setCreateObjectURL] = useState(`${ProfileImg.src}`);
@@ -70,7 +62,7 @@ export default function Settings() {
     }
   }
   function handlNameChange(event: ChangeEvent<HTMLInputElement>) {
-    const modifiedname = { ...dataSettings, name: event.target.value };
+    const modifiedname = { ...dataSettings, full_name: event.target.value };
     setDataSettings(modifiedname);
   }
   function handlNickNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -117,21 +109,9 @@ export default function Settings() {
       setDataSettings(await getSettings());
     }
     fetcher();
-
-    // async function handleImageChange() {
-    //     console.log("Fileimage:", selectedImage);
-    //     const formData = new FormData();
-    //     // console.log("file", image)
-    //     formData.append("profile", selectedImage ?? "https://placehold.co/400");
-    //     const response = await fetch("/api/upload", {
-    //       method: "POST",
-    //       body: formData
-    //     });
-    //     console.log("res:", response);
-    // }
-    // handleImageChange();
   }, []);
   console.log("dataa", dataSettings);
+  console.log("photo", dataSettings.photo_path);
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">

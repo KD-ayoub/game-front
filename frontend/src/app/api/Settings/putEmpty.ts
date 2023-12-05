@@ -7,6 +7,5 @@ export default async function PutEmpty() {
     if (!response.ok) {
         console.log("error in putEmpty");
     }
-    console.log("ressss", await response.json());
     return await response.json();
 }
