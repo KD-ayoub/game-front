@@ -51,19 +51,41 @@ var ground = Bodies.rectangle(matterContainer.clientWidth / 2,
     document.body.clientHeight + THICCNESS / 2,
     matterContainer.clientWidth, THICCNESS, { isStatic: true });
 
+var sky = Bodies.rectangle(
+    matterContainer.clientWidth / 2,
+    THICCNESS,
+    matterContainer.clientWidth, THICCNESS, { isStatic: true });
+
 
 //wall
 let left = Bodies.rectangle(
-    0 - THICCNESS / 2,
+    0 ,
+    matterContainer.clientHeight / 2,
+    THICCNESS,
+    matterContainer.clientHeight * 5,
+    { isStatic: true }
+);
+let right = Bodies.rectangle(
+    matterContainer.clientWidth + THICCNESS / 2,
     matterContainer.clientHeight / 2,
     THICCNESS,
     matterContainer.clientHeight * 5,
     { isStatic: true }
 );
 
+for (let i = 0; i < 100; i++) {
+    let obj = Bodies.circle(i, 10, 30, {
+        friction: 0.3,
+        frictionAir: 0.00001,
+        restitution: 0.8,
+    });
+    Composite.add(engine.world, obj);
+}
+
+
 // add all of the bodies to the world
 //Composite.add(engine.world, [boxA, boxB, ground]);
-Composite.add(engine.world, [circle, boxB, left, ground]);
+Composite.add(engine.world, [circle, boxB, left, right, ground]);
 //Composite.add(engine.world, mouseConstraint);
 
 // run the renderer
@@ -79,6 +101,24 @@ Runner.run(runner, engine);
 function handleResize(container) {
     render.canvas.width = matterContainer.clientWidth;
     render.canvas.height = matterContainer.clientHeight;
+
+    Matter.Body.setPosition(
+        ground,
+        Matter.Vector.create(
+            matterContainer.clientWidth / 2,
+            matterContainer.clientHeight + THICCNESS / 2,
+            27184
+        )
+    );
+
+    Matter.Body.setPosition(
+        right,
+        Matter.Vector.create(
+            matterContainer.clientHeight + THICCNESS / 2,
+            matterContainer.clientWidth / 2,
+            //27184
+        )
+    );
 }
 
 window.addEventListener("resize", () => handleResize(matterContainer));

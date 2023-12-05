@@ -9,6 +9,7 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class SettingsService {
+  private hld: string;
   constructor(private prisma: PrismaService, private cloudinaryService: CloudinaryService) {}
 
   async getSettingsData(userId: string): Promise<{}> {
@@ -60,18 +61,71 @@ export class SettingsService {
     return profile;
   }
 
+  async deleteImageData(userId: string) {
+    const profile = await this.prisma.profile.findUnique({
+      where: {
+        userID: userId
+      },
+      select: {
+        photoID: true,
+        photo_path: true
+      }
+    });
+    if (profile.photoID !== "default_img") {
+      //console.log('ll');
+      //this one put it in try/catch
+      this.cloudinaryService.deleteFile(profile.photoID);
+      await this.prisma.profile.update({
+        where: {
+          userID: userId,
+        },
+        data: {
+          //photo_path: (file) ? upload.secure_url : "default_img",
+          photo_path: "default_img",
+          photoID: "default_img"
+        },
+      });
+    }
+    return {
+      photo_path: "default_img"
+    };
+    //this.cloudinaryService.deleteFile(this.hld);
+  }
+
   async changeSettingsImage(file: Express.Multer.File, userId: string): Promise<{}> {
     try {
       let upload;
 
-      if (file)
-        upload = await this.cloudinaryService.uploadFile(file);
+      //if (file) {
+      const commingData = await this.prisma.profile.findUnique({
+        where: {
+          userID: userId
+        },
+        select: {
+          photoID: true,
+          photo_path: true
+        }
+      });
+      if (commingData.photoID !== "default_img") {
+        this.cloudinaryService.deleteFile(commingData.photoID);
+      }
+      upload = await this.cloudinaryService.uploadFile(file);
+        //this.hld = await upload.public_id;
+        //await console.log(this.hld);
+        //await console.log(upload);
+      //}
+      //else {
+      //  console.log('ll ', this.hld);
+      //  this.cloudinaryService.deleteFile(this.hld);
+      //}
       const profile = await this.prisma.profile.update({
         where: {
           userID: userId,
         },
         data: {
-          photo_path: (file) ? upload.secure_url : "default_img",
+          //photo_path: (file) ? upload.secure_url : "default_img",
+          photo_path: upload.secure_url,
+          photoID: upload.public_id
         },
         select: {
           photo_path: true,
