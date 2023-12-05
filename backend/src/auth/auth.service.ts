@@ -67,7 +67,7 @@ export class AuthService {
 
 	async signup(details: any,profile_data: signup)
 	{
-
+		console.log(profile_data);
 		const user: user_request = {
 			full_name: details.full_name,
 			nickname: details.nickname,

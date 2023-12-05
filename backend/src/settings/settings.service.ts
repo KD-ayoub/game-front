@@ -64,6 +64,7 @@ export class SettingsService {
     try {
       let upload;
 
+
       if (file)
         upload = await this.cloudinaryService.uploadFile(file);
       const profile = await this.prisma.profile.update({

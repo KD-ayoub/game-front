@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import default_avatar from "@/app/assets/svg/default_avatar.svg";
 import { NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
-import { FieldErrors, useForm } from "@redwoodjs/forms";
 import { ToastContainer, toast } from "react-toastify";
 import { ChangeEvent } from "react";
+import PutImage from "@/app/api/Settings/putImage";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function Good_login() {
@@ -13,23 +13,27 @@ export default function Good_login() {
   const [info, setInfo] = useState({
     full_name: "",
     nickname: "",
-    // path_avatar: "",
-  });
+    });
   const [avatar, setAvatar] = useState(default_avatar.src);
+  const [image, setImage] = useState<File>();
 
   function handleForm(e: ChangeEvent<HTMLInputElement>) {
     const { id, value } = e.target; // Destructure id and value from the event target
     const newInfo = { ...info, [id]: value }; // Update the newInfo object
     setInfo(newInfo); // Update the state
-    if (e.target.files)
+    if (e.target.files) 
+    {
       setAvatar(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
+
     console.log(newInfo);
   }
-
   // send data
   function on_Submit(
     ) {
-    // e.preventDefault();
+    const data = new FormData();
+    data.append("file", image??'');
 
     fetch(url, {
       method: "POST",
@@ -42,17 +46,7 @@ export default function Good_login() {
     .then((res) => res.json())
     .then((res) => console.log(res))
     .catch((error) => console.error("Error:", error));
-    fetch(url_avatar, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(avatar),
-      credentials: "include",
-    })
-    .then((res) => res.json())
-    .then((res) => console.log(res))
-    .catch((error) => console.error("Error:", error));
+    PutImage(data);  
   }
 
   return (
@@ -63,7 +57,6 @@ export default function Good_login() {
         >
           <form
             className="flex  flex-col items-center space-6 p-12"
-            onSubmit={(e) => on_Submit(e)}
           >
             <div className="Avatar flex flex-col justify-center items-center space-y-3">
               <img
