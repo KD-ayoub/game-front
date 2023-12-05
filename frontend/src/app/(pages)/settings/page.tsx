@@ -16,7 +16,7 @@ import getSettings from "@/app/api/Settings/getSettings";
 import PutSettings from "@/app/api/Settings/putSettings";
 import { CldImage } from "next-cloudinary";
 import PutImage from "@/app/api/Settings/putImage";
-import PutEmpty from "@/app/api/Settings/putEmpty";
+import DeleteImage from "@/app/api/Settings/deleteImage";
 
 
 export default function Settings() {
@@ -76,7 +76,7 @@ export default function Settings() {
     }
     URL.revokeObjectURL(createObjectURL);
     setCreateObjectURL(`${ProfileImg.src}`);
-    PutEmpty();
+    DeleteImage();
     // send an empty json
   }
   function handlImageChange() {
