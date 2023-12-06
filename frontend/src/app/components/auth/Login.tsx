@@ -15,7 +15,6 @@ export default function Login()
 {
   
 
-
   return (
     <div className="flex  w-1/2 h-screen items-center justify-center  flex-col bg-gradient-radial">
       <div className="w-514 h-601 bg-[#15131D] border border-rgb-129-87-98 rounded-3xl p-10 flex flex-col items-center justify-center">
