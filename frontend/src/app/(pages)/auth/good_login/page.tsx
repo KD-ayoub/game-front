@@ -18,7 +18,6 @@ export default function Good_login() {
   const RefFullname = useRef<HTMLInputElement>(null);
   const [ErrorFullname, setErrorFullname] = useState(false);
 
-
   function handleAvatar(e: ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     setAvatar(e.target.value); // Update the state
@@ -30,9 +29,16 @@ export default function Good_login() {
     console.log(e.target.value);
   }
 
-  function on_Submit() {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const data = new FormData();
     const info = { full_name, nickname };
+
+    if (full_name.length < 3 || full_name.length > 30) {
+      setErrorFullname(true);
+      toast.error("Error input full name");
+      return;
+    }
     data.append("file", image ?? "");
     info.full_name = full_name;
     info.nickname = nickname;
@@ -48,19 +54,8 @@ export default function Good_login() {
       .then((res) => console.log(res))
       .catch((error) => console.error("Error:", error));
     PutImage(data);
-  }
 
-  function handleSubmit() {
-    // e.preventDefault();
-
-      if (full_name.length < 3 || full_name.length > 30) {
-        setErrorFullname(true);
-        toast.error("Error input full name");
-        return;
-      }
-
-
-    console.log("hadi fhandleSbmit");
+    console.log("hadi fhandleSbmit\n");
     console.log(full_name, nickname, avatar);
   }
 
@@ -143,12 +138,12 @@ export default function Good_login() {
               </label> */}
             </div>
             <div>
-              <input
+              <button
                 className="border m-2 p-2 shadow-lg shadow-[#ff5555bb] rounded-xl hover:bg-[#ff5555bb]"
-                type="button"
-                value={"Save"}
-                onClick={on_Submit}
-              ></input>
+                // onClick={on_Submit}
+              >
+                Submit
+              </button>
               <ToastContainer />
             </div>
           </form>
