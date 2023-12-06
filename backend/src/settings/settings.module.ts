@@ -7,6 +7,6 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
   imports: [CloudinaryModule],
   controllers: [SettingsController],
   providers: [SettingsService],
-  exports: []
+  exports: [SettingsService]
 })
 export class SettingsModule {}

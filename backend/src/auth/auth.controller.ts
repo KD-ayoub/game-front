@@ -1,46 +1,43 @@
-import { Body, Controller, Get, Post, Req, Res, Session, UseGuards } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, ForbiddenException, Get, HttpException, Post, Redirect, Req, Res, Session, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 import { AuthenticatedGuard, FT_GUARD, first_timeGuard } from './guards';
 import { AuthService } from './auth.service';
-import { intra_api_info, server_response, signup, user_request } from 'src/utils/types';
+import { _2fa, signup } from 'src/utils/types';
 import { resolve } from 'path';
-import { session } from 'passport';
-import { SessionData } from 'express-session';
+import { SettingsService } from 'src/settings/settings.service';
+
 
 @Controller('auth')
 export class AuthController {
-	constructor(private auth: AuthService){}
+	constructor(private auth: AuthService, private qr: SettingsService){}
 
 	// first path to log to intra  it redirect to 42 api
-	@Get('/login')
 	@UseGuards(FT_GUARD)
+	@Get('/login')
 	login() {
 	  return;
 	}
 
 	// 42 api redirect to this page and this page send a cookie
-	@Get('/redirect')
 	@UseGuards(FT_GUARD)
-	redirect() 
-	{
-		// return here if first time
-		return 1;
-	}
+	@Get('/redirect')
+	@Redirect('status')
+	redirect(@Req() req: Request) {}
 
 	// this route get user info for the first time	
-	@Post('/signup')
 	@UseGuards(AuthenticatedGuard)
+	@Post('/signup')
 	signup(@Req() req: Request,@Body() body: signup) {
-	  return this.auth.signup(req.user,body);
+		if (!body || !body.full_name ||!body.nickname )
+			return {error : "sir t7wa gad l9lawi"};
+	  	return this.auth.signup(req.user,body);
 	}
-	
+
 	// guards after checking 42 login and then check if first time and then check for 2fa
-	@Get('/status')
 	@UseGuards(first_timeGuard)
-	status(@Req() req: Request) 
-	{
-	  return req.user;
-	}
+	@Get('/status')
+	//@Redirect("http://google.com") // put the link of the profile
+	status(@Req() req: Request) {}
 	
 	@Get('/logout')
 	@UseGuards(first_timeGuard)
@@ -52,23 +49,34 @@ export class AuthController {
 			}
 			resolve();
 		});
-	  return req.user;
+	  return {logout: "seccussfuly"};
 	}
-
-	@Get("/test")
-	@UseGuards(first_timeGuard)
-	test()
-	{
-		return "test";
-	}
-
 
 	@Post('2fa')
-	_2fa(@Req() req: Request,@Body() body: signup,@Session() session: any)
+	@UseGuards(AuthenticatedGuard)
+	async _2fa(@Req() req: Request,@Body() body: _2fa,@Session() session: any,@Res() res)
 	{
 		// get the user and check if 2fa enabled
 		const user = session.passport.user;
-		user.blan = "hey";
+		let user_pr;
+
+		if (user.id)
+			user_pr = await this.auth.find_if_2fa_enabled(user.id);
+
+
+		if (user_pr)
+		{ 
+			// redirect to profile
+			return res.redirect("http://google.com")
+		}
+
+
+		let verify = await this.qr.checkIfQrCodeIsRight(user.id,user.code);
+		console.log(verify);
+		if (verify === false)
+			throw  new ForbiddenException("code is not valid");
+		user.code = body.code;
+
 		req.session.save((err) => {
 			if (err)
 			{
@@ -77,5 +85,7 @@ export class AuthController {
 			}
 			return req.user;
 		})
+		// redirect to profile
+		return res.redirect("http://google.com")
 	}
 }

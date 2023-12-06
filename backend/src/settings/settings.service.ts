@@ -54,11 +54,9 @@ export class SettingsService {
       token
     })
     if (verify)
-      console.log('code correct');
+		return true;
     else
-      console.log('code uncorrect');
-
-    return profile;
+		return false
   }
 
   async deleteImageData(userId: string) {

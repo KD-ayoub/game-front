@@ -1,9 +1,7 @@
-import { Controller, Get, Put, Delete, Body, Headers, UseGuards , Req } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Controller, Get, Put, Delete, Body, UseGuards , Req } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { AuthenticatedGuard } from '../auth/guards';
 import { SettingsDto } from './dto';
-import { intra_api_info, server_response, user_request } from 'src/utils/types';
 
 //upload
 import { Express } from 'express';
@@ -21,6 +19,7 @@ export class SettingsController {
 
   @Get()
   getSettings(@Req() req: any) {
+    console.log("entred in get");
     return this.SettingsService.getSettingsData(req.user.id);
   }
 

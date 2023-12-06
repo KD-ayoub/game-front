@@ -1,6 +1,7 @@
 import { Injectable, ExecutionContext , CanActivate, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from 'prisma/prisma.service';
+import { SettingsService } from 'src/settings/settings.service';
 
 @Injectable()
 export class FT_GUARD extends AuthGuard('42') {
@@ -13,7 +14,8 @@ export class FT_GUARD extends AuthGuard('42') {
 	  	return activate;
 	  	
 	  } catch (error) {
-		  //console.log(error)
+		const res = context.switchToHttp().getResponse();
+		res.redirect("http://localhost:3000/auth");
 	  }
   }
 }
@@ -23,6 +25,12 @@ export class AuthenticatedGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
 	  try {
     	const req = context.switchToHttp().getRequest();
+		if (req.isAuthenticated())
+		{
+			// redirect to profile
+		}
+		const res = context.switchToHttp().getResponse();
+		res.redirect("http://localhost:3000/auth");
     	return req.isAuthenticated();
 	  	
 	  } catch (error) {
@@ -33,12 +41,14 @@ export class AuthenticatedGuard implements CanActivate {
 
 @Injectable()
 export class first_timeGuard implements CanActivate{
-	constructor(private prisma: PrismaService){}
+	constructor(private prisma: PrismaService,private qr: SettingsService){}
 	async canActivate(context: ExecutionContext): Promise<boolean>
 	{
+		console.log("1");
 		const req = context.switchToHttp().getRequest();
 		if (req.isAuthenticated())
 		{
+			console.log("2");
 			const user = await this.prisma.user.findUnique({
 				where: {
 					id: req.user.id
@@ -46,20 +56,23 @@ export class first_timeGuard implements CanActivate{
 			})
 			if (user.first_time)
 			{
-				throw new HttpException('first_time',HttpStatus.FORBIDDEN);
+				const res = context.switchToHttp().getResponse();
+				res.redirect("http://localhost:3000/auth/good_login");
+				return req.isAuthenticated();
 			}
 			if (user.fac_auth) // 2fa
 			{
-				//console.log(req.session);
-				// get the 2fa from cookie and check it with the database pass
-				console.log(req.session.passport.user);
-				const profile = await this.prisma.profile.findUnique({
-					where: {
-						userID: user.id,
-					}
-				})
-				throw new HttpException('2fa',HttpStatus.FORBIDDEN);
+				const res = context.switchToHttp().getResponse();
+				//console.log("test : ",req.session.passport.user);
+				const user = req.session.passport.user;
+				if (!user.code)
+				{
+					// redirect to 2fa page
+					res.redirect("http://google.com");
+				}
 			}
+			const res = context.switchToHttp().getResponse();
+			res.redirect("http://localhost:3000/profile");
 		}
 		return req.isAuthenticated();
 	}

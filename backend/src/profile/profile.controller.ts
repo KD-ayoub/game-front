@@ -4,7 +4,7 @@ import { ProfileService } from './profile.service';
 import { AuthenticatedGuard } from '../auth/guards';
 
 @Controller('profile/:id')
-@UseGuards(AuthenticatedGuard)
+// @UseGuards(AuthenticatedGuard)
 //here a guard who check if the user authenticate
 //if the user give 'me' you should check the user authenticate with the same token
 //if the user was an uid check it and send data
