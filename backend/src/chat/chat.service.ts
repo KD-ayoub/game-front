@@ -122,39 +122,58 @@ export class chatService {
 
 	async get_all_conv(id: string)
 	{
-		const conv = await this.prisma.directMessage.findMany({
-			where: {
-				OR:[
-					{
-						sender: {
-							id
-						}
-					},
-					{
-						receiver : {
-							id
-						},
-					}
-				]
+		const conversations = await this.prisma.directMessage.findMany({
+    		where: {
+    		  OR: [
+    		    {
+    		      sender: {
+    		        id,
+    		      },
+    		    },
+    		    {
+    		      receiver: {
+    		        id,
+    		      },
+    		    },
+    		  ],
+    		},
+    		select: {
+    		  sender: {
+    		    select: {
+    		      id: true,
+    		      nickName: true,
+    		    },
+    		  },
+    		  receiver: {
+    		    select: {
+    		      id: true,
+    		      nickName: true,
+    		    },
+    		  },
+    		},
+		});
+
+		const uniqueUserIds = Array.from(
+			new Set([
+				...conversations.map((conv) => conv.sender.id),
+      			...conversations.map((conv) => conv.receiver.id),
+			])
+		);
+		const conv = uniqueUserIds.filter((userid) => userid !== id);
+
+		const users = await this.prisma.user.findMany({
+			where:{
+				id: {in: conv}
 			},
 			select:{
-				content: true
+				nickName: true,
+				profile:{
+					select: {
+						photo_path: true,
+					}
+				}
 			}
-			//select:{
-			//	receiver:{
-			//		select:{
-			//			nickName : true
-			//		}
-			//	},
-			//	sender:{
-			//		select:{
-			//			nickName : true
-			//		}
-			//	}
-			//}
 		})
-		//console.log(conv);
-		return conv;
+		return users;
 	}
-
 }

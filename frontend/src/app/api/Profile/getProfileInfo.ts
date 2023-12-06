@@ -1,6 +1,6 @@
 
 export default async function getProfileInfo() {
-    const response = await fetch('http://localhost:3001/profile/2fe65793-2158-465a-9abe-84068913d86d/main', {
+    const response = await fetch('http://localhost:3001/profile/9acbcd9e-6ad4-491b-a501-d1d1ca7cc652/main', {
         method: 'GET',
         //mode: 'cors',
         headers: {

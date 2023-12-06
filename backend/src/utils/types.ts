@@ -15,3 +15,7 @@ export type signup = {
 	image: string,
 }
 
+export type _2fa = {
+	code : string,
+}
+

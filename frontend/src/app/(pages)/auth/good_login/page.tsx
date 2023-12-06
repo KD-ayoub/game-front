@@ -1,40 +1,63 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, RefObject } from "react";
 import default_avatar from "@/app/assets/svg/default_avatar.svg";
 import { NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 import { ToastContainer, toast } from "react-toastify";
 import { ChangeEvent } from "react";
 import PutImage from "@/app/api/Settings/putImage";
+import getUserData from "@/app/api/auth/getUserData";
+import CheckInputFullName from "@/app/utils/library/checkInputFullName";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function Good_login() {
   const url = "http://localhost:3001/auth/signup";
-  const url_avatar = "http://localhost:3001/settings/update_image";
-  const [info, setInfo] = useState({
-    full_name: "",
-    nickname: "",
-    });
+  const [full_name, setFullName] = useState("");
+  const [nickname, setNickname] = useState("");
   const [avatar, setAvatar] = useState(default_avatar.src);
   const [image, setImage] = useState<File>();
+  // const dataUser = getUserData();
+  const RefFullname = useRef<HTMLInputElement>(null);
 
-  function handleForm(e: ChangeEvent<HTMLInputElement>) {
-    const { id, value } = e.target; // Destructure id and value from the event target
-    const newInfo = { ...info, [id]: value }; // Update the newInfo object
-    setInfo(newInfo); // Update the state
+  function handleFullName(e: ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    setFullName(e.target.value); // Update the state
+    CheckInputFullName(RefFullname, "border border-gray-300 rounded-md");
+    console.log(e.target.value);
+  }
+
+  // function handleFullNameError(RefFullname: RefObject<HTMLInputElement>) {
+  //   CheckInputFullName(RefFullname, "border border-red-300 rounded-md");
+
+  // }
+
+  function handleNickname(e: ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    setNickname(e.target.value); // Update the state
+    
+
+    console.log(e.target.value);
+  }
+
+  function handleAvatar(e: ChangeEvent<HTMLInputElement>) {
+
+    e.preventDefault();
+    setAvatar(e.target.value); // Update the state
     if (e.target.files) 
     {
       setAvatar(URL.createObjectURL(e.target.files[0]));
       setImage(e.target.files[0]);
     }
 
-    console.log(newInfo);
+    console.log(e.target.value);
   }
   // send data
   function on_Submit(
     ) {
     const data = new FormData();
+    const info = {full_name, nickname}
     data.append("file", image??'');
-
+    info.full_name = full_name;
+    info.nickname = nickname;
     fetch(url, {
       method: "POST",
       headers: {
@@ -48,6 +71,8 @@ export default function Good_login() {
     .catch((error) => console.error("Error:", error));
     PutImage(data);  
   }
+
+
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -69,7 +94,7 @@ export default function Good_login() {
                 <label className="block">
                   <span className="sr-only">Choose profile photo</span>
                   <input
-                    onChange={(e) => handleForm(e)}
+                    onChange={(e) => handleAvatar(e)}
                     // value={info.path_avatar}
 
                     id="path_avatar"
@@ -92,13 +117,15 @@ export default function Good_login() {
                 <label className="text-black pb-4">
                   <span className="text-white p-2">Full_Name</span>
                   <input
-                    onChange={(e) => handleForm(e)}
-                    value={info.full_name}
+                    onKeyUp={(e) => CheckInputFullName(RefFullname, "border border-gray-300 rounded-md")}
+                    onChange={(e) => handleFullName(e)}
+                    value={full_name}
                     id="full_name"
                     name="full_name"
                     type="text"
                     maxLength={30}
-                    className="border border-gray-300 rounded-md"
+                    className="border border-gray-300 rounded-md "
+                    style={{ outline: "none" }}
                   />
                 </label>
               </div>
@@ -106,8 +133,8 @@ export default function Good_login() {
                 <label className="text-black pb-4">
                   <span className="text-white p-2">Nickname</span>
                   <input
-                    onChange={(e) => handleForm(e)}
-                    value={info.nickname}
+                    onChange={(e) => handleNickname(e)}
+                    value={nickname}
                     id="nickname"
                     name="nickname"
                     type="text"
@@ -129,6 +156,7 @@ export default function Good_login() {
               <ToastContainer />
             </div>
           </form>
+
         </div>
       </div>
     </main>
