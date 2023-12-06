@@ -45,26 +45,35 @@ Composite.add(engine.world, mouseConstraint);
 // create two boxes and a ground
 //var boxA = Bodies.rectangle(400, 200, 80, 80);
 //var boxA = Bodies.rectangle(100, 100, 160, 160, {isStatic: true});
-var circle = Bodies.circle(440, 30, 50);
+//var circle = Bodies.circle(440, 30, 50);
+//console.log(matterContainer.clientWidth);
+//console.log(matterContainer.clientHeight);
+let circle = Bodies.circle(matterContainer.clientWidth / 2, 
+    matterContainer.clientHeight / 2,
+    30, {
+    friction: 0.3,
+    frictionAir: 0.00001,
+    restitution: 0.8,
+});
 var boxB = Bodies.rectangle(450, 50, 80, 80);
 var ground = Bodies.rectangle(matterContainer.clientWidth / 2,
-    document.body.clientHeight + THICCNESS / 2,
+    matterContainer.clientHeight + THICCNESS / 2,
     matterContainer.clientWidth, THICCNESS, { isStatic: true });
 
-var sky = Bodies.rectangle(
-    matterContainer.clientWidth / 2,
-    THICCNESS,
+var sky = Bodies.rectangle(matterContainer.clientWidth / 2,
+    (THICCNESS / 2) - THICCNESS,
     matterContainer.clientWidth, THICCNESS, { isStatic: true });
 
 
 //wall
 let left = Bodies.rectangle(
-    0 ,
+    (THICCNESS / 2) - THICCNESS,
     matterContainer.clientHeight / 2,
     THICCNESS,
-    matterContainer.clientHeight * 5,
+    matterContainer.clientHeight,
     { isStatic: true }
 );
+
 let right = Bodies.rectangle(
     matterContainer.clientWidth + THICCNESS / 2,
     matterContainer.clientHeight / 2,
@@ -74,18 +83,25 @@ let right = Bodies.rectangle(
 );
 
 for (let i = 0; i < 100; i++) {
-    let obj = Bodies.circle(i, 10, 30, {
+    //let obj = Bodies.circle(i, 10, 30, {
+    //    friction: 0.3,
+    //    frictionAir: 0.00001,
+    //    restitution: 0.8,
+    //});
+    let circle = Bodies.circle(matterContainer.clientWidth / 2, 
+        matterContainer.clientHeight / 2,
+        30, {
         friction: 0.3,
         frictionAir: 0.00001,
         restitution: 0.8,
     });
-    Composite.add(engine.world, obj);
+    Composite.add(engine.world, circle);
 }
 
 
 // add all of the bodies to the world
 //Composite.add(engine.world, [boxA, boxB, ground]);
-Composite.add(engine.world, [circle, boxB, left, right, ground]);
+Composite.add(engine.world, [circle, boxB, left, right, sky, ground]);
 //Composite.add(engine.world, mouseConstraint);
 
 // run the renderer

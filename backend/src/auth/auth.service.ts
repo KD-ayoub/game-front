@@ -82,8 +82,7 @@ export class AuthService {
 				full_name: found_user.full_name,
 				login: found_user.nickName,
 				id: found_user.id,
-				first_time: found_user.first_time,
-				intra_42_id: found_user.intra_42_id
+				first_time: found_user.first_time, intra_42_id: found_user.intra_42_id
 			}
 			
 			return response;
