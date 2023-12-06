@@ -22,32 +22,22 @@ export class AuthController {
 	@UseGuards(FT_GUARD)
 	@Get('/redirect')
 	@Redirect('status')
-	redirect(@Req() req: Request) 
-	{
-		console.log('hey');
-		// redirect to  status
-		return req.user;
-	}
+	redirect(@Req() req: Request) {}
 
 	// this route get user info for the first time	
 	@UseGuards(AuthenticatedGuard)
 	@Post('/signup')
 	signup(@Req() req: Request,@Body() body: signup) {
-		console.log("body : " , body);
 		if (!body || !body.full_name ||!body.nickname )
 			return {error : "sir t7wa gad l9lawi"};
-		//console.log("hey : ",body);
-	  return this.auth.signup(req.user,body);
+	  	return this.auth.signup(req.user,body);
 	}
 
 	// guards after checking 42 login and then check if first time and then check for 2fa
 	@UseGuards(first_timeGuard)
 	@Get('/status')
 	//@Redirect("http://google.com") // put the link of the profile
-	status(@Req() req: Request) 
-	{
-	  return req.user;
-	}
+	status(@Req() req: Request) {}
 	
 	@Get('/logout')
 	@UseGuards(first_timeGuard)

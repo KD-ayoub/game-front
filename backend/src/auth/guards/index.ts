@@ -14,7 +14,8 @@ export class FT_GUARD extends AuthGuard('42') {
 	  	return activate;
 	  	
 	  } catch (error) {
-		  //console.log(error)
+		const res = context.switchToHttp().getResponse();
+		res.redirect("http://localhost:3000/auth");
 	  }
   }
 }
@@ -28,6 +29,8 @@ export class AuthenticatedGuard implements CanActivate {
 		{
 			// redirect to profile
 		}
+		const res = context.switchToHttp().getResponse();
+		res.redirect("http://localhost:3000/auth");
     	return req.isAuthenticated();
 	  	
 	  } catch (error) {
@@ -41,9 +44,11 @@ export class first_timeGuard implements CanActivate{
 	constructor(private prisma: PrismaService,private qr: SettingsService){}
 	async canActivate(context: ExecutionContext): Promise<boolean>
 	{
+		console.log("1");
 		const req = context.switchToHttp().getRequest();
 		if (req.isAuthenticated())
 		{
+			console.log("2");
 			const user = await this.prisma.user.findUnique({
 				where: {
 					id: req.user.id
@@ -53,6 +58,7 @@ export class first_timeGuard implements CanActivate{
 			{
 				const res = context.switchToHttp().getResponse();
 				res.redirect("http://localhost:3000/auth/good_login");
+				return req.isAuthenticated();
 			}
 			if (user.fac_auth) // 2fa
 			{
@@ -65,6 +71,8 @@ export class first_timeGuard implements CanActivate{
 					res.redirect("http://google.com");
 				}
 			}
+			const res = context.switchToHttp().getResponse();
+			res.redirect("http://localhost:3000/profile");
 		}
 		return req.isAuthenticated();
 	}
