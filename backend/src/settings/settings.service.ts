@@ -71,59 +71,38 @@ export class SettingsService {
         photo_path: true
       }
     });
+    if (!profile)
+      throw new NotFoundException('User not found');
     if (profile.photoID !== "default_img") {
-      //console.log('ll');
-      //this one put it in try/catch
-      this.cloudinaryService.deleteFile(profile.photoID);
-      await this.prisma.profile.update({
-        where: {
-          userID: userId,
-        },
-        data: {
-          //photo_path: (file) ? upload.secure_url : "default_img",
-          photo_path: "default_img",
-          photoID: "default_img"
-        },
-      });
+      try {
+        this.cloudinaryService.deleteFile(profile.photoID);
+        await this.prisma.profile.update({
+          where: {
+            userID: userId,
+          },
+          data: {
+            photo_path: "default_img",
+            photoID: "default_img"
+          },
+        });
+      } catch (err) {
+        throw new ConflictException('error in cloudinary delete photo');
+      }
     }
     return {
       photo_path: "default_img"
     };
-    //this.cloudinaryService.deleteFile(this.hld);
   }
 
   async changeSettingsImage(file: Express.Multer.File, userId: string): Promise<{}> {
     try {
-      let upload;
-
-      //if (file) {
-      const commingData = await this.prisma.profile.findUnique({
-        where: {
-          userID: userId
-        },
-        select: {
-          photoID: true,
-          photo_path: true
-        }
-      });
-      if (commingData.photoID !== "default_img") {
-        this.cloudinaryService.deleteFile(commingData.photoID);
-      }
-      upload = await this.cloudinaryService.uploadFile(file);
-        //this.hld = await upload.public_id;
-        //await console.log(this.hld);
-        //await console.log(upload);
-      //}
-      //else {
-      //  console.log('ll ', this.hld);
-      //  this.cloudinaryService.deleteFile(this.hld);
-      //}
+      await this.deleteImageData(userId);
+      const upload = await this.cloudinaryService.uploadFile(file);
       const profile = await this.prisma.profile.update({
         where: {
           userID: userId,
         },
         data: {
-          //photo_path: (file) ? upload.secure_url : "default_img",
           photo_path: upload.secure_url,
           photoID: upload.public_id
         },

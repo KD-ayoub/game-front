@@ -7,8 +7,9 @@ const streamifier = require('streamifier');
 export class CloudinaryService {
   deleteFile(id: string): Promise<CloudinaryResponse> {
     return new Promise<CloudinaryResponse>((resolve, reject) => {
-      cloudinary.uploader.destroy(id, (error, result) => {
-        //console.log(result)
+      cloudinary.uploader.destroy(id, (err, result) => {
+        if (err)
+          reject(err);
         resolve(result);
       });
     });
