@@ -6,6 +6,8 @@ import { LoggerMiddleware } from './common/utils/logger';
 import { ProfileModule } from './profile/profile.module';
 import { SettingsModule } from './settings/settings.module';
 import { GameModule } from './game/game.module';
+import { AppGateway } from './app.gateway';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ChatModule } from './chat/chat.module';
 
 @Module({
@@ -16,7 +18,8 @@ import { ChatModule } from './chat/chat.module';
 	  	PassportModule.register({session: true}),
 	  	ProfileModule,
 	  	SettingsModule,
-		GameModule,
+			CloudinaryModule,
+			GameModule,
 		ChatModule
   ],
 })

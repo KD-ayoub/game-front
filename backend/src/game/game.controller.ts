@@ -13,7 +13,6 @@ export class GameController {
 		return 'here logic to play with a friend';
 	}
 
-
 	@Get('play_random')
 	playRandom(): string {
 		this.GameService.playRandom();

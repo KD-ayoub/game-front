@@ -1,31 +1,47 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, RefObject } from "react";
 import default_avatar from "@/app/assets/svg/default_avatar.svg";
 import { NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
-import { FieldErrors, useForm } from "@redwoodjs/forms";
 import { ToastContainer, toast } from "react-toastify";
+import { ChangeEvent } from "react";
+import PutImage from "@/app/api/Settings/putImage";
+import getUserData from "@/app/api/auth/getUserData";
+import CheckInputFullName from "@/app/utils/library/checkInputFullName";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function Good_login() {
   const url = "http://localhost:3001/auth/signup";
-  const [info, setInfo] = useState({
-    full_name: "",
-    nickname: "",
-    // path_avatar: "",
-  });
+  const [full_name, setFullName] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [avatar, setAvatar] = useState(default_avatar.src);
+  const [image, setImage] = useState<File>();
+  const RefFullname = useRef<HTMLInputElement>(null);
+  const [ErrorFullname, setErrorFullname] = useState(false);
 
-  function handleForm(e:any) {
-    const { id, value } = e.target; // Destructure id and value from the event target
-    const newInfo = { ...info, [id]: value }; // Update the newInfo object
-    setInfo(newInfo); // Update the state
-    console.log(newInfo);
+  function handleAvatar(e: ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    setAvatar(e.target.value); // Update the state
+    if (e.target.files) {
+      setAvatar(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
+
+    console.log(e.target.value);
   }
 
-  // send data 
-  function onSubmit(e:any) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const data = new FormData();
+    const info = { full_name, nickname };
 
-    // data.append("path_avatar", info.path_avatar);
+    if (full_name.length < 3 || full_name.length > 30) {
+      setErrorFullname(true);
+      toast.error("Error input full name");
+      return;
+    }
+    data.append("file", image ?? "");
+    info.full_name = full_name;
+    info.nickname = nickname;
     fetch(url, {
       method: "POST",
       headers: {
@@ -37,8 +53,11 @@ export default function Good_login() {
       .then((res) => res.json())
       .then((res) => console.log(res))
       .catch((error) => console.error("Error:", error));
-  }
+    PutImage(data);
 
+    console.log("hadi fhandleSbmit\n");
+    console.log(full_name, nickname, avatar);
+  }
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -48,20 +67,20 @@ export default function Good_login() {
         >
           <form
             className="flex  flex-col items-center space-6 p-12"
-            onSubmit={(e) => onSubmit(e)}
+            onSubmit={handleSubmit}
           >
             <div className="Avatar flex flex-col justify-center items-center space-y-3">
               <img
-                className="h-150 w-150 object-cover rounded-full"
+                className="h-50 w-50 object-cover m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44 rounded-full"
                 // hna ghadi i5asni ndir blast default_avatar ndir variable li mstori fih tswira
-                src={default_avatar.src}
+                src={avatar}
                 alt="Current profile photo"
               />
               <div className="Avatar flex flex-col justify-center items-center pl-28 pb-6">
                 <label className="block">
                   <span className="sr-only">Choose profile photo</span>
                   <input
-                    onChange={(e) => handleForm(e)}
+                    onChange={(e) => handleAvatar(e)}
                     // value={info.path_avatar}
                     id="path_avatar"
                     type="file"
@@ -83,40 +102,49 @@ export default function Good_login() {
                 <label className="text-black pb-4">
                   <span className="text-white p-2">Full_Name</span>
                   <input
-                    onChange={(e) => handleForm(e)}
-                    value={info.full_name}
+                    onChange={(e) => setFullName(e.target.value)}
+                    value={full_name}
                     id="full_name"
                     name="full_name"
                     type="text"
+                    // placeholder="Full Name"
                     maxLength={30}
-                    className="border border-gray-300 rounded-md"
+                    className="border border-gray-300 rounded-md pl-1"
+                    style={{ outline: "none" }}
                   />
                 </label>
               </div>
+              {/* {ErrorFullname ?
+                <label className="text-red-500 text-center">
+                  Error input full name
+                </label>: ""} */}
               <div className="flex justify-center">
                 <label className="text-black pb-4">
                   <span className="text-white p-2">Nickname</span>
                   <input
-                    onChange={(e) => handleForm(e)}
-                    value={info.nickname}
+                    onChange={(e) => setNickname(e.target.value)}
+                    value={nickname}
                     id="nickname"
                     name="nickname"
+                    // placeholder="Nickname"
                     type="text"
                     maxLength={8}
-                    className="border border-gray-300 rounded-md"
+                    className="border border-gray-300 rounded-md pl-1"
                   />
-                  
                 </label>
               </div>
+              {/* <label className="text-red-500 text-center hidden">
+                Error input nickname
+              </label> */}
             </div>
             <div>
               <button
                 className="border m-2 p-2 shadow-lg shadow-[#ff5555bb] rounded-xl hover:bg-[#ff5555bb]"
-                type="submit"
+                // onClick={on_Submit}
               >
-                Save
+                Submit
               </button>
-               <ToastContainer />
+              <ToastContainer />
             </div>
           </form>
         </div>
