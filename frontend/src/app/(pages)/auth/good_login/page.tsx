@@ -1,12 +1,14 @@
 "use client";
 import { useState, useEffect, useRef, RefObject } from "react";
 import default_avatar from "@/app/assets/svg/default_avatar.svg";
-import { NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
+import { NeuePlakFontBold, NeuePlakFont } from "@/app/utils/NeuePlakFont";
 import { ToastContainer, toast } from "react-toastify";
 import { ChangeEvent } from "react";
 import PutImage from "@/app/api/Settings/putImage";
 import getUserData from "@/app/api/auth/getUserData";
 import CheckInputFullName from "@/app/utils/library/checkInputFullName";
+import Image from "next/image";
+import ChangeImg from "@/app/assets/svg/settings/change.svg";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function Good_login() {
@@ -62,91 +64,74 @@ export default function Good_login() {
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="flex w-full h-screen items-center justify-center  flex-col bg-gradient-radial">
-        <div
-          className={`w-1/3 h-1/2 bg-[#15131D] border border-rgb-129-87-98 rounded-3xl  flex flex-col items-center justify-center ${NeuePlakFontBold.className} drop-shadow-2xl shadow-lg shadow-[#15131D]`}
-        >
-          <form
-            className="flex  flex-col items-center space-6 p-12"
-            onSubmit={handleSubmit}
-          >
-            <div className="Avatar flex flex-col justify-center items-center space-y-3">
-              <img
-                className="h-50 w-50 object-cover m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44 rounded-full"
-                // hna ghadi i5asni ndir blast default_avatar ndir variable li mstori fih tswira
-                src={avatar}
-                alt="Current profile photo"
-              />
-              <div className="Avatar flex flex-col justify-center items-center pl-28 pb-6">
-                <label className="block">
-                  <span className="sr-only">Choose profile photo</span>
-                  <input
-                    onChange={(e) => handleAvatar(e)}
-                    // value={info.path_avatar}
-                    id="path_avatar"
-                    type="file"
-                    name="path_avatar"
-                    accept="image/png, image/jpeg, image/jpg"
-                    className="block w-full text-sm text-slate-500
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-full file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-violet-50 file:text-[#c9c8ca]
-                      hover:file:bg-[#ff5555bb]
-                      "
-                  />
-                </label>
+        <div className="w-52 h-[400px] sm:w-72 sm:h-[450px] md:w-80 md:h-[480px] lg:w-[368px] lg:h-[550px] xl:w-[500px] xl:h-[650px] 2xl:w-[600px] 2xl:h-[850px] bg-[#15131D] border border-solid border-white rounded-[20px] flex flex-col justify-evenly items-center ">
+          <div className="flex flex-col justify-center items-center gap-3 lg:gap-5 2xl:gap-7">
+            <Image
+              className="md:w-[100px] md:h-[100px] lg:w-[110px] lg:h-[110px] xl:w-[125px] xl:h-[125px] 2xl:w-[145px] 2xl:h-[145px]"
+              src={default_avatar.src}
+              width={80}
+              height={80}
+              alt="avatar"
+            />
+            <label
+              className={`${NeuePlakFont.className} text-[14px] lg:text-[20px] xl:text-[24px] 2xl:text-[34px] cursor-pointer`}
+              htmlFor="profile-img"
+            >
+              <div className="w-[94px] sm:w-[96px] sm:h-[26px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[140px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 lg:gap-2 xl:gap-3 2xl:gap-6 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
+                <Image
+                  className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
+                  src={ChangeImg.src}
+                  width={14}
+                  height={14}
+                  alt="trash icon"
+                />
+                Change
+                <input
+                  className="hidden"
+                  type="file"
+                  accept="image/png, image/jpeg, image/jpg"
+                  id="profile-img"
+                />
               </div>
-            </div>
-            <div className="flex flex-col justify-center items-center space-y-1">
-              <div className="flex justify-center">
-                <label className="text-black pb-4">
-                  <span className="text-white p-2">Full_Name</span>
-                  <input
-                    onChange={(e) => setFullName(e.target.value)}
-                    value={full_name}
-                    id="full_name"
-                    name="full_name"
-                    type="text"
-                    // placeholder="Full Name"
-                    maxLength={30}
-                    className="border border-gray-300 rounded-md pl-1"
-                    style={{ outline: "none" }}
-                  />
-                </label>
-              </div>
-              {/* {ErrorFullname ?
-                <label className="text-red-500 text-center">
-                  Error input full name
-                </label>: ""} */}
-              <div className="flex justify-center">
-                <label className="text-black pb-4">
-                  <span className="text-white p-2">Nickname</span>
-                  <input
-                    onChange={(e) => setNickname(e.target.value)}
-                    value={nickname}
-                    id="nickname"
-                    name="nickname"
-                    // placeholder="Nickname"
-                    type="text"
-                    maxLength={8}
-                    className="border border-gray-300 rounded-md pl-1"
-                  />
-                </label>
-              </div>
-              {/* <label className="text-red-500 text-center hidden">
-                Error input nickname
-              </label> */}
-            </div>
-            <div>
-              <button
-                className="border m-2 p-2 shadow-lg shadow-[#ff5555bb] rounded-xl hover:bg-[#ff5555bb]"
-                // onClick={on_Submit}
+            </label>
+          </div>
+          <div>
+            <form>
+              <p
+                className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px] `}
               >
-                Submit
-              </button>
-              <ToastContainer />
-            </div>
-          </form>
+                Full name
+              </p>
+              <input
+                style={{ outline: "none" }}
+                className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                type="text"
+                id="full-name"
+                maxLength={30}
+                required
+              />
+            </form>
+            <form>
+              <p
+                className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px]`}
+              >
+                Nickname
+              </p>
+              <input
+                style={{ outline: "none" }}
+                className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                type="text"
+                id="nick-name"
+                maxLength={8}
+                required
+              />
+            </form>
+          </div>
+          <div className="w-24 h-8 md:w-28 lg:w-32 lg:h-9 xl:w-36 xl:h-12 2xl:w-44 2xl:h-16 border border-solid border-gray-500 rounded-[8px] 2xl:rounded-[18px] flex justify-center">
+            <button className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[20px] xl:text-[24px] 2xl:text-[28px]`}>
+              Submit
+            </button>
+          </div>
         </div>
       </div>
     </main>
