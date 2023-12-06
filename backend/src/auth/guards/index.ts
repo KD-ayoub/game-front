@@ -52,7 +52,7 @@ export class first_timeGuard implements CanActivate{
 			if (user.first_time)
 			{
 				const res = context.switchToHttp().getResponse();
-				//res.redirect("http://google.com");
+				res.redirect("http://localhost:3000/auth/good_login");
 			}
 			if (user.fac_auth) // 2fa
 			{
