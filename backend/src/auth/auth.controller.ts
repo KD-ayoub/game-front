@@ -1,14 +1,15 @@
-import { Body, Controller, Get, Post, Redirect, Req, Session, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, HttpException, Post, Redirect, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthenticatedGuard, FT_GUARD, first_timeGuard } from './guards';
 import { AuthService } from './auth.service';
 import { _2fa, signup } from 'src/utils/types';
 import { resolve } from 'path';
+import { SettingsService } from 'src/settings/settings.service';
 
 
 @Controller('auth')
 export class AuthController {
-	constructor(private auth: AuthService){}
+	constructor(private auth: AuthService, private qr: SettingsService){}
 
 	// first path to log to intra  it redirect to 42 api
 	@UseGuards(FT_GUARD)
@@ -63,12 +64,29 @@ export class AuthController {
 
 	@Post('2fa')
 	@UseGuards(AuthenticatedGuard)
-	_2fa(@Req() req: Request,@Body() body: _2fa,@Session() session: any)
+	async _2fa(@Req() req: Request,@Body() body: _2fa,@Session() session: any,@Res() res)
 	{
 		// get the user and check if 2fa enabled
 		const user = session.passport.user;
-		console.log(body);
+		let user_pr;
+
+		if (user.id)
+			user_pr = await this.auth.find_if_2fa_enabled(user.id);
+
+
+		if (user_pr)
+		{ 
+			// redirect to profile
+			return res.redirect("http://google.com")
+		}
+
+
+		let verify = await this.qr.checkIfQrCodeIsRight(user.id,user.code);
+		console.log(verify);
+		if (verify === false)
+			throw  new ForbiddenException("code is not valid");
 		user.code = body.code;
+
 		req.session.save((err) => {
 			if (err)
 			{
@@ -77,5 +95,7 @@ export class AuthController {
 			}
 			return req.user;
 		})
+		// redirect to profile
+		return res.redirect("http://google.com")
 	}
 }

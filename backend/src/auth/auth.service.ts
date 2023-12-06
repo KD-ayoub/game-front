@@ -1,4 +1,5 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, Param, UnauthorizedException } from '@nestjs/common';
+import { profile } from 'console';
 import { PrismaService } from 'prisma/prisma.service';
 import { server_response, signup, user_request } from "src/utils/types"
 
@@ -44,6 +45,11 @@ export class AuthService {
 			}
 
 		});
+		const profile = await this.prisma.profile.create({
+			data:{
+				userID: user.id,
+			}
+		})
 		return user;
 	}
 
@@ -88,13 +94,13 @@ export class AuthService {
 					nickName: profile_data.nickname,
 					full_name: profile_data.full_name,
 					first_time: false,
-				}
-			})
-
-			// create the profile and link it with the user
-			await this.prisma.profile.create({
-				data:{
-					userID: user.id,
+				},
+				select:{
+					id: true,
+					full_name: true,
+					nickName: true,
+					first_time: true,
+					intra_42_id: true,
 				}
 			})
 
@@ -112,6 +118,19 @@ export class AuthService {
 			throw new ConflictException("nickname is already taken");
 		}
 			
+	}
+
+	async find_if_2fa_enabled(id: string)
+	{
+		const user = await this.prisma.user.findUnique({
+			where : {
+				id
+			},
+			select:{
+				fac_auth: true
+			}
+		})
+		return user.fac_auth;
 	}
 
 	async delete_old_sessions(id: string)

@@ -1,6 +1,7 @@
 import { Injectable, ExecutionContext , CanActivate, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from 'prisma/prisma.service';
+import { SettingsService } from 'src/settings/settings.service';
 
 @Injectable()
 export class FT_GUARD extends AuthGuard('42') {
@@ -37,7 +38,7 @@ export class AuthenticatedGuard implements CanActivate {
 
 @Injectable()
 export class first_timeGuard implements CanActivate{
-	constructor(private prisma: PrismaService){}
+	constructor(private prisma: PrismaService,private qr: SettingsService){}
 	async canActivate(context: ExecutionContext): Promise<boolean>
 	{
 		const req = context.switchToHttp().getRequest();
@@ -55,15 +56,14 @@ export class first_timeGuard implements CanActivate{
 			}
 			if (user.fac_auth) // 2fa
 			{
-				//console.log(req.session);
-				// get the 2fa from cookie and check it with the database pass
-				console.log("test : ",req.session.passport.user);
-				const profile = await this.prisma.profile.findUnique({
-					where: {
-						userID: user.id,
-					}
-				})
-				throw new HttpException('2fa',HttpStatus.FORBIDDEN);
+				const res = context.switchToHttp().getResponse();
+				//console.log("test : ",req.session.passport.user);
+				const user = req.session.passport.user;
+				if (!user.code)
+				{
+					// redirect to 2fa page
+					res.redirect("http://google.com");
+				}
 			}
 		}
 		return req.isAuthenticated();
