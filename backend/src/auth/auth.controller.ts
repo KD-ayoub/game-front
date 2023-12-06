@@ -15,6 +15,7 @@ export class AuthController {
 	@UseGuards(FT_GUARD)
 	@Get('/login')
 	login() {
+		console.log('lll');
 	  return;
 	}
 
@@ -22,7 +23,9 @@ export class AuthController {
 	@UseGuards(FT_GUARD)
 	@Get('/redirect')
 	@Redirect('status')
-	redirect(@Req() req: Request) {}
+	redirect(@Req() req: Request) {
+		console.log('redirect');
+	}
 
 	// this route get user info for the first time	
 	@UseGuards(AuthenticatedGuard)
