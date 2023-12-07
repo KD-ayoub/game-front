@@ -3,12 +3,18 @@
 import Link from "next/link";
 import React from "react";
 import { useState } from "react";
-import { Header, SideBar } from "@/app/components";
+import {
+  Header,
+  SideBar,
+  OnlineNow,
+  ChannelMessaged,
+  FriendsMessaged,
+} from "@/app/components";
 
 export default function Chat() {
-
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
+  const [option, setOption] = useState("Friends");
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -21,7 +27,24 @@ export default function Chat() {
       <div
         className={`grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 lg:mt-[72px] xl:mt-[96px] 2xl:mt-[128px] ${marginbody} //flex justify-center items-center//`}
       >
-        {/* <div className="h-[200px] w-[70px] bg-red-500"></div> */}
+        <div className="chat w-1265 h-864 grid  bg-red-599">
+          <OnlineNow />
+          <div>
+            <select
+              name="Messages"
+              className="bg-[#717273] w-116 h-26"
+              value={option}
+              onChange={(e) => setOption(e.target.value)}
+            >
+              <option value="Friends">Friends</option>
+              <option value="Channels" className="">
+                Channels
+              </option>
+            </select>
+          </div>
+          {option === "Friends" ? <FriendsMessaged /> : <ChannelMessaged />}
+          <p className="text-red-500">this is what i select {option}</p>
+        </div>
       </div>
     </main>
   );
