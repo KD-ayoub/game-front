@@ -6,8 +6,8 @@ import { SessionSerializer } from './utils/Serializer';
 import { SettingsModule } from 'src/settings/settings.module';
 
 @Module({
-	imports: [SettingsModule],
-  	controllers: [AuthController],
-  	providers: [AuthService,FT_Strategy,SessionSerializer],
+  imports: [SettingsModule],
+  controllers: [AuthController],
+  providers: [AuthService, FT_Strategy, SessionSerializer]
 })
 export class AuthModule {}
