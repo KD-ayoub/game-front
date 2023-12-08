@@ -14,7 +14,6 @@ import Vertical from "@/app/assets/svg/settings/verticalred.svg";
 import Qrcode from "@/app/assets/svg/settings/qrcode.svg";
 import getSettings from "@/app/api/Settings/getSettings";
 import PutSettings from "@/app/api/Settings/putSettings";
-import { CldImage } from "next-cloudinary";
 import PutImage from "@/app/api/Settings/putImage";
 
 export default function Settings() {
