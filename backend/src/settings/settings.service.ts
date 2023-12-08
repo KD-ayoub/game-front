@@ -94,6 +94,9 @@ export class SettingsService {
 
   async changeSettingsImage(file: Express.Multer.File, userId: string): Promise<{}> {
     try {
+      console.log('in change setting image');
+      console.log(`userID = ${userId}`);
+      console.log(file);
       await this.deleteImageData(userId);
       const upload = await this.cloudinaryService.uploadFile(file);
       const profile = await this.prisma.profile.update({

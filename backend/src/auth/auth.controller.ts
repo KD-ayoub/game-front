@@ -1,5 +1,5 @@
 import { Body, Controller, ForbiddenException, Get, HttpException, Post, Redirect, Req, Res, Session, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthenticatedGuard, FT_GUARD, first_timeGuard } from './guards';
 import { AuthService } from './auth.service';
 import { _2fa, signup } from 'src/utils/types';
@@ -9,38 +9,58 @@ import { SettingsService } from 'src/settings/settings.service';
 
 @Controller('auth')
 export class AuthController {
-	constructor(private auth: AuthService, private qr: SettingsService){}
+	constructor(private auth: AuthService, private qr: SettingsService) {}
 
 	// first path to log to intra  it redirect to 42 api
 	@UseGuards(FT_GUARD)
-	@Get('/login')
+	@Get('login')
 	login() {
-		console.log('lll');
-	  return;
+		console.log('login');
+	  return ;
 	}
 
 	// 42 api redirect to this page and this page send a cookie
 	@UseGuards(FT_GUARD)
-	@Get('/redirect')
+	@Get('redirect')
 	@Redirect('status')
-	redirect(@Req() req: Request) {
-		console.log('redirect');
-	}
+	redirect(@Req() req: Request) {}
 
 	// this route get user info for the first time	
 	@UseGuards(AuthenticatedGuard)
-	@Post('/signup')
-	signup(@Req() req: Request,@Body() body: signup) {
+	//@Get('signup')
+	//async signup(@Req() req: any, @Res() res: Response) {
+	@Post('signup')
+	async signup(@Req() req: any, @Body() body: signup, @Res() res) {
+		//here login of the guard
+		console.log('ddd');
+		return 'done';
+
+		let redirectUrl = "http://localhost:3000/profile";
+		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
+		const twoFacCheck = await this.auth.check2fa(req.user.id);
+		//here the user is logged and it's not his first time to log
+		if (!checkFirstTime) {
+			if (twoFacCheck)
+				redirectUrl = "http://localhost:3000/twofactor";
+			res.redirect(redirectUrl);
+			return ;
+		}
+		//this one will be checked in pipe
 		if (!body || !body.full_name ||!body.nickname )
-			return {error : "sir t7wa gad l9lawi"};
-	  	return this.auth.signup(req.user,body);
+			return {error : "Body is wrong"};
+	  //this.auth.signup(req.user, body);
+		//res.redirect("http://localhost:3000/auth");
+	  return this.auth.signup(req.user, body);
 	}
 
 	// guards after checking 42 login and then check if first time and then check for 2fa
 	@UseGuards(first_timeGuard)
-	@Get('/status')
+	@Get('status')
 	//@Redirect("http://google.com") // put the link of the profile
-	status(@Req() req: Request) {}
+	status(@Req() req: any, @Res() res: Response) {
+		res.redirect("http://localhost:3000/profile");
+		return this.auth.getUserData(req.user.id);
+	}
 	
 	@Get('/logout')
 	@UseGuards(first_timeGuard)
