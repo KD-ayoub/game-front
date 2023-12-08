@@ -40,7 +40,6 @@ export class AuthController {
 	async signup(@Req() req: any, @Body() body: signup, @Res() res) {
 		//here login of the guard
 		console.log('ddd');
-		return 'done';
 
 		let redirectUrl = "http://localhost:3000/profile";
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);

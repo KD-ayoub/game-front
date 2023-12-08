@@ -9,9 +9,16 @@ import getUserData from "@/app/api/auth/getUserData";
 import CheckInputFullName from "@/app/utils/library/checkInputFullName";
 import Image from "next/image";
 import ChangeImg from "@/app/assets/svg/settings/change.svg";
+import { UserType } from "@/app/types/goodloginType";
+import PutUserData from "@/app/api/auth/putuserData";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function GoodLogin() {
+  const [userData, setUserData] = useState<UserType>({
+    full_name: "",
+    nickName: "",
+    photo_user: `${default_avatar.src}`,
+  });
   const [nickName, setNickname] = useState("");
   const [fullName, setFullname] = useState("");
   const fullNameRef = useRef<HTMLInputElement>(null);
@@ -55,12 +62,40 @@ export default function GoodLogin() {
     }
   }
   function handlNickNameChange(event: ChangeEvent<HTMLInputElement>) {
+    const modifiedFullName = {...userData, nickName: event.target.value};
+    setUserData(modifiedFullName);
     setNickname(event.target.value);
   }
   function handlFullNameChange(event: ChangeEvent<HTMLInputElement>) {
+    const modifiedFullName = {...userData, full_name: event.target.value};
+    setUserData(modifiedFullName);
     setFullname(event.target.value);
   }
-
+  function handlSubmit() {
+    const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
+    const nickNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
+    if (fullNameRef.current && nickNameRef.current) {
+      if (
+        fullNameRegex.test(fullNameRef.current.value) &&
+        nickNameRegex.test(nickNameRef.current.value)
+      ) {
+        // send put method
+        console.log(userData);
+        const body = {full_name: userData.full_name, nickName: userData.nickName};
+        PutUserData(body);
+        console.log("save");
+      } else {
+        // make toast error
+        console.log("dont save");
+      }
+    }
+  }
+  useEffect(() => {
+    async function fetcher() {
+      setUserData(await getUserData());
+    }
+    fetcher();
+  }, [])
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="flex w-full h-screen items-center justify-center  flex-col bg-gradient-radial">
@@ -68,7 +103,7 @@ export default function GoodLogin() {
           <div className="flex flex-col justify-center items-center gap-3 lg:gap-5 2xl:gap-7">
             <Image
               className="h-20 md:w-[100px] md:h-[100px] lg:w-[110px] lg:h-[110px] xl:w-[125px] xl:h-[125px] 2xl:w-[145px] 2xl:h-[145px] rounded-full"
-              src={objectUrl}
+              src={userData.photo_user === `${default_avatar.src}` ? objectUrl : userData.photo_user}
               width={80}
               height={80}
               alt="avatar"
@@ -109,7 +144,7 @@ export default function GoodLogin() {
                 type="text"
                 id="full-name"
                 ref={fullNameRef}
-                value=""
+                value={userData.full_name}
                 onChange={handlFullNameChange}
                 onKeyUp={handlFullNameError}
                 maxLength={30}
@@ -128,7 +163,7 @@ export default function GoodLogin() {
                 type="text"
                 id="nick-name"
                 ref={nickNameRef}
-                value=""
+                value={userData.nickName}
                 onChange={handlNickNameChange}
                 onKeyUp={handlNickNameError}
                 maxLength={8}
@@ -136,7 +171,7 @@ export default function GoodLogin() {
               />
             </form>
           </div>
-          <div className="w-24 h-8 md:w-28 lg:w-32 lg:h-9 xl:w-36 xl:h-12 2xl:w-44 2xl:h-16 border border-solid border-gray-500 rounded-[8px] 2xl:rounded-[18px] flex justify-center">
+          <div className="w-24 h-8 md:w-28 lg:w-32 lg:h-9 xl:w-36 xl:h-12 2xl:w-44 2xl:h-16 border border-solid border-gray-500 rounded-[8px] 2xl:rounded-[18px] flex justify-center" onClick={handlSubmit}>
             <button
               className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[20px] xl:text-[24px] 2xl:text-[28px]`}
             >
