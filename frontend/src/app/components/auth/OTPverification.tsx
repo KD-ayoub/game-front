@@ -53,6 +53,7 @@ export default function OTPVerification() {
               className={`${NeuePlakFont.className} w-6 h-6 sm:w-8 sm:h-8 lg:w-12 lg:h-12 xl:w-16 xl:h-16 2xl:w-20 2xl:h-20 text-center sm:text-[20px] lg:text-[28px] xl:text-[33px] 2xl:text-[40px] bg-[#383546] rounded-[5px] xl:rounded-[10px] 2xl:rounded-[15px] spin-button-none`}
               onChange={(event) => handlInputChange(event)}
               onKeyDown={(event) => handlKeyDown(event, index)}
+              style={{MozAppearance: "textfield"}}
             ></input>
           );
         })}
