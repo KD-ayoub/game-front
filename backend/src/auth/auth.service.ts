@@ -9,7 +9,28 @@ export class AuthService {
 	constructor(private prisma : PrismaService){}
 
 	//here logic hicham
-	//async	checkFirstTime(userId: string): Promise<boolean> {
+	async getLoginData(userId: string): Promise<{}> {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: userId
+			},
+			select: {
+				full_name: true,
+				nickName: true
+			}
+		});
+		const profile = await this.prisma.profile.findUnique({
+			where: {
+				userID: userId
+			},
+			select: {
+				photo_path: true
+			}
+		});
+		user['photo_user'] = profile.photo_path;
+		return user;
+	}
+	
 	async	checkFirstTime(userId: string): Promise<boolean> {
 		const commingData = await this.prisma.user.findUnique({
 			where: {

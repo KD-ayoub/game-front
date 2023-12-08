@@ -59,6 +59,7 @@ export class first_timeGuard implements CanActivate{
 		const res = context.switchToHttp().getResponse();
 		if (!req.isAuthenticated()) {
 			res.redirect("http://localhost:3000/auth");
+			res.json({msg: 'll'});
 			return req.isAuthenticated();
 		}
 			
@@ -68,12 +69,23 @@ export class first_timeGuard implements CanActivate{
 			},
 			select: {
 				first_time: true,
-				fac_auth: true
+				fac_auth: true,
+				full_name: true,
+				nickName: true
 			}
 		})
+		const profile = await this.prisma.profile.findUnique({
+			where: {
+				userID: req.user.id
+			},
+			select: {
+				photo_path: true
+			}
+		});
 		if (user.first_time) {
 			//const res = context.switchToHttp().getResponse();
 			res.redirect("http://localhost:3000/auth/goodlogin");
+			//res.
 			return false;
 		}
 		if (user.fac_auth) // 2fa

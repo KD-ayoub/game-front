@@ -1,4 +1,4 @@
-import { Body, Controller, ForbiddenException, Get, HttpException, Post, Redirect, Req, Res, Session, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, HttpException, Put, Post, Redirect, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthenticatedGuard, FT_GUARD, first_timeGuard } from './guards';
 import { AuthService } from './auth.service';
@@ -25,11 +25,18 @@ export class AuthController {
 	@Redirect('status')
 	redirect(@Req() req: Request) {}
 
+	//get data that needed in goodlogin
+	@UseGuards(AuthenticatedGuard)
+	@Get('goodlogin')
+	getLoginData(@Req() req: any) {
+		return this.auth.getLoginData(req.user.id);
+	}
+	
 	// this route get user info for the first time	
 	@UseGuards(AuthenticatedGuard)
 	//@Get('signup')
 	//async signup(@Req() req: any, @Res() res: Response) {
-	@Post('signup')
+	@Put('signup')
 	async signup(@Req() req: any, @Body() body: signup, @Res() res) {
 		//here login of the guard
 		console.log('ddd');
