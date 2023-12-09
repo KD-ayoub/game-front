@@ -35,7 +35,7 @@ export class AuthController {
 
 	@UseGuards(AuthenticatedGuard)
 	@Get('checkUserStatus')
-	async checkUserStatus(@Req() req: any, @Res() res: any) {
+	async checkUserStatus(@Req() req: any) {
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
 		if (checkFirstTime)

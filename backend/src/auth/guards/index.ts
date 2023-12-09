@@ -53,14 +53,13 @@ export class AuthenticatedGuard implements CanActivate {
 			//return true;
 
 			//just got added
-				//throw new ForbiddenException({message: loginStatus.NotLogged});
-			if (!req.isAuthenticated) {
-				throw new ForbiddenException({message: loginStatus.NotLogged});
-				//console.log('ggg');
-				//return req.isAthenticated();
-			}
+			if (!req.isAuthenticated())
+				throw loginStatus.NotLogged;
     	return req.isAuthenticated();
 	  } catch (error) {
+			if (error === loginStatus.NotLogged)
+				throw new ForbiddenException({message: loginStatus.NotLogged});
+			//this one will get taking down later
 			throw new HttpException('invalid token',HttpStatus.BAD_REQUEST);
 	  }
   }

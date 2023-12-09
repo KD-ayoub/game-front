@@ -92,7 +92,7 @@ export default function GoodLogin() {
         const putData = await PutUserData(body);
         if (putData.status === 200) {
           // redirect to profile
-          router.push("/profile?message=success");
+          router.push("/profile");
         } else if (putData.status === 409) {
           toast.error("nickname already exists", {
             style: {
