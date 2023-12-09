@@ -1,13 +1,41 @@
 "use client";
 import { useState, useEffect } from "react";
 import { NeuePlakFontBold, NeuePlakFont } from "@/app/utils/NeuePlakFont";
-import { ToastContainer, toast } from "react-toastify";
 import Image from "next/image";
 import Qrimage from "@/app/assets/images/qrcodeee.jpeg";
 import OTPVerification from "@/app/components/auth/OTPverification";
+import CheckUserStatus from "@/app/api/checkUserStatus";
+import { loginStatus } from "@/app/utils/library/authEnum";
+import { useRouter } from "next/navigation";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function TwoFactor() {
+  const router = useRouter();
+  useEffect(() => {
+    async function fetcher() {
+      const responseStatus = await CheckUserStatus();
+      if (responseStatus.status === 403) {
+        const body = await responseStatus.json();
+        if (body.message === loginStatus.FirstTime) {
+          //redirect to first time
+          console.log("first time");
+          router.push('/auth/goodlogin');
+        } else if (body.message === loginStatus.NotLogged) {
+          //redirect to auth
+          console.log("not logged");
+          router.push('/auth');
+        } else if (body.message === loginStatus.TwoFactor) {
+          console.log("two factor");
+        }
+        await console.log("bbbbbb", body);
+      } else {
+        console.log("you are alrady logged");
+        router.push("/profile");
+        return null;
+      }
+    }
+    fetcher();
+  }, []);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="flex w-full h-screen items-center justify-center  flex-col bg-gradient-radial">

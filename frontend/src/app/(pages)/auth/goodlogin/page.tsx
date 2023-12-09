@@ -11,8 +11,10 @@ import ChangeImg from "@/app/assets/svg/settings/change.svg";
 import { UserType } from "@/app/types/goodloginType";
 import PutUserData from "@/app/api/auth/putuserData";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+import CheckUserStatus from "@/app/api/checkUserStatus";
+import { loginStatus } from "@/app/utils/library/authEnum";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function GoodLogin() {
@@ -115,8 +117,25 @@ export default function GoodLogin() {
       }
     }
   }
+
   useEffect(() => {
     async function fetcher() {
+      const responseStatus = await CheckUserStatus();
+      if (responseStatus.status === 403) {
+        const body = await responseStatus.json();
+        if (body.message === loginStatus.FirstTime) {
+          console.log("first time");
+        } else if (body.message === loginStatus.NotLogged) {
+          console.log("not logged");
+        } else if (body.message === loginStatus.TwoFactor) {
+          console.log("two factor");
+        }
+        await console.log("bbbbbb", body);
+      } else {
+        console.log("you are alrady logged");
+        router.push("/profile");
+        return null;
+      }
       setUserData(await getUserData());
     }
     fetcher();
