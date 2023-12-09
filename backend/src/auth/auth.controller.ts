@@ -31,32 +31,56 @@ export class AuthController {
 	getLoginData(@Req() req: any) {
 		return this.auth.getLoginData(req.user.id);
 	}
-	
+
 	// this route get user info for the first time	
 	@UseGuards(AuthenticatedGuard)
 	//@Get('signup')
 	//async signup(@Req() req: any, @Res() res: Response) {
 	@Put('signup')
-	async signup(@Req() req: any, @Body() body: signup, @Res() res) {
+	//async signup(@Req() req: any, @Body() body: signup, @Res() res: any) {
+	signup(@Req() req: any, @Body() body: signup, @Res({passthrough: true}) res: any) {
 		//here login of the guard
 		console.log('ddd');
+		let redirectUrl = "http://localhost:3000/auth";
 
-		let redirectUrl = "http://localhost:3000/profile";
-		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
-		const twoFacCheck = await this.auth.check2fa(req.user.id);
-		//here the user is logged and it's not his first time to log
-		if (!checkFirstTime) {
-			if (twoFacCheck)
-				redirectUrl = "http://localhost:3000/twofactor";
-			res.redirect(redirectUrl);
-			return ;
-		}
-		//this one will be checked in pipe
-		if (!body || !body.full_name ||!body.nickname )
-			return {error : "Body is wrong"};
-	  //this.auth.signup(req.user, body);
-		//res.redirect("http://localhost:3000/auth");
-	  return this.auth.signup(req.user, body);
+		//res.header('Access-Control-Allow-Origin', '*');
+    //res.header('Access-Control-Allow-Credentials', 'true');
+    //res.header('Access-Control-Allow-Methods', 'PUT,GET,POST,DELETE');
+    ////res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+		//res.header('Access-Control-Allow-Headers',
+		//	'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    //)
+
+
+		//res.setHeader('Access-Control-Allow-Origin', '*');
+    //res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    //res.setHeader('Access-Control-Allow-Headers', '*');
+    //res.setHeader('Access-Control-Allow-Credentials', true);
+
+		//res.redirect(302, redirectUrl);
+		throw new ForbiddenException({message: 'first'});
+		//return 'hey';
+
+		//let redirectUrl = "http://localhost:3000/profile";
+		//const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
+		//const twoFacCheck = await this.auth.check2fa(req.user.id);
+		////here the user is logged and it's not his first time to log
+		//await console.log(`hey fstTime ${checkFirstTime} facChk = ${twoFacCheck}`);
+		////if (!checkFirstTime) {
+		////	if (twoFacCheck)
+		////		redirectUrl = "http://localhost:3000/twofactor";
+		////	res.redirect(redirectUrl);
+		////	return ;
+		////}
+		//console.log(body);
+		////this one will be checked in pipe
+		//if (!body || !body.full_name ||!body.nickname )
+		//	return {error : "Body is wrong"};
+	  ////this.auth.signup(req.user, body);
+		//const wait = await this.auth.signup(req.user, body);
+		////await res.redirect("http://localhost:3000/profile");
+		//return wait;
+	  ////return this.auth.signup(req.user, body);
 	}
 
 	// guards after checking 42 login and then check if first time and then check for 2fa

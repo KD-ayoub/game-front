@@ -6,6 +6,8 @@ import * as passport from 'passport';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { PrismaService } from 'prisma/prisma.service';
 
+//cors
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(session({
@@ -28,11 +30,14 @@ async function bootstrap() {
   app.use(passport.session());
   app.setGlobalPrefix('');
 
+  
   app.enableCors({
     origin: 'http://localhost:3000',
+    //origin: '*',
     credentials: true,
     //methods: [RequestMethod.ALL.toString()],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: 'Content-Type, Authorization',
   });
 
   app.useGlobalPipes(new ValidationPipe({

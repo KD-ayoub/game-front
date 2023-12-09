@@ -8,10 +8,13 @@ export class FT_GUARD extends AuthGuard('42') {
   async canActivate(context: ExecutionContext)
   {
 	  try {
+			//console.log('hey');
+			//const res = context.switchToHttp().getResponse();
+			//res.redirect("http://localhost:3000/auth/goodlogin");
+			//return false;
 			//console.log(context);
 			//throw "hey";
 			//return true;
-			console.log('hey');
       const activate = (await super.canActivate(context)) as boolean;
 			await console.log(`1 ft_guard ${activate}`);
 	  	const request = context.switchToHttp().getRequest();
@@ -30,6 +33,12 @@ export class FT_GUARD extends AuthGuard('42') {
 export class AuthenticatedGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
 	  try {
+			console.log('hlley');
+			//const res = context.switchToHttp().getResponse();
+			//res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    	//res.header('Access-Control-Allow-Credentials', 'true');
+			//res.redirect(302, "http://localhost:3000");
+			//return false;
 			console.log('authenticatedGuard');
     	const req = context.switchToHttp().getRequest();
 			//if (req.isAuthenticated()) {
@@ -59,7 +68,7 @@ export class first_timeGuard implements CanActivate{
 		const res = context.switchToHttp().getResponse();
 		if (!req.isAuthenticated()) {
 			res.redirect("http://localhost:3000/auth");
-			res.json({msg: 'll'});
+			//res.json({msg: 'll'});
 			return req.isAuthenticated();
 		}
 			

@@ -11,6 +11,7 @@ import Image from "next/image";
 import ChangeImg from "@/app/assets/svg/settings/change.svg";
 import { UserType } from "@/app/types/goodloginType";
 import PutUserData from "@/app/api/auth/putuserData";
+import Link from 'next/link';
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function GoodLogin() {
@@ -71,7 +72,7 @@ export default function GoodLogin() {
     setUserData(modifiedFullName);
     setFullname(event.target.value);
   }
-  function handlSubmit() {
+  async function handlSubmit() {
     const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
     const nickNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
     if (fullNameRef.current && nickNameRef.current) {
@@ -81,8 +82,11 @@ export default function GoodLogin() {
       ) {
         // send put method
         console.log(userData);
-        const body = {full_name: userData.full_name, nickName: userData.nickName};
-        PutUserData(body);
+        const body = {full_name: userData.full_name, nickname: userData.nickName};
+        const putData = await PutUserData(body);
+        if (putData.message === 'first')
+          return (<Link href="http://localhost:3000/auth"></Link>);
+        await console.log('hona ', putData);
         console.log("save");
       } else {
         // make toast error

@@ -12,7 +12,7 @@ export type  user_request = server_response;
 export type signup = {
 	full_name: string,
 	nickname : string,
-	image: string,
+	//image: string,
 }
 
 export type _2fa = {
