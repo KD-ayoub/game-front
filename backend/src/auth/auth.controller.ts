@@ -46,20 +46,29 @@ export class AuthController {
 	}
 
 	// this route get user info for the first time	
-	@UseGuards(AuthenticatedGuard)
 	//@Get('signup')
 	//async signup(@Req() req: any, @Res() res: Response) {
-	@Put('signup')
+	//@Get('signup')
 	//async signup(@Req() req: any, @Body() body: signup, @Res() res: any) {
-	async signup(@Req() req: any, @Body() body: signup, @Res() res: any) {
+	//signup(@Req() req: any, @Body() body: signup, @Res() res: any) {
+	//signup() {
+	@UseGuards(AuthenticatedGuard)
+	@Put('signup')
+	async signup(@Req() req: any, @Body() body: signup) {
+		//console.log('cool');
+		////return 'hey';
+		//res.status(200).send('hey');
+		//console.log('cool ll');
+		//return ;
 		//here login of the guard
 		//throw new ForbiddenException({message: loginStatus.NotLogged});
 
 		//let redirectUrl = "http://localhost:3000/profile";
-		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		//const twoFacCheck = await this.auth.check2fa(req.user.id);
 		//here the user is logged and it's not his first time to log
 		//await console.log(`hey fstTime ${checkFirstTime} facChk = ${twoFacCheck}`);
+		
+		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		if (!checkFirstTime) {
 			//if (twoFacCheck)
 			//	redirectUrl = "http://localhost:3000/twofactor";
@@ -72,10 +81,10 @@ export class AuthController {
 		if (!body || !body.full_name ||!body.nickname )
 			return {error : "Body is wrong"};
 	  //this.auth.signup(req.user, body);
-		const wait = await this.auth.signup(req.user, body);
+		//const wait = await this.auth.signup(req.user, body);
 		//await res.redirect("http://localhost:3000/profile");
-		return wait;
-	  //return this.auth.signup(req.user, body);
+		//return wait;
+	  return this.auth.signup(req.user, body);
 	}
 
 	// guards after checking 42 login and then check if first time and then check for 2fa
