@@ -15,6 +15,10 @@ export default async function PutUserData(userData: {
     },
     body: JSON.stringify(userData),
   })
+  if (!response.ok) {
+    if (response.status === 403)
+      await console.log('err = ', response.status);
+  }
   //.then(res => {
   //  console.log('wayli');
   //  //if (res.redirected)

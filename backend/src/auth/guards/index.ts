@@ -1,7 +1,8 @@
-import { Injectable, ExecutionContext , CanActivate, HttpException, HttpStatus } from '@nestjs/common';
+import { ForbiddenException, Injectable, ExecutionContext , CanActivate, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from 'prisma/prisma.service';
 import { SettingsService } from 'src/settings/settings.service';
+import { loginStatus } from '../auth.enum';
 
 @Injectable()
 export class FT_GUARD extends AuthGuard('42') {
@@ -33,7 +34,7 @@ export class FT_GUARD extends AuthGuard('42') {
 export class AuthenticatedGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
 	  try {
-			console.log('hlley');
+			//console.log('hlley');
 			//const res = context.switchToHttp().getResponse();
 			//res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     	//res.header('Access-Control-Allow-Credentials', 'true');
@@ -50,6 +51,14 @@ export class AuthenticatedGuard implements CanActivate {
 			//console.log('db f guard ', req.isAuthenticated);
 			//console.log(res);
 			//return true;
+
+			//just got added
+				//throw new ForbiddenException({message: loginStatus.NotLogged});
+			if (!req.isAuthenticated) {
+				throw new ForbiddenException({message: loginStatus.NotLogged});
+				//console.log('ggg');
+				//return req.isAthenticated();
+			}
     	return req.isAuthenticated();
 	  } catch (error) {
 			throw new HttpException('invalid token',HttpStatus.BAD_REQUEST);

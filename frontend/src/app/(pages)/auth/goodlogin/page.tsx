@@ -84,8 +84,9 @@ export default function GoodLogin() {
         console.log(userData);
         const body = {full_name: userData.full_name, nickname: userData.nickName};
         const putData = await PutUserData(body);
-        if (putData.message === 'first')
-          return (<Link href="http://localhost:3000/auth"></Link>);
+        //await console.log('hey ', putData);
+        //if (putData.message === 'first')
+        //  return (<Link href="http://localhost:3000/auth"></Link>);
         await console.log('hona ', putData);
         console.log("save");
       } else {
