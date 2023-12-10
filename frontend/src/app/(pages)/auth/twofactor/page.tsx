@@ -40,6 +40,14 @@ export default function TwoFactor() {
         router.push("/profile");
         return null;
       }
+      ///////send to backend 
+      const response = await fetch('http://localhost:3001/...', {
+        method: 'POST',
+        body: JSON.stringify(enteredOTP),
+        credentials: 'include',
+      })
+      await console.log(response);
+      //////////////////////////:
     }
     fetcher();
   }, []);
