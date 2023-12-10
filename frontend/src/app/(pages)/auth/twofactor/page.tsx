@@ -11,6 +11,13 @@ import { useRouter } from "next/navigation";
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function TwoFactor() {
   const router = useRouter();
+
+  const [enteredOTP, setEnteredOTP] = useState('');
+
+  function handleGetOTP(otp: string) {
+    setEnteredOTP(otp);
+  }
+
   useEffect(() => {
     async function fetcher() {
       const responseStatus = await CheckUserStatus();
@@ -36,6 +43,7 @@ export default function TwoFactor() {
     }
     fetcher();
   }, []);
+  console.log('OTP', enteredOTP);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="flex w-full h-screen items-center justify-center  flex-col bg-gradient-radial">
@@ -51,7 +59,7 @@ export default function TwoFactor() {
             <p className={`${NeuePlakFont.className} text-[16px] sm:text-[20px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}>
               Enter the code
             </p>
-            <OTPVerification/>
+            <OTPVerification GetOTP={handleGetOTP}/>
             <div className="w-24 h-8 sm:w-28 sm:h-9 md:w-28 lg:w-36 lg:h-12 xl:w-40 xl:h-[56px] 2xl:w-48 2xl:h-[72px] border border-solid border-gray-500 rounded-[8px] 2xl:rounded-[18px] flex justify-center">
             <button
               className={`${NeuePlakFont.className} text-[16px] sm:text-[18px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}

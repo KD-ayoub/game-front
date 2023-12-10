@@ -4,7 +4,10 @@ import "./otpstyle.css";
 import { NeuePlakFont } from "@/app/utils/NeuePlakFont";
 
 let currentOtpindex: number;
-export default function OTPVerification() {
+interface OTPVerificationProps {
+  GetOTP: (otp: string) => void;
+}
+export default function OTPVerification({ GetOTP }: OTPVerificationProps) {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const inputRef = useRef<HTMLInputElement>(null);
   const [activeInput, setActiveInput] = useState(0);
@@ -38,6 +41,11 @@ export default function OTPVerification() {
       inputRef.current.focus();
     }
   }, [activeInput]);
+
+  useEffect(() => {
+    const enteredOTP = otp.join('');
+    GetOTP(enteredOTP);
+  }, [otp, GetOTP]);
 
   return (
     <>
