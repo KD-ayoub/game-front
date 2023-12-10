@@ -27,31 +27,31 @@ export default function TwoFactor() {
     await console.log(response);
     //////////////////////////:
   }
-  useEffect(() => {
-    async function fetcher() {
-      const responseStatus = await CheckUserStatus();
-      if (responseStatus.status === 403) {
-        const body = await responseStatus.json();
-        if (body.message === loginStatus.FirstTime) {
-          //redirect to first time
-          console.log("first time");
-          router.push("/auth/goodlogin");
-        } else if (body.message === loginStatus.NotLogged) {
-          //redirect to auth
-          console.log("not logged");
-          router.push("/auth");
-        } else if (body.message === loginStatus.TwoFactor) {
-          console.log("two factor");
-        }
-        await console.log("bbbbbb", body);
-      } else {
-        console.log("you are alrady logged");
-        router.push("/profile");
-        return null;
-      }
-    }
-    fetcher();
-  }, []);
+  // useEffect(() => {
+  //   async function fetcher() {
+  //     const responseStatus = await CheckUserStatus();
+  //     if (responseStatus.status === 403) {
+  //       const body = await responseStatus.json();
+  //       if (body.message === loginStatus.FirstTime) {
+  //         //redirect to first time
+  //         console.log("first time");
+  //         router.push("/auth/goodlogin");
+  //       } else if (body.message === loginStatus.NotLogged) {
+  //         //redirect to auth
+  //         console.log("not logged");
+  //         router.push("/auth");
+  //       } else if (body.message === loginStatus.TwoFactor) {
+  //         console.log("two factor");
+  //       }
+  //       await console.log("bbbbbb", body);
+  //     } else {
+  //       console.log("you are alrady logged");
+  //       router.push("/profile");
+  //       return null;
+  //     }
+  //   }
+  //   fetcher();
+  // }, []);
   console.log("OTP", enteredOTP);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">

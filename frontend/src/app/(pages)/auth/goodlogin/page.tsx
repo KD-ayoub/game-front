@@ -120,24 +120,24 @@ export default function GoodLogin() {
 
   useEffect(() => {
     async function fetcher() {
-      const responseStatus = await CheckUserStatus();
-      if (responseStatus.status === 403) {
-        const body = await responseStatus.json();
-        if (body.message === loginStatus.FirstTime) {
-          console.log("first time");
-        } else if (body.message === loginStatus.NotLogged) {
-          console.log("not logged");
-          router.push('/auth');
-        } else if (body.message === loginStatus.TwoFactor) {
-          console.log("two factor");
-          router.push("/auth/twofactor");
-        }
-        await console.log("bbbbbb", body);
-      } else {
-        console.log("you are alrady logged");
-        router.push("/profile");
-        return null;
-      }
+      // const responseStatus = await CheckUserStatus();
+      // if (responseStatus.status === 403) {
+      //   const body = await responseStatus.json();
+      //   if (body.message === loginStatus.FirstTime) {
+      //     console.log("first time");
+      //   } else if (body.message === loginStatus.NotLogged) {
+      //     console.log("not logged");
+      //     router.push('/auth');
+      //   } else if (body.message === loginStatus.TwoFactor) {
+      //     console.log("two factor");
+      //     router.push("/auth/twofactor");
+      //   }
+      //   await console.log("bbbbbb", body);
+      // } else {
+      //   console.log("you are alrady logged");
+      //   router.push("/profile");
+      //   return null;
+      // }
       setUserData(await getUserData());
     }
     fetcher();
