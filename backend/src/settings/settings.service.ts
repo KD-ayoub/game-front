@@ -39,7 +39,7 @@ export class SettingsService {
   }
 
   //take it off
-  async checkIfQrCodeIsRight(userId: string, token: string): Promise<{}> {
+  async checkIfQrCodeIsRight(userId: string, token: string): Promise<boolean> {
     const profile = await this.prisma.profile.findUnique({
       where: {
         userID: userId,
@@ -52,11 +52,12 @@ export class SettingsService {
       secret: profile.TwoFac_pass,
       encoding: 'base32',
       token
-    })
-    if (verify)
-		return true;
-    else
-		return false
+    }) as boolean;
+    return verify;
+    //if (verify)
+		//  return true;
+    //else
+		//  return false
   }
 
   async deleteImageData(userId: string) {
