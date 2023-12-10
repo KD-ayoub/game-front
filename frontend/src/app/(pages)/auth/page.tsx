@@ -30,6 +30,7 @@ export default function Auth() {
           console.log("not logged");
         } else if (body.message === loginStatus.TwoFactor) {
           console.log("two factor");
+          router.push('/auth/twofactor');
         }
         await console.log("bbbbbb", body);
       } else {

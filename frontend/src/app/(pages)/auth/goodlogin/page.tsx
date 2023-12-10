@@ -127,8 +127,10 @@ export default function GoodLogin() {
           console.log("first time");
         } else if (body.message === loginStatus.NotLogged) {
           console.log("not logged");
+          router.push('/auth');
         } else if (body.message === loginStatus.TwoFactor) {
           console.log("two factor");
+          router.push("/auth/twofactor");
         }
         await console.log("bbbbbb", body);
       } else {

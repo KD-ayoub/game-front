@@ -36,6 +36,7 @@ export class AuthController {
 	@UseGuards(AuthenticatedGuard)
 	@Get('checkUserStatus')
 	async checkUserStatus(@Req() req: any) {
+		//this code is going to guard
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
 		if (checkFirstTime)
@@ -44,6 +45,21 @@ export class AuthController {
 			throw new ForbiddenException({message: loginStatus.TwoFactor});
 		return 'Good';
 	}
+
+	@UseGuards(AuthenticatedGuard)
+	@Get('getUserStatus')
+	async getUserStatus(@Req() req: any) {
+		//this will get taken down and putting in guard
+		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
+		const twoFacCheck = await this.auth.check2fa(req.user.id);
+		if (checkFirstTime)
+			throw new ForbiddenException({message: loginStatus.FirstTime});
+		if (twoFacCheck)
+			throw new ForbiddenException({message: loginStatus.TwoFactor});
+		////
+		return this.auth.getUserStatus(req.user.id);
+	}
+
 
 	// this route get user info for the first time	
 	//@Get('signup')
