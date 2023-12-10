@@ -12,12 +12,21 @@ import { useRouter } from "next/navigation";
 export default function TwoFactor() {
   const router = useRouter();
 
-  const [enteredOTP, setEnteredOTP] = useState('');
+  const [enteredOTP, setEnteredOTP] = useState("");
 
   function handleGetOTP(otp: string) {
     setEnteredOTP(otp);
   }
-
+  async function handlLogin() {
+    ///////send to backend
+    const response = await fetch("http://localhost:3001/...", {
+      method: "POST",
+      body: JSON.stringify(enteredOTP),
+      credentials: "include",
+    });
+    await console.log(response);
+    //////////////////////////:
+  }
   useEffect(() => {
     async function fetcher() {
       const responseStatus = await CheckUserStatus();
@@ -26,11 +35,11 @@ export default function TwoFactor() {
         if (body.message === loginStatus.FirstTime) {
           //redirect to first time
           console.log("first time");
-          router.push('/auth/goodlogin');
+          router.push("/auth/goodlogin");
         } else if (body.message === loginStatus.NotLogged) {
           //redirect to auth
           console.log("not logged");
-          router.push('/auth');
+          router.push("/auth");
         } else if (body.message === loginStatus.TwoFactor) {
           console.log("two factor");
         }
@@ -40,18 +49,10 @@ export default function TwoFactor() {
         router.push("/profile");
         return null;
       }
-      ///////send to backend 
-      const response = await fetch('http://localhost:3001/...', {
-        method: 'POST',
-        body: JSON.stringify(enteredOTP),
-        credentials: 'include',
-      })
-      await console.log(response);
-      //////////////////////////:
     }
     fetcher();
   }, []);
-  console.log('OTP', enteredOTP);
+  console.log("OTP", enteredOTP);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="flex w-full h-screen items-center justify-center  flex-col bg-gradient-radial">
@@ -64,17 +65,22 @@ export default function TwoFactor() {
               height={100}
               alt="qr image scan"
             />
-            <p className={`${NeuePlakFont.className} text-[16px] sm:text-[20px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}>
+            <p
+              className={`${NeuePlakFont.className} text-[16px] sm:text-[20px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}
+            >
               Enter the code
             </p>
-            <OTPVerification GetOTP={handleGetOTP}/>
-            <div className="w-24 h-8 sm:w-28 sm:h-9 md:w-28 lg:w-36 lg:h-12 xl:w-40 xl:h-[56px] 2xl:w-48 2xl:h-[72px] border border-solid border-gray-500 rounded-[8px] 2xl:rounded-[18px] flex justify-center">
-            <button
-              className={`${NeuePlakFont.className} text-[16px] sm:text-[18px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}
+            <OTPVerification GetOTP={handleGetOTP} />
+            <div
+              className="w-24 h-8 sm:w-28 sm:h-9 md:w-28 lg:w-36 lg:h-12 xl:w-40 xl:h-[56px] 2xl:w-48 2xl:h-[72px] border border-solid border-gray-500 rounded-[8px] 2xl:rounded-[18px] flex justify-center"
+              onClick={handlLogin}
             >
-              Login
-            </button>
-          </div>
+              <button
+                className={`${NeuePlakFont.className} text-[16px] sm:text-[18px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}
+              >
+                Login
+              </button>
+            </div>
           </div>
         </div>
       </div>
