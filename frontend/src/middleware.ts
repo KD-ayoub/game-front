@@ -15,6 +15,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     } else if (data.message === loginStatus.TwoFactor) {
       return NextResponse.redirect(new URL("/auth/twofactor", request.url));
+    } else {
+      return NextResponse.redirect(new URL("/profile", request.url));
     }
   } else if (cookie && request.nextUrl.pathname === "/auth/twofactor") {
     const responseStatus = await CheckUserStatus(cookie.value);
@@ -23,22 +25,33 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/auth/goodlogin", request.url));
     } else if (data.message === loginStatus.TwoFactor) {
       return NextResponse.next();
+    } else {
+      return NextResponse.redirect(new URL("/profile", request.url));
     }
   } else if (cookie && request.nextUrl.pathname === "/auth") {
+    const responseStatus = await CheckUserStatus(cookie.value);
+    const data = await responseStatus.json();
+    console.log(data.message);
+    if (data.message === loginStatus.FirstTime) {
+      return NextResponse.redirect(new URL("/auth/goodlogin", request.url));
+    } else if (data.message === loginStatus.TwoFactor) {
+      return NextResponse.redirect(new URL("/auth/twofactor", request.url));
+    } else {
+      return NextResponse.redirect(new URL("/profile", request.url));
+    }
+  } else if (!cookie && request.nextUrl.pathname === "/auth") {
+    return NextResponse.next();
+  } else if(cookie) {
     const responseStatus = await CheckUserStatus(cookie.value);
     const data = await responseStatus.json();
     if (data.message === loginStatus.FirstTime) {
       return NextResponse.redirect(new URL("/auth/goodlogin", request.url));
     } else if (data.message === loginStatus.TwoFactor) {
       return NextResponse.redirect(new URL("/auth/twofactor", request.url));
-    }
-  } else {
-    if (!cookie && request.nextUrl.pathname === "/auth") {
+    } else {
       return NextResponse.next();
     }
-    return NextResponse.redirect(new URL("/auth", request.url));
   }
-  return NextResponse.next();
 }
 
 export const config = {
