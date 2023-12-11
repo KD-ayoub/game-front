@@ -19,9 +19,11 @@ export default function TwoFactor() {
   }
   async function handlLogin() {
     ///////send to backend
-    const response = await fetch("http://localhost:3001/...", {
+    const body = {code: enteredOTP};
+    console.log(JSON.stringify(body));
+    const response = await fetch("http://localhost:3001/auth/2fa", {
       method: "POST",
-      body: JSON.stringify(enteredOTP),
+      body: JSON.stringify(body),
       credentials: "include",
     });
     await console.log(response);
