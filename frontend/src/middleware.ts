@@ -3,58 +3,51 @@ import { NextRequest } from "next/server";
 import CheckUserStatus from "./app/api/checkUserStatus";
 import { loginStatus } from "./app/utils/library/authEnum";
 
-// This function can be marked `async` if using `await` inside
+async function goodLoginMiddleware() {}
 
-async function goodLoginMiddleware() {
-  const responseStatus = await CheckUserStatus();
-  if (responseStatus.status === 403) {
-    const body = await responseStatus.json();
-    if (body.message === loginStatus.FirstTime) {
-      console.log("first time");
-      return loginStatus.FirstTime;
-    } else if (body.message === loginStatus.NotLogged) {
-      console.log("not logged", body.message);
-      return loginStatus.NotLogged;
-    } else if (body.message === loginStatus.TwoFactor) {
-      console.log("two factor");
-      return loginStatus.TwoFactor;
+// This function can be marked `async` if using `await` inside
+export async function middleware(request: NextRequest) {
+  const cookie = request.cookies.get("connect.sid");
+  if (cookie && request.nextUrl.pathname === "/auth/goodlogin") {
+    const responseStatus = await CheckUserStatus(cookie.value);
+    const data = await responseStatus.json();
+    if (data.message === loginStatus.FirstTime) {
+      return NextResponse.next();
+    } else if (data.message === loginStatus.TwoFactor) {
+      return NextResponse.redirect(new URL("/auth/twofactor", request.url));
+    }
+  } else if (cookie && request.nextUrl.pathname === "/auth/twofactor") {
+    const responseStatus = await CheckUserStatus(cookie.value);
+    const data = await responseStatus.json();
+    if (data.message === loginStatus.FirstTime) {
+      return NextResponse.redirect(new URL("/auth/goodlogin", request.url));
+    } else if (data.message === loginStatus.TwoFactor) {
+      return NextResponse.next();
+    }
+  } else if (cookie && request.nextUrl.pathname === "/auth") {
+    const responseStatus = await CheckUserStatus(cookie.value);
+    const data = await responseStatus.json();
+    if (data.message === loginStatus.FirstTime) {
+      return NextResponse.redirect(new URL("/auth/goodlogin", request.url));
+    } else if (data.message === loginStatus.TwoFactor) {
+      return NextResponse.redirect(new URL("/auth/twofactor", request.url));
     }
   } else {
-    console.log("you are alrady logged");
-    return "200";
+    console.log("here");
+    if (!cookie && request.nextUrl.pathname === "/auth") {
+      return NextResponse.next();
+    }
+    return NextResponse.redirect(new URL("/auth", request.url));
   }
-}
-
-export async function middleware(request: NextRequest) {
-    const status = await goodLoginMiddleware();
-    // if (status === loginStatus.FirstTime) {
-    //   return NextResponse.redirect(new URL('/auth/goodlogin', request.url));
-    // } else if (status === loginStatus.NotLogged) {
-    //   return NextResponse.redirect(new URL('/auth', request.url));
-    // } else if (status === loginStatus.TwoFactor) {
-    //   return NextResponse.redirect(new URL('/auth/twofctor'));
-    // }
-    // return NextResponse.redirect(new URL('/profile', request.url));
-  // const responseStatus = await CheckUserStatus();
-  //     if (responseStatus.status === 403) {
-  //       const body = await responseStatus.json();
-  //       if (body.message === loginStatus.FirstTime) {
-  //         console.log("first time");
-  //       } else if (body.message === loginStatus.NotLogged) {
-  //         console.log("not logged");
-  //         return NextResponse.redirect(new URL('/auth', request.url))
-  //       } else if (body.message === loginStatus.TwoFactor) {
-  //         console.log("two factor");
-  //         return NextResponse.redirect(new URL('/auth/twofactor', request.url))
-  //       }
-  //       await console.log("bbbbbb", body);
-  //     } else {
-  //       console.log("you are alrady logged");
-  //       return NextResponse.redirect(new URL('/profile', request.url))
-  //     }
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/profile/", "/chat", "/game", "/settings", "/auth/:path*"],
+  matcher: [
+    "/profile/:path*",
+    "/chat",
+    "/game",
+    "/settings",
+    "/auth/:path*",
+  ],
 };

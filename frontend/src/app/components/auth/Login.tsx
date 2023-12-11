@@ -1,7 +1,7 @@
-"use client";
+
 
 import { NeuePlakFontBold, NeuePlakFont } from "@/app/utils/NeuePlakFont";
-import React, { SyntheticEvent, useEffect, useState } from "react";
+// import React, { SyntheticEvent, useEffect, useState } from "react";
 import Image from "next/image";
 // import BlueAchiev from "@/app/assets/svg/blueachiev.svg";
 import intra_logo from "@/app/assets/svg/42_logo.svg";
