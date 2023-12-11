@@ -146,7 +146,7 @@ export class AuthController {
 	@UseGuards(AuthenticatedGuard)
 	@Post('2fa')
 	//async _2fa(@Req() req: Request, @Body() body: _2fa, @Session() session: any,@Res() res)
-	async _2fa(@Req() req: any, @Body() body: _2fa, @Session() session: any) {
+	async _2fa(@Req() req: any, @Body() body: _2fa, @Session() session: any, @Res() res: Response) {
 		//this will get taken down and putting in guard
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
@@ -157,7 +157,8 @@ export class AuthController {
 		//if (!twoFacCheck || (twoFacCheck && session.passport.user.code))
 		//console.log('dugg ', session.passport.user);
 		if (!twoFacCheck || (twoFacCheck && user.hasOwnProperty('code')))
-			return 'Good';
+			//return {message: 'Good'};
+			res.redirect('http://localhost:3000/profile');
 			//throw new ForbiddenException({message: loginStatus.TwoFactor});
 		////
 		const verify = await this.settingService.checkIfQrCodeIsRight(user.id, body.code);
@@ -168,7 +169,8 @@ export class AuthController {
 		//console.log(req.user);
 		//console.log(session.passport.user);
 		//console.log('body = ', body);
-		return 'Good';
+		res.redirect('http://localhost:3000/profile');
+		//return {message: 'Good'};
 
 
 
