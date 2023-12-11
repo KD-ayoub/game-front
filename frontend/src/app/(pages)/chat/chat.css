@@ -1,0 +1,74 @@
+.chat {
+    background-color: rgb(66, 129, 129);
+    height: 100%;
+    width: 1266px;
+    height: 864px;
+    display: grid;
+    grid-template-columns: 400px 866px;
+    grid-template-rows: 117px 53px 694px;
+
+}
+
+.onlineNow {
+    background-color: #15131D;
+    height: 100%;
+    /* width: 361px; */
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    display: grid;
+    /* grid-template-rows: 117px 747px; */
+}
+
+.onlineList {
+    max-height: 110px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    overflow-x: auto;
+    /* scroll-behavior: smooth; */
+}
+
+.onlineList::-webkit-scrollbar {
+    height: 10px;
+  }
+  
+  .onlineList::-webkit-scrollbar-track {
+    background-color: #15131D;
+  }
+  
+  .onlineList::-webkit-scrollbar-thumb {
+    background-color: #70686749;
+  }
+  
+  .onlineList::-webkit-scrollbar-thumb:hover {
+    background-color: #6664646c;
+  }
+  
+
+.onlineList .onlineUser {
+    min-width: 60px;
+    height: 80px;
+    text-align: center;
+    margin: auto;
+}
+
+
+.msgSelect {
+    background-color: rgb(22, 19, 182);
+    height: 100%;
+    /* width: 866px; */
+    display: grid;
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    /* grid-template-rows: 117px 747px; */
+}
+
+.sentMessages {
+    background-color: rgb(19, 182, 73);
+    height: 100%;
+    /* width: 866px; */
+    display: grid;
+    grid-column: 1 / 2;
+    grid-row: 3 / 4;
+    /* grid-template-rows: 117px 747px; */
+}

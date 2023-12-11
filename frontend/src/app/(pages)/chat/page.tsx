@@ -10,6 +10,7 @@ import {
   ChannelMessaged,
   FriendsMessaged,
 } from "@/app/components";
+import "./chat.css";
 
 export default function Chat() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -25,14 +26,14 @@ export default function Chat() {
       />
       <SideBar isHumburgClicked={isHumburgClicked} />
       <div
-        className={`grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 lg:mt-[72px] xl:mt-[96px] 2xl:mt-[128px] ${marginbody} //flex justify-center items-center//`}
+        className={`grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 lg:mt-[72px] xl:mt-[96px] 2xl:mt-[128px] ${marginbody} flex justify-center items-center`}
       >
-        <div className="chat w-1265 h-864 grid  bg-red-599">
+        <div className="chat w-1265 h-864 bg-[#9b6363]">
           <OnlineNow />
-          <div>
+          <div className="msgSelect">
             <select
               name="Messages"
-              className="bg-[#717273] w-116 h-26"
+              className="bg-[#717273] w-116 h-26 "
               value={option}
               onChange={(e) => setOption(e.target.value)}
             >
@@ -43,7 +44,7 @@ export default function Chat() {
             </select>
           </div>
           {option === "Friends" ? <FriendsMessaged /> : <ChannelMessaged />}
-          <p className="text-red-500">this is what i select {option}</p>
+          <p className="text-[#f8bebeda]">this is what i select: {option}</p>
         </div>
       </div>
     </main>
