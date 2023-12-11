@@ -33,7 +33,6 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/auth/twofactor", request.url));
     }
   } else {
-    console.log("here");
     if (!cookie && request.nextUrl.pathname === "/auth") {
       return NextResponse.next();
     }

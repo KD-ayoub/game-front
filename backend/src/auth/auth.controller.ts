@@ -24,8 +24,17 @@ export class AuthController {
 	@UseGuards(FT_GUARD)
 	@Get('redirect')
 	//this redirect will get taken
-	@Redirect('status')
-	redirect(@Req() req: Request) {}
+	//@Redirect('status')
+	async redirect(@Req() req: any, @Session() session: any) {
+		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
+		const twoFacCheck = await this.auth.check2fa(req.user.id);
+		const user = session.passport.user;
+		if (checkFirstTime)
+			throw new ForbiddenException({message: loginStatus.FirstTime});
+		if (twoFacCheck && !user.hasOwnProperty('code'))
+			throw new ForbiddenException({message: loginStatus.TwoFactor});
+		return {message: 'Good'};
+	}
 
 	//get data that needed in goodlogin
 	@UseGuards(AuthenticatedGuard)
@@ -38,6 +47,7 @@ export class AuthController {
 	@Get('checkUserStatus')
 	async checkUserStatus(@Req() req: any, @Session() session: any) {
 		//this code is going to guard
+			//throw new ForbiddenException({message: loginStatus.FirstTime});
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
 		const user = session.passport.user;
@@ -45,7 +55,7 @@ export class AuthController {
 			throw new ForbiddenException({message: loginStatus.FirstTime});
 		if (twoFacCheck && !user.hasOwnProperty('code'))
 			throw new ForbiddenException({message: loginStatus.TwoFactor});
-		return 'Good';
+		return {message: 'Good'};
 	}
 
 	@UseGuards(AuthenticatedGuard)

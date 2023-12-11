@@ -75,7 +75,7 @@ export class first_timeGuard implements CanActivate{
 		const req = context.switchToHttp().getRequest();
 		const res = context.switchToHttp().getResponse();
 		if (!req.isAuthenticated()) {
-			res.redirect("http://localhost:3000/auth");
+			//res.redirect("http://localhost:3000/auth");
 			//res.json({msg: 'll'});
 			return req.isAuthenticated();
 		}
