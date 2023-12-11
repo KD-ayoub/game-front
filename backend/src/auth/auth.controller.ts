@@ -95,6 +95,12 @@ export class AuthController {
 		res.redirect("http://localhost:3000/profile");
 		return this.auth.getUserData(req.user.id);
 	}
+
+	@Get("test")
+	test()
+	{
+		return {blan :"blan"};
+	}
 	
 	@Get('/logout')
 	@UseGuards(first_timeGuard)

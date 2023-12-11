@@ -1,10 +1,30 @@
 import { Injectable } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
+import { errorMonitor } from "events";
 import { PrismaService } from "prisma/prisma.service";
+import { AppGateway } from "src/app.gateway";
 
 @Injectable()
 export class chatService {
-	constructor(private prisma : PrismaService){}
+	constructor(private prisma : PrismaService,private appGateway : AppGateway){}
+
+	async get_picture_name(id: string)
+	{
+		const data = await this.prisma.user.findUnique({
+			where: {
+				id
+			},
+			select: {
+				nickName: true,
+				profile: {
+					select: {
+						photo_path: true,
+					}
+				}
+			}
+		})
+		return data;
+	}
 
 	async get_all_direct_messages(userid: string)
 	{
@@ -20,8 +40,38 @@ export class chatService {
 	}
 
 
-	async create_a_direct_message(senderId: string,content : Direct_message)
+	async create_a_direct_message(senderId: string,content : Direct_message,rec_sock_id : string,send_sock_id : string)
 	{
+		try {
+			const directMessage  = await this.prisma.directMessage.findFirst({
+				where: {
+					OR: [
+						{
+							senderId,
+						},
+						{
+							receiverId: senderId,
+						}
+					]
+				}
+			})
+			if (!directMessage)
+			{
+				const sender_obj = await this.get_picture_name(senderId);
+				this.appGateway.server.to(rec_sock_id).emit('conv',sender_obj);
+				//console.log("sender : " , sender_obj);
+				const receiver_obj = await this.get_picture_name(content.recieverId);
+				this.appGateway.server.to(send_sock_id).emit('conv',receiver_obj);
+
+				//console.log("receiver : " , receiver_obj);
+
+
+				//console.log("-------------------->   ",content);
+				// emit a new conversation 
+			}
+		} catch (error) {
+			console.log("error adak lhmar");
+		}
 		try {
 			await this.prisma.directMessage.create({
 				data: {
@@ -33,7 +83,7 @@ export class chatService {
 			});
 			
 		} catch (error) {
-			console.log("hey")
+			console.log("hey : ",error)
 			 throw new WsException('invalid credentials.');
 		}
 	}
