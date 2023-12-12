@@ -25,15 +25,18 @@ export class AuthController {
 	@Get('redirect')
 	//this redirect will get taken
 	//@Redirect('status')
-	async redirect(@Req() req: any, @Session() session: any) {
+	async redirect(@Req() req: any, @Session() session: any, @Res() res: any) {
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
 		const user = session.passport.user;
 		if (checkFirstTime)
-			throw new ForbiddenException({message: loginStatus.FirstTime});
+			res.redirect('http://localhost:3000/goodlogin');
+			//throw new ForbiddenException({message: loginStatus.FirstTime});
 		if (twoFacCheck && !user.hasOwnProperty('code'))
-			throw new ForbiddenException({message: loginStatus.TwoFactor});
-		return {message: 'Good'};
+			res.redirect('http://localhost:3000/twofactor');
+			//throw new ForbiddenException({message: loginStatus.TwoFactor});
+		res.redirect('http://localhost:3000/profile');
+		//return {message: 'Good'};
 	}
 
 	//get data that needed in goodlogin
