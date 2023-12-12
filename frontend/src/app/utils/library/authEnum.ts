@@ -1,5 +1,5 @@
 export enum loginStatus {
-	NotLogged,
-	FirstTime,
-	TwoFactor
+	NotLogged = "NotLogged",
+	FirstTime = "FirstTime",
+	TwoFactor = "TwoFactor"
 }

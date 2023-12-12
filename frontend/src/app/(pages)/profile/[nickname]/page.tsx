@@ -24,6 +24,7 @@ import getFriends from "@/app/api/Profile/getFriends";
 import getGamesHistory from "@/app/api/Profile/getGamesHistory";
 import { usePathname } from "next/navigation";
 import getAllUsers from "@/app/api/Profile/getAllUsers";
+import { useUserContext } from "@/app/components/useUserContext";
 
 export default function ProfileUser({ params }: { params: { nickname: string } }) {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -61,36 +62,39 @@ export default function ProfileUser({ params }: { params: { nickname: string } }
   const [dataGamesHistory, setdataGamesHistory] = useState<
     Array<GamesHistoryType>
   >([]);
+  const context = useUserContext();
   useEffect(() => {
     async function fetchallusers() {
-      const allusers: AllUsersType[] = await getAllUsers();
-      for (let data = 0; data < allusers.length; data++) {
-        if (allusers[data].nickName === params.nickname) {
-          userid = allusers[data].id;
-          console.log(userid);
-          setdataAllUsers(allusers);
-          return;
-        } 
+      if (context.id) {
+        const allusers: AllUsersType[] = await getAllUsers(context.id);
+        for (let data = 0; data < allusers.length; data++) {
+          if (allusers[data].nickName === params.nickname) {
+            userid = allusers[data].id;
+            console.log(userid);
+            setdataAllUsers(allusers);
+            return;
+          } 
+        }
+        // error user does not exist, return to main profile
+        setdataAllUsers([]);
       }
-      // error user does not exist, return to main profile
-      setdataAllUsers([]);
     }
     fetchallusers();
-  }, []);
+  }, [context.id]);
   useEffect(() => {
     async function fetchdata() {
-      if (dataAllUsers.length !== 0) {
+      if (dataAllUsers.length !== 0 && context.id) {
         // pass userid as param
-        setdataProfile(await getProfileInfo());
-        setdataStatusGame(await getStatusGame());
-        setdataAchievement(await getAchievement());
-        setdataFriends(await getFriends());
-        setdataGamesHistory(await getGamesHistory());
+        setdataProfile(await getProfileInfo(userid));
+        setdataStatusGame(await getStatusGame(userid));
+        setdataAchievement(await getAchievement(userid));
+        setdataFriends(await getFriends(userid));
+        setdataGamesHistory(await getGamesHistory(userid));
         setIsloaded(false);
       }
     }
     fetchdata();
-  }, [dataAllUsers]);
+  }, [dataAllUsers, context.id]);
   // console.log(params.nickname);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">

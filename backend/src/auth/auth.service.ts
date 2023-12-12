@@ -72,6 +72,20 @@ export class AuthService {
 		});
 		return await commingData.fac_auth;
 	}
+
+	async getUserStatus(userId: string): Promise<{}> {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: userId
+			},
+			select: {
+				id: true,
+				full_name: true,
+				nickName: true
+			}
+		});
+		return await user;
+	}
 	//
 
 	async validateUser(details : any)

@@ -1,5 +1,5 @@
-"use client";
 
+"use client";
 // import Link from "next/link";
 import React from "react";
 // import { useState } from "react";
@@ -15,31 +15,28 @@ import { useRouter } from "next/navigation";
 
 export default function Auth() {
   const router = useRouter();
-
-  useEffect(() => {
-    async function fetcher() {
-      const responseStatus = await CheckUserStatus();
-      if (responseStatus.status === 403) {
-        const body = await responseStatus.json();
-        if (body.message === loginStatus.FirstTime) {
-          //redirect to first time
-          console.log("first time");
-          router.push('/auth/goodlogin');
-        } else if (body.message === loginStatus.NotLogged) {
-          //redirect to auth
-          console.log("not logged");
-        } else if (body.message === loginStatus.TwoFactor) {
-          console.log("two factor");
-        }
-        await console.log("bbbbbb", body);
-      } else {
-        console.log("you are alrady logged");
-        router.push("/profile");
-        return null;
-      }
-    }
-    fetcher();
-  }, []);
+  // useEffect(() => {
+  //   async function goodLoginMiddleware() {
+  //     const responseStatus = await CheckUserStatus();
+  //     if (responseStatus.status === 403) {
+  //       const body = await responseStatus.json();
+  //       if (body.message === loginStatus.FirstTime) {
+  //         console.log("first time");
+  //         return loginStatus.FirstTime;
+  //       } else if (body.message === loginStatus.NotLogged) {
+  //         console.log("not logged", body.message);
+  //         return loginStatus.NotLogged;
+  //       } else if (body.message === loginStatus.TwoFactor) {
+  //         console.log("two factor");
+  //         return loginStatus.TwoFactor;
+  //       }
+  //     } else {
+  //       console.log("you are alrady logged");
+  //       return "200";
+  //     }
+  //   }
+  //   goodLoginMiddleware();
+  // }, []);
   return (
     <main className="h-screen w-full bg-[#252134] max-w-[5120px]">
       <div className="w-full h-full flex justify-around items-center ">
