@@ -24,7 +24,12 @@ export default function TwoFactor() {
     const response = await fetch("http://localhost:3001/auth/2fa", {
       method: "POST",
       body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
       credentials: "include",
+      //body: JSON.stringify({"code": "88348"}),
+      //body: body,
     });
     await console.log(response);
     //////////////////////////:
