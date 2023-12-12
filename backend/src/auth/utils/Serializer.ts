@@ -4,16 +4,17 @@ import { AuthService } from "../auth.service";
 import { server_response } from "src/utils/types";
 
 @Injectable()
-export class SessionSerializer extends PassportSerializer{
-	constructor(private readonly authService: AuthService)
-	{
+export class SessionSerializer extends PassportSerializer {
+	constructor(private readonly authService: AuthService) {
 		super();
 	}
-	serializeUser(user, done: (err: Error, user: any)=> void) {
+
+	serializeUser(user, done: (err: Error, user: any) => void) {
 		if (user.id)
 			this.authService.delete_old_sessions(user.id);
 		done(null,user);
 	}
+
 	async deserializeUser(user, done: (err: Error, user: any)=> void)
 	{
 		const userDB = await this.authService.findUser(user);
@@ -24,6 +25,6 @@ export class SessionSerializer extends PassportSerializer{
 			nickname: userDB.nickName,
 			first_time: userDB.first_time,
 		}
-		return userDB ? done(null,found):  done(null, null);
+		return userDB ? done(null, found) : done(null, null);
 	}
 }

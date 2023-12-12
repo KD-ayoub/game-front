@@ -9,7 +9,7 @@ export default function OnlineNow() {
   const [friends, setFriends] = useState([
     { id: 1, name: "Johnoe", picture: fakeAvatar.src, isOnline: true },
     { id: 2, name: "Ausso", picture: hic_avatar.src, isOnline: true },
-    { id: 3, name: "FW", picture: mo_avatar.src, isOnline: true },
+    { id: 3, name: "Moka", picture: mo_avatar.src, isOnline: true },
     { id: 4, name: "Aissa", picture: hic_avatar.src, isOnline: true },
     { id: 5, name: "Mimo", picture: fakeAvatar.src, isOnline: true },
     { id: 6, name: "Mortelle", picture: hic_avatar.src, isOnline: true },

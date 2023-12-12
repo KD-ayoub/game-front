@@ -39,14 +39,11 @@ export default function Chat() {
               onChange={(e) => setOption(e.target.value)}
             >
               <option value="Friends">Friends</option>
-              <option value="Channels" className="">
-                Channels
-              </option>
+              <option value="Channels">Channels</option>
             </select>
           </div>
           {option === "Friends" ? <FriendsMessaged /> : <ChannelMessaged />}
           {/* <p className="text-[#f8bebeda]">this is what i select: {option}</p> */}
-          <FriendConversation />
 
         </div>
       </div>

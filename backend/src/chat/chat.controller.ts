@@ -11,8 +11,8 @@ export class ChatController{
 	@Get('history/:id')
 	async history(@Session() session: Record<string,any>,@Param('id') id : string)
 	{
-		console.log(session.passport.user.id);
-		console.log(id);
+		//console.log(session.passport.user.id);
+		//console.log(id);
 		let all_messages : message_history[]  = await this.chatService.get_all_dm_history(session.passport.user.id,id);
 		return all_messages;
 	}

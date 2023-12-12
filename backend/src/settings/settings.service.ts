@@ -9,6 +9,7 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class SettingsService {
+  private hld: string;
   constructor(private prisma: PrismaService, private cloudinaryService: CloudinaryService) {}
 
   async getSettingsData(userId: string): Promise<{}> {
@@ -58,19 +59,53 @@ export class SettingsService {
 		return false
   }
 
+  async deleteImageData(userId: string) {
+    const profile = await this.prisma.profile.findUnique({
+      where: {
+        userID: userId
+      },
+      select: {
+        photoID: true,
+        photo_path: true
+      }
+    });
+    if (!profile)
+      throw new NotFoundException('User not found');
+    if (profile.photoID !== "default_img") {
+      try {
+        this.cloudinaryService.deleteFile(profile.photoID);
+        await this.prisma.profile.update({
+          where: {
+            userID: userId,
+          },
+          data: {
+            photo_path: "default_img",
+            photoID: "default_img"
+          },
+        });
+      } catch (err) {
+        throw new ConflictException('error in cloudinary delete photo');
+      }
+    }
+    return {
+      photo_path: "default_img"
+    };
+  }
+
   async changeSettingsImage(file: Express.Multer.File, userId: string): Promise<{}> {
     try {
-      let upload;
-
-
-      if (file)
-        upload = await this.cloudinaryService.uploadFile(file);
+      console.log('in change setting image');
+      console.log(`userID = ${userId}`);
+      console.log(file);
+      await this.deleteImageData(userId);
+      const upload = await this.cloudinaryService.uploadFile(file);
       const profile = await this.prisma.profile.update({
         where: {
           userID: userId,
         },
         data: {
-          photo_path: (file) ? upload.secure_url : "default_img",
+          photo_path: upload.secure_url,
+          photoID: upload.public_id
         },
         select: {
           photo_path: true,
