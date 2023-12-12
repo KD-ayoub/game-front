@@ -7,6 +7,7 @@ import OTPVerification from "@/app/components/auth/OTPverification";
 import CheckUserStatus from "@/app/api/checkUserStatus";
 import { loginStatus } from "@/app/utils/library/authEnum";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function TwoFactor() {
@@ -19,6 +20,15 @@ export default function TwoFactor() {
   }
   async function handlLogin() {
     ///////send to backend
+    if (enteredOTP.length !== 6) {
+      toast.error("Enter the 6 numbers", {
+        style: {
+          backgroundColor: "#383546",
+          color: "white",
+        },
+      });
+      return ;
+    }
     const body = {code: enteredOTP};
     console.log(JSON.stringify(body));
     const response = await fetch("http://localhost:3001/auth/2fa", {
@@ -31,13 +41,22 @@ export default function TwoFactor() {
       //body: JSON.stringify({"code": "88348"}),
       //body: body,
     });
-    await console.log(response);
+    if (!response.ok) {
+      toast.error("code Incorrect", {
+        style: {
+          backgroundColor: "#383546",
+          color: "white",
+        },
+      });
+      return;
+    }
     //////////////////////////:
   }
   
   console.log("OTP", enteredOTP);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
+      <Toaster />
       <div className="flex w-full h-screen items-center justify-center  flex-col bg-gradient-radial">
         <div className="w-52 h-[400px] sm:w-72 sm:h-[450px] md:w-80 md:h-[480px] lg:w-[368px] lg:h-[550px] xl:w-[500px] xl:h-[650px] 2xl:w-[600px] 2xl:h-[850px] bg-[#15131D] border border-solid border-white rounded-[20px] flex flex-col justify-evenly items-center ">
           <div className="flex flex-col justify-center items-center gap-3 lg:gap-5 2xl:gap-7">

@@ -30,10 +30,10 @@ export class AuthController {
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
 		const user = session.passport.user;
 		if (checkFirstTime)
-			res.redirect('http://localhost:3000/goodlogin');
+			res.redirect('http://localhost:3000/auth/goodlogin');
 			//throw new ForbiddenException({message: loginStatus.FirstTime});
 		if (twoFacCheck && !user.hasOwnProperty('code'))
-			res.redirect('http://localhost:3000/twofactor');
+			res.redirect('http://localhost:3000/auth/twofactor');
 			//throw new ForbiddenException({message: loginStatus.TwoFactor});
 		res.redirect('http://localhost:3000/profile');
 		//return {message: 'Good'};
@@ -151,7 +151,7 @@ export class AuthController {
 	//async _2fa(@Req() req: Request, @Body() body: _2fa, @Session() session: any,@Res() res)
 	async _2fa(@Req() req: any, @Body() body: _2fa, @Session() session: any, @Res() res: Response) {
 		//this will get taken down and putting in guard
-		//console.log('ll = ', body);
+		console.log('ll = ', body);
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
 		const user = session.passport.user;

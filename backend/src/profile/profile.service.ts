@@ -17,7 +17,7 @@ export class ProfileService {
       }
     });
     if (!user || !profile)
-      throw new NotFoundException();
+      return {};
     const data = await {
       id: user.id,
       full_name: user.full_name,
@@ -38,7 +38,7 @@ export class ProfileService {
       }
     });
     if (!game.length)
-      throw new NotFoundException();
+      return [];
     for (let i = 0; i < game.length; i++)
       game[i]['opponent_data'] = await this.getOtherUserData(game[i].opponent_id);
     return game;
@@ -65,7 +65,7 @@ export class ProfileService {
       }
     })
     if (!opponent || !profile)
-      throw new NotFoundException();
+      return [];
     const data = await {
       id: opponent.id,
       full_name: opponent.full_name,
@@ -82,7 +82,7 @@ export class ProfileService {
       }
     });
     if (!user)
-      throw new NotFoundException();
+      return {};
     const data = await {
       games: user.games,
       win: user.win,
@@ -98,7 +98,7 @@ export class ProfileService {
       }
     });
     if (!commingData)
-      throw new NotFoundException();
+      return {};
     return commingData;
   }
 
@@ -113,7 +113,7 @@ export class ProfileService {
       }
     });
     if (!commingData.length)
-      throw new NotFoundException();
+      return [];
     for (let i = 0; i < commingData.length; i++) {
       await data.push(await this.getOtherUserData(commingData[i].friendId));
     }
@@ -135,7 +135,7 @@ export class ProfileService {
       }
     });
     if (!img.length || !commingData.length)
-      throw new NotFoundException();
+      return [];
     commingData.forEach((data) => {
       data['photo_path'] = img.find((elem) => (elem.userID === data.id)).photo_path;
     })
