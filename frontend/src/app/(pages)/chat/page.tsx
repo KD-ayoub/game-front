@@ -9,6 +9,7 @@ import {
   OnlineNow,
   ChannelMessaged,
   FriendsMessaged,
+  FriendConversation,
 } from "@/app/components";
 import "./chat.css";
 
@@ -30,10 +31,10 @@ export default function Chat() {
       >
         <div className="chat w-1265 h-864 bg-[#9b6363]">
           <OnlineNow />
-          <div className="msgSelect">
+          <div className="msgSelect pt-2">
             <select
               name="Messages"
-              className="bg-[#717273] w-116 h-26 "
+              className="bg-[#15131D] text-center w-32 h-7 rounded-md "
               value={option}
               onChange={(e) => setOption(e.target.value)}
             >
@@ -44,7 +45,9 @@ export default function Chat() {
             </select>
           </div>
           {option === "Friends" ? <FriendsMessaged /> : <ChannelMessaged />}
-          <p className="text-[#f8bebeda]">this is what i select: {option}</p>
+          {/* <p className="text-[#f8bebeda]">this is what i select: {option}</p> */}
+          <FriendConversation />
+
         </div>
       </div>
     </main>

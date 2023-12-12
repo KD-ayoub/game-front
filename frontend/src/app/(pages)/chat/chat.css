@@ -5,7 +5,7 @@
     height: 864px;
     display: grid;
     grid-template-columns: 400px 866px;
-    grid-template-rows: 117px 53px 694px;
+    grid-template-rows: 117px 40px 707px;
 
 }
 
@@ -54,7 +54,7 @@
 
 
 .msgSelect {
-    background-color: rgb(22, 19, 182);
+    background-color: #15131D;
     height: 100%;
     /* width: 866px; */
     display: grid;
@@ -70,5 +70,26 @@
     display: grid;
     grid-column: 1 / 2;
     grid-row: 3 / 4;
+    /* grid-template-rows: 117px 747px; */
+}
+
+.friendsMessaged {
+    background-color: rgb(216, 33, 170);
+    height: 100%;
+    /* width: 866px; */
+    display: grid;
+    grid-column: 1 / 2;
+    grid-row: 3 / 4;
+    /* grid-template-rows: 117px 747px; */
+
+}
+
+.friendConv {
+    background-color: rgba(216, 33, 170, 0.459);
+    height: 100%;
+    /* width: 866px; */
+    display: grid;
+    grid-column: 2 / 3;
+    grid-row: 1 / 4;
     /* grid-template-rows: 117px 747px; */
 }
