@@ -58,13 +58,14 @@ export default function Profile() {
   console.log("context", context.id);
   useEffect(() => {
     async function fetchdata() {
-      
+      if (context.id) {
         setdataProfile(await getProfileInfo(context.id));
         setdataStatusGame(await getStatusGame(context.id));
         setdataAchievement(await getAchievement(context.id));
         setdataFriends(await getFriends(context.id));
         setdataGamesHistory(await getGamesHistory(context.id));
         setIsloaded(false);
+      }
     }
     fetchdata();
   }, [context.id]);

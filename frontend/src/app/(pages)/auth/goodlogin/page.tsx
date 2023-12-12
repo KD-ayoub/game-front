@@ -120,7 +120,7 @@ export default function GoodLogin() {
 
   useEffect(() => {
     async function fetcher() {
-      // 
+      //
       setUserData(await getUserData());
     }
     fetcher();

@@ -17,8 +17,8 @@ export default function UserContextProvider({
 }) {
   const [userData, setUserData] = useState<userType>({
     id: "",
-    full_name: "",
-    nickName: "",
+    full_name: '',
+    nickName: '',
   });
   useEffect(() => {
     async function fetcher() {
@@ -29,6 +29,10 @@ export default function UserContextProvider({
         },
         credentials: 'include',
       })
+      if (!response.ok) {
+        console.log("response error in context");
+        return;
+      }
       setUserData(await response.json());
     }
     fetcher();

@@ -26,7 +26,7 @@ export default function Settings() {
     full_name: "",
     nickName: "",
     fac_auth: false,
-    photo_path: "",
+    photo_path: `${ProfileImg.src}`,
   });
   const [respSettings, setRespSettings] = useState<SettingsType>({
     id: "",
@@ -77,11 +77,13 @@ export default function Settings() {
   }
   function handlRemoveImage() {
     console.log("image:",createObjectURL);
+    console.log("image2:",dataSettings.photo_path);
     if (fileinputRef.current) {
       fileinputRef.current.value = "";
     }
     URL.revokeObjectURL(createObjectURL);
     setCreateObjectURL(`${ProfileImg.src}`);
+    dataSettings.photo_path = `${ProfileImg.src}`;
     // send an empty json
   }
   function handlImageChange() {
@@ -114,19 +116,6 @@ export default function Settings() {
       setDataSettings(await getSettings());
     }
     fetcher();
-
-    // async function handleImageChange() {
-    //     console.log("Fileimage:", selectedImage);
-    //     const formData = new FormData();
-    //     // console.log("file", image)
-    //     formData.append("profile", selectedImage ?? "https://placehold.co/400");
-    //     const response = await fetch("/api/upload", {
-    //       method: "POST",
-    //       body: formData
-    //     });
-    //     console.log("res:", response);
-    // }
-    // handleImageChange();
   }, []);
   console.log("dataa", dataSettings);
 
@@ -152,7 +141,7 @@ export default function Settings() {
             <div className="flex flex-col justify-center items-center">
               <Image
                 className="m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44 rounded-full"
-                src={createObjectURL}
+                src={dataSettings.photo_path === `${ProfileImg.src}` ? createObjectURL : dataSettings.photo_path}
                 width={60}
                 height={60}
                 alt="settings image"
@@ -196,9 +185,12 @@ export default function Settings() {
                         e.preventDefault();
                         if (e.target.files) {
                           const file = e.target.files[0];
-                          setCreateObjectURL(URL.createObjectURL(file));
-                          console.log("imagechange:",createObjectURL);
-                          setSelectedImage(file);
+                          if (e.target.files.length > 0) {
+                            setCreateObjectURL(URL.createObjectURL(file));
+                            dataSettings.photo_path = `${ProfileImg.src}`
+                            console.log("imagechange:",createObjectURL);
+                            setSelectedImage(file);
+                          }
                         }
                       }}
                     />
