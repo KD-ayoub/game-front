@@ -154,8 +154,11 @@ export class AuthController {
 	@UseGuards(AuthenticatedGuard)
 	@Post('2fa')
 	//async _2fa(@Req() req: Request, @Body() body: _2fa, @Session() session: any,@Res() res)
-	async _2fa(@Req() req: any, @Body() body: _2fa, @Session() session: any, @Res() res: Response) {
+	async _2fa(@Req() req: any, @Body() body: _2fa, @Session() session: any) {
 		//this will get taken down and putting in guard
+		//console.log('ll = ', body);
+		//return {message: 'Good'};
+
 		console.log('ll = ', body);
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
