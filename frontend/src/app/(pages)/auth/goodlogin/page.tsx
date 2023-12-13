@@ -32,6 +32,9 @@ export default function GoodLogin() {
   const [fileImage, setFileImage] = useState<File>();
   const router = useRouter();
   const searchParam = useSearchParams();
+
+  const {fetcher} = useUserContext();
+
   function handlImageChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
     if (event.target.files) {
@@ -95,6 +98,7 @@ export default function GoodLogin() {
         if (putData.status === 200) {
           // redirect to profile
           router.push("/profile");
+          fetcher();
         } else if (putData.status === 409) {
           toast.error("nickname already exists", {
             style: {

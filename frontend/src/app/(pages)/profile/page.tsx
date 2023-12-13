@@ -54,21 +54,21 @@ export default function Profile() {
   });
   const [dataFriends, setdataFriends] = useState<Array<FriendsType>>([]);
   const [dataGamesHistory, setdataGamesHistory] = useState<Array<GamesHistoryType>>([]);
-  const context = useUserContext();
-  console.log("context in profile", context.id);
+  const {userData} = useUserContext();
+  console.log("context in profile", userData.id);
   useEffect(() => {
     async function fetchdata() {
-      if (context.id) {
-        setdataProfile(await getProfileInfo(context.id));
-        setdataStatusGame(await getStatusGame(context.id));
-        setdataAchievement(await getAchievement(context.id));
-        setdataFriends(await getFriends(context.id));
-        setdataGamesHistory(await getGamesHistory(context.id));
+      if (userData.id) {
+        setdataProfile(await getProfileInfo(userData.id));
+        setdataStatusGame(await getStatusGame(userData.id));
+        setdataAchievement(await getAchievement(userData.id));
+        setdataFriends(await getFriends(userData.id));
+        setdataGamesHistory(await getGamesHistory(userData.id));
         setIsloaded(false);
       }
     }
     fetchdata();
-  }, [context.id]);
+  }, [userData.id]);
   console.log("gameeeehisto", dataGamesHistory);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">

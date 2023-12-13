@@ -8,7 +8,14 @@ type userType = {
   nickName: string;
 };
 
-export const UserContext = createContext<userType | null>(null);
+// export const UserContext = createContext<userType | null>(null);
+type UserContextType = {
+  userData: userType;
+  setUserData: React.Dispatch<React.SetStateAction<userType>>;
+  fetcher: () => Promise<void>;
+};
+
+export const UserContext = createContext<UserContextType | null>(null);
 
 export default function UserContextProvider({
   children,
@@ -20,26 +27,42 @@ export default function UserContextProvider({
     full_name: '',
     nickName: '',
   });
-  useEffect(() => {
-    async function fetcher() {
-      const response = await fetch('http://localhost:3001/auth/getUserStatus', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      })
-      if (!response.ok) {
-        console.log("response error in context");
-        return;
-      }
-      setUserData(await response.json());
+
+  async function fetcher() {
+    const response = await fetch('http://localhost:3001/auth/getUserStatus', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      console.log("response error in context");
+      return;
     }
+    setUserData(await response.json());
+  }
+
+  useEffect(() => {
+    // async function fetcher() {
+    //   const response = await fetch('http://localhost:3001/auth/getUserStatus', {
+    //     method: 'GET',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     credentials: 'include',
+    //   })
+    //   if (!response.ok) {
+    //     console.log("response error in context");
+    //     return;
+    //   }
+    //   setUserData(await response.json());
+    // }
     fetcher();
   }, [])
   console.log("user data", userData);
   return (
-    <UserContext.Provider value={userData}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ userData, setUserData, fetcher }}>{children}</UserContext.Provider>
   );
 }
 

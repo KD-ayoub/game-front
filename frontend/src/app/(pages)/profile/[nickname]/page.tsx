@@ -66,18 +66,18 @@ export default function ProfileUser({
   const [dataGamesHistory, setdataGamesHistory] = useState<
     Array<GamesHistoryType>
   >([]);
-  const context = useUserContext();
+  const {userData} = useUserContext();
   const router = useRouter();
-  console.log("context in [nick]", context.id);
+  console.log("context in [nick]", userData.id);
   useEffect(() => {
     async function fetchallusers() {
-      if (context.id) {
+      if (userData.id) {
         console.log("entered here", params.nickname);
-        if (context.nickName === params.nickname) {
+        if (userData.nickName === params.nickname) {
           router.push('/profile');
           return;
         }
-        const allusers: AllUsersType[] = await getAllUsers(context.id);
+        const allusers: AllUsersType[] = await getAllUsers(userData.id);
         for (let data = 0; data < allusers.length; data++) {
           if (allusers[data].nickName === params.nickname) {
             console.log("found id of ", params.nickname);
@@ -98,7 +98,7 @@ export default function ProfileUser({
       setdataAllUsers([]);
     }
     fetchallusers();
-  }, [context.id]);
+  }, [userData.id]);
   // useEffect(() => {
   //   async function fetchdata() {
   //     if (dataAllUsers.length !== 0 && userid) {
