@@ -1,4 +1,6 @@
 const matterContainer = document.querySelector("#matter-container");
+console.log(matterContainer.clientWidth);
+console.log(matterContainer.clientHeight);
 const THICCNESS = 60;
 
 // module aliases
@@ -18,14 +20,22 @@ var render = Render.create({
     element: matterContainer,
     engine: engine,
     options: {
-        width: matterContainer.clientWidth,
-        height: document.body.clientHeight,
+        width: matterContainer.clientWidth - (matterContainer.clientWidth / 3),
+        height: document.body.clientHeight - (document.body.clientHeight / 4),
         background: "transparent",
         //wireframes: true,
         wireframes: false,
         showAngleIndicator: true
     }
 });
+
+//Render.lookAt(
+//    render,
+//    //padding = {
+//    //x: 10,
+//    //y: 10,
+//    //}
+//);
 
 //mouse
 let mouse = Mouse.create(render.canvas);
@@ -82,7 +92,7 @@ let right = Bodies.rectangle(
     { isStatic: true }
 );
 
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 2; i++) {
     //let obj = Bodies.circle(i, 10, 30, {
     //    friction: 0.3,
     //    frictionAir: 0.00001,

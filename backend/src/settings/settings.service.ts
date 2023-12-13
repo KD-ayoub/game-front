@@ -48,11 +48,14 @@ export class SettingsService {
         TwoFac_pass: true
       }
     });
+
+    await console.log(`token => ${token} pass => ${profile.TwoFac_pass}`);
     let verify = speakeasy.totp.verify({
       secret: profile.TwoFac_pass,
       encoding: 'base32',
       token
-    }) as boolean;
+    });
+    console.log('here ', verify);
     return verify;
     //if (verify)
 		//  return true;
@@ -140,10 +143,11 @@ export class SettingsService {
             userID: userId,
           },
           data: {
-            TwoFac_pass: objFac.base32
+            TwoFac_pass: objFac.base32,
+            QR_url: objFac.otpauth_url
           },
           select: {
-            TwoFac_pass: true
+            QR_url: true
           }
         });
       }
@@ -153,7 +157,7 @@ export class SettingsService {
             userID: userId,
           },
           select: {
-            TwoFac_pass: true
+            QR_url: true
           }
         });
       }
@@ -175,7 +179,7 @@ export class SettingsService {
       });
       if (data.fac_auth) {
         try {
-          user['qr_code_url'] = await qrcode.toDataURL(profile.TwoFac_pass);
+          user['qr_code_url'] = await qrcode.toDataURL(profile.QR_url);
         } catch (err) {
           throw (err);
         }

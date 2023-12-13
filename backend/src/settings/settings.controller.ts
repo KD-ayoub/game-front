@@ -21,9 +21,12 @@ import * as qrcode from 'qrcode';
 //here check if the user sends the user header 
 export class SettingsController {
   //constructor(private SettingsService: SettingsService) {}
-  constructor(private SettingsService: SettingsService) {}
+  constructor(private SettingsService: SettingsService) {
+    this.i = 0;
+  }
 
   private secret: string;
+  private url: string;
   private i: number;
   @Get()
   getSettings(@Req() req: any) {
@@ -31,25 +34,29 @@ export class SettingsController {
     return this.SettingsService.getSettingsData(req.user.id);
   }
 
-  //@Post('tst')
-  //ok(@Headers('code') id: any) {
-  //  if (!this.i) {
-  //    this.secret = speakeasy.generateSecret().base32;
-  //  }
-  //  else {
-  //    let verify = speakeasy.totp.verify({
-  //      secret: this.secret,
-  //      encoding: 'base32',
-  //      id
-  //    })
-  //    if (verify)
-	//	    console.log(true);
-  //    else
-	//	    console.log(false);
-  //  }
-  //  this.i++;
-  //  return qrcode.toDataURL(this.secret);
-  //}
+  @Post('tst')
+  ok(@Headers('code') id: any) {
+    if (!this.i) {
+      const ok = speakeasy.generateSecret();
+      this.url = ok.otpauth_url;
+      this.secret = ok.base32;
+      console.log(ok);
+    }
+    else {
+      console.log(`base32 = ${this.secret} | token ${id}`);
+      let verify = speakeasy.totp.verify({
+        secret: this.secret,
+        encoding: 'base32',
+        token: id
+      });
+      if (verify)
+		    console.log(true);
+      else
+		    console.log(false);
+    }
+    this.i++;
+    return qrcode.toDataURL(this.url);
+  }
 
   @Put('update_image')
   @UseInterceptors(FileInterceptor('file'))
