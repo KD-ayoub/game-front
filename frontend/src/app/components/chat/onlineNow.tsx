@@ -33,9 +33,9 @@ export default function OnlineNow() {
   return (
     <div className="onlineNow">
       <h2>Online Friends</h2>
-      <div className="onlineList flex overflow-y-hidden">
+      <div className="onlineList flex">
         {onlineFriends.map((friend) => (
-          <div className="onlineUser text-[9px] text-center p-1 " key={friend.id}>
+          <div className="onlineUser text-[10px] text-center p-1 " key={friend.id}>
             <img
               src={friend.picture}
               alt={friend.name}

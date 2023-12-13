@@ -12,6 +12,7 @@ import {
   FriendConversation,
 } from "@/app/components";
 import "./chat.css";
+import { NeuePlakFont } from "@/app/utils/NeuePlakFont";
 
 export default function Chat() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -29,7 +30,7 @@ export default function Chat() {
       <div
         className={`grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 lg:mt-[72px] xl:mt-[96px] 2xl:mt-[128px] ${marginbody} flex justify-center items-center`}
       >
-        <div className="chat w-1265 h-864 bg-[#9b6363]">
+        <div className={`chat ${NeuePlakFont.className} w-1265 h-864 bg-[#9b6363]`}>
           <OnlineNow />
           <div className="msgSelect pt-2">
             <select
