@@ -13,14 +13,15 @@ export class SettingsService {
   constructor(private prisma: PrismaService, private cloudinaryService: CloudinaryService) {}
 
   async getSettingsData(userId: string): Promise<{}> {
-    const img = await this.prisma.profile.findUnique({
+    const profile = await this.prisma.profile.findUnique({
       where: {
         userID: userId,
       },
       select: {
         photo_path: true,
+        QR_url: true
       }
-    })
+    });
     const commingData = await this.prisma.user.findUnique({
       where: {
         id: userId,
@@ -32,9 +33,11 @@ export class SettingsService {
         fac_auth: true
       }
     });
-    if (!img || !commingData)
+    if (!profile || !commingData)
       throw new NotFoundException();
-    commingData['photo_path'] = await img.photo_path;
+    commingData['photo_path'] = await profile.photo_path;
+    if (commingData.fac_auth)
+      commingData['qr_code_url'] = await qrcode.toDataURL(profile.QR_url);
     return commingData;
   }
 
