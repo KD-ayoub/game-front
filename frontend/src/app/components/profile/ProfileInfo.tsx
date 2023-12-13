@@ -62,8 +62,8 @@ export default function ProfileInfo({
         <div className="md:w-full md:h-full md:relative">
           <div className="absolute top-[20%] md:top-[35%] -translate-y-1/2 -translate-x-1/2 left-1/2 md:left-[50px] lg:left-[70px] xl:left-[80px] 2xl:left-[122px] ">
             <Image
-              className="md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 2xl:w-36 2xl:h-36"
-              src={ProfileImg.src}
+              className="md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 2xl:w-36 2xl:h-36 rounded-full"
+              src={dataprofile.photo_path}
               width={60}
               height={60}
               alt="profile image"

@@ -68,7 +68,7 @@ export default function Settings() {
     }
   }
   function handlNameChange(event: ChangeEvent<HTMLInputElement>) {
-    const modifiedname = { ...dataSettings, name: event.target.value };
+    const modifiedname = { ...dataSettings, full_name: event.target.value };
     setDataSettings(modifiedname);
   }
   function handlNickNameChange(event: ChangeEvent<HTMLInputElement>) {

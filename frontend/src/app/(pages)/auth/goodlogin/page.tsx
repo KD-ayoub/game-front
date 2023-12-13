@@ -15,6 +15,7 @@ import { redirect, useRouter, useSearchParams } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import CheckUserStatus from "@/app/api/checkUserStatus";
 import { loginStatus } from "@/app/utils/library/authEnum";
+import { useUserContext } from "@/app/components/useUserContext";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function GoodLogin() {
@@ -31,7 +32,6 @@ export default function GoodLogin() {
   const [fileImage, setFileImage] = useState<File>();
   const router = useRouter();
   const searchParam = useSearchParams();
-
   function handlImageChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
     if (event.target.files) {

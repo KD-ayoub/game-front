@@ -55,7 +55,7 @@ export default function Profile() {
   const [dataFriends, setdataFriends] = useState<Array<FriendsType>>([]);
   const [dataGamesHistory, setdataGamesHistory] = useState<Array<GamesHistoryType>>([]);
   const context = useUserContext();
-  console.log("context", context.id);
+  console.log("context in profile", context.id);
   useEffect(() => {
     async function fetchdata() {
       if (context.id) {

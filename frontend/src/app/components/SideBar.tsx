@@ -31,6 +31,7 @@ export default function SideBar({
         alt="Sideimg"
         width={0}
         height={0}
+        priority={true}
       />
       <div className="flex flex-col items-center gap-10 xl:gap-12 2xl:gap-20 pt-20 sm:pt-24 md:pt-24 lg:pt-32 xl:pt-40 2xl:pt-72">
         <div className="relative">
