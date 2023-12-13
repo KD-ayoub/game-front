@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, ForbiddenException, BadRequestException, Session } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { SettingsDto } from './dto';
@@ -9,7 +9,7 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class SettingsService {
-  private hld: string;
+  //private hld: string;
   constructor(private prisma: PrismaService, private cloudinaryService: CloudinaryService) {}
 
   async getSettingsData(userId: string): Promise<{}> {
@@ -49,18 +49,13 @@ export class SettingsService {
       }
     });
 
-    await console.log(`token => ${token} pass => ${profile.TwoFac_pass}`);
     let verify = speakeasy.totp.verify({
       secret: profile.TwoFac_pass,
       encoding: 'base32',
       token
     });
-    console.log('here ', verify);
+    console.log('otp ', verify);
     return verify;
-    //if (verify)
-		//  return true;
-    //else
-		//  return false
   }
 
   async deleteImageData(userId: string) {
@@ -123,7 +118,7 @@ export class SettingsService {
     }
   }
 
-  async changeSettingsData(userId: string, data: SettingsDto): Promise<{}> {
+  async changeSettingsData(userId: string, data: SettingsDto, session: any): Promise<{}> {
     try {
       let objFac;
       let profile;
@@ -137,7 +132,13 @@ export class SettingsService {
         }
       });
       if (!facCheck.fac_auth && data.fac_auth) {
+		    const user = session.passport.user;
         objFac = speakeasy.generateSecret();
+		    session.passport.user['code'] = speakeasy.totp({
+          secret: objFac.base32,
+          encoding: 'base32'
+        });
+        console.log('dd ', objFac);
         profile = await this.prisma.profile.update({
           where: {
             userID: userId,

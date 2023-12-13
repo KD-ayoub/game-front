@@ -1,4 +1,4 @@
-import { Controller, Post, Headers, Get, Put, Delete, Body, UseGuards , Req } from '@nestjs/common';
+import { Controller, Post, Headers, Get, Put, Delete, Body, UseGuards, Req, Session } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { AuthenticatedGuard } from '../auth/guards';
 import { SettingsDto } from './dto';
@@ -22,41 +22,51 @@ import * as qrcode from 'qrcode';
 export class SettingsController {
   //constructor(private SettingsService: SettingsService) {}
   constructor(private SettingsService: SettingsService) {
-    this.i = 0;
+    //this.i = 0;
   }
 
-  private secret: string;
-  private url: string;
-  private i: number;
   @Get()
   getSettings(@Req() req: any) {
     console.log("entred in get");
     return this.SettingsService.getSettingsData(req.user.id);
   }
 
-  @Post('tst')
-  ok(@Headers('code') id: any) {
-    if (!this.i) {
-      const ok = speakeasy.generateSecret();
-      this.url = ok.otpauth_url;
-      this.secret = ok.base32;
-      console.log(ok);
-    }
-    else {
-      console.log(`base32 = ${this.secret} | token ${id}`);
-      let verify = speakeasy.totp.verify({
-        secret: this.secret,
-        encoding: 'base32',
-        token: id
-      });
-      if (verify)
-		    console.log(true);
-      else
-		    console.log(false);
-    }
-    this.i++;
-    return qrcode.toDataURL(this.url);
-  }
+  //private secret: string;
+  //private url: string;
+  //private i: number;
+  //@Post('tst')
+  //ok(@Headers('code') id: string) {
+  //  if (!this.i) {
+  //    this.i++;
+  //    const ok = speakeasy.generateSecret();
+  //    this.url = ok.otpauth_url;
+  //    this.secret = ok.base32;
+  //    console.log(ok);
+  //    var url = speakeasy.otpauthURL({
+  //      secret: ok.ascii,
+  //      label: 'game pong',
+  //      algorithm: 'sha512'
+  //    });
+  //    //return qrcode.toDataURL(this.url);
+  //    return qrcode.toDataURL(url);
+  //  }
+  //  else {
+  //    console.log(`base32 = ${this.secret} | token |${id}|`);
+  //    let ll = speakeasy.totp({
+  //      secret: this.secret,
+  //      encoding: 'base32'
+  //    });
+  //    console.log('ll = ', ll);
+  //    let verify = speakeasy.totp.verify({
+  //      secret: this.secret,
+  //      encoding: 'base32',
+  //      token: id,
+  //      window: 1
+  //    });
+	//	  console.log('code => ', verify);
+  //  }
+  //  return 'done';
+  //}
 
   @Put('update_image')
   @UseInterceptors(FileInterceptor('file'))
@@ -67,12 +77,12 @@ export class SettingsController {
   //maybe here add a delete endpoint for deleting the image
   
   @Put('update_data')
-  changeSettings(@Req() req: any, @Body() data: SettingsDto): any {
+  changeSettings(@Req() req: any, @Body() data: SettingsDto, @Session() session: any): any {
     //wtf here pipe not working
     //console.log(JSON.stringify(data));
     if (!JSON.stringify(data) || JSON.stringify(data) === '{}')
       return data;
-    return this.SettingsService.changeSettingsData(req.user.id, data);
+    return this.SettingsService.changeSettingsData(req.user.id, data, session);
   }
 
   @Delete('delete_image')

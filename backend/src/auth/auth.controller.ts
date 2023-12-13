@@ -112,8 +112,8 @@ export class AuthController {
 		if (!checkFirstTime) {
 			//if (twoFacCheck)
 			//	redirectUrl = "http://localhost:3000/twofactor";
-			//res.redirect(redirectUrl);
-			return 'Good';
+			//res.redirect("http://localhost:3000/profile");
+			return {message: 'Good'};
 			//throw new ForbiddenException({message: loginStatus.NotLogged});
 		}
 		console.log(body);
@@ -167,9 +167,10 @@ export class AuthController {
 		//console.log('dugg ', session.passport.user);
 		if (!twoFacCheck || (twoFacCheck && user.hasOwnProperty('code'))) {
 			//return {message: 'Good'};
-			res.redirect('http://localhost:3000/profile');
-			//throw new ForbiddenException({message: loginStatus.TwoFactor});
-			return ;
+			//res.redirect('http://localhost:3000/profile');
+			////throw new ForbiddenException({message: loginStatus.TwoFactor});
+			//return ;
+			return {message: 'Good'};
 
 		}
 		////
@@ -183,9 +184,9 @@ export class AuthController {
 		//console.log(req.user);
 		//console.log(session.passport.user);
 		//console.log('body = ', body);
-		res.redirect('http://localhost:3000/profile');
-		return ;
-		//return {message: 'Good'};
+		//res.redirect('http://localhost:3000/profile');
+		//return ;
+		return {message: 'Good'};
 
 
 
