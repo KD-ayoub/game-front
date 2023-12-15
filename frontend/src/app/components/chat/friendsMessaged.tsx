@@ -5,6 +5,7 @@ import fakeAvatar from "@/app/assets/svg/chat/fakeAvatar.svg";
 import hic_avatar from "@/app/assets/svg/chat/hic_avatar.svg";
 import mo_avatar from "@/app/assets/svg/chat/mo_avatar.svg";
 import "../../(pages)/chat/chat.css";
+import { friendSelected } from "@/app/utils/library/friendsSelected";
 
 export default function FriendsMessaged() {
   const [friends, setFriends] = useState([
@@ -25,9 +26,10 @@ export default function FriendsMessaged() {
   ]);
   const [searching, setSearching] = useState("");
   const [showFriendConversation, setShowFriendConversation] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState(null);
 
-  function handlShowFriendConversation() {
-    setShowFriendConversation(!showFriendConversation);
+  function handlShowFriendConversation(friend: friendSelected) {
+    setSelectedFriend(friend);
   }
 
   const filterSearch = () => {
@@ -60,30 +62,32 @@ export default function FriendsMessaged() {
           />
         </div>
         <ul className="friendsscroll pt-2">
-          {filterSearch().map(
-            (
-              friend 
-            ) => (
-              <li className="friend" key={friend.name}>
-                  <button className="selectFriend w-[100%]" onClick={handlShowFriendConversation}>
-                <div className="listFriends flex flex-row p-1">
-                    <img
-                      src={friend.picture}
-                      alt={friend.name}
-                      className="w-[45px] rounded-full"
-                      />
-                    <h4 className="text-[14px] pl-2 pt-1">{friend.name}</h4>
-                    {friend.unread > 0 ? (
-                      <span className="bg-[#E95A3A] w-[12px] h-[12px] ml-auto mt-5 text-[9px] rounded-full text-center ">
-                        {friend.unread > 9 ? "+9" : friend.unread}
-                      </span>
-                    ) : null}{" "}
-                    {showFriendConversation ? <FriendConversation /> : null}
-                </div>
-                  </button>
-              </li>
-            )
-          )}
+          {filterSearch().map((friend) => (
+            <li className="friend" key={friend.name}>
+              <button
+                className="selectFriend w-[100%]"
+                onClick={() => handlShowFriendConversation(friend)}
+              >
+              <div className="listFriends flex flex-row p-1">
+                <img
+                  src={friend.picture}
+                  alt={friend.name}
+                  className="w-[45px] rounded-full"
+                />
+                <h4 className="text-[14px] pl-2 pt-1">{friend.name}</h4>
+                {friend.unread > 0 ? (
+                  <span className="bg-[#E95A3A] w-[12px] h-[12px] ml-auto mt-5 text-[9px] rounded-full text-center ">
+                    {friend.unread > 9 ? "+9" : friend.unread}
+                  </span>
+                ) : null}{" "}
+              </div>
+              {selectedFriend === friend ? (
+                <FriendConversation friend={friend} />
+              ) : null}
+              
+              </button>
+            </li>
+          ))}
         </ul>
       </div>
       {/* <FriendConversation /> */}

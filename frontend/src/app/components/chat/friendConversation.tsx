@@ -1,10 +1,10 @@
 import "../../(pages)/chat/chat.css";
 // import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
-
+import { friendSelected } from "@/app/utils/library/friendsSelected";
 // const socket = io("");
 
-export default function FriendConversation() {
+export default function FriendConversation(friend: friendSelected) {
   const [messages, setMessages] = useState("hi");
   const [receivedMessages, setReceivedMessages] = useState("");
 
@@ -24,7 +24,7 @@ export default function FriendConversation() {
       <div className="bg-[#d6934fa4]">
         <input
           placeholder="Message..."
-          className="bg-[#15131D] text-[#f8bebeda] w-80 h-7 rounded-md"
+          className="bg-[#15131D] text-[#f8bebeda] rounded-md"
           // onChange={(e) => {
           //   setMessages(e.target.value);
           // }}
