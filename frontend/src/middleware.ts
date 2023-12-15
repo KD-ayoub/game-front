@@ -48,6 +48,9 @@ export async function middleware(request: NextRequest) {
     } else if (data.message === loginStatus.TwoFactor) {
       console.log('entered 8', data.message);
       return NextResponse.redirect(new URL("/auth/twofactor", request.url));
+    } else if (data.message === loginStatus.NotLogged) {
+      console.log('entered 8', data.message);
+      return NextResponse.next();
     } else {
       console.log('entered 9', data.message);
       return NextResponse.redirect(new URL("/profile", request.url));
@@ -55,7 +58,7 @@ export async function middleware(request: NextRequest) {
   } else if (!cookie && request.nextUrl.pathname === "/auth") {
     console.log('entered 10');
     return NextResponse.next();
-  } else if(cookie) {
+  } else if(cookie && request.nextUrl.pathname !== "/auth") {
     const responseStatus = await CheckUserStatus(cookie.value);
     const data = await responseStatus.json();
     if (data.message === loginStatus.FirstTime) {
@@ -64,8 +67,11 @@ export async function middleware(request: NextRequest) {
     } else if (data.message === loginStatus.TwoFactor) {
       console.log('entered 12', data.message);
       return NextResponse.redirect(new URL("/auth/twofactor", request.url));
+    } else if (data.message === loginStatus.NotLogged) {
+      console.log('entered 12', data.message);
+      return NextResponse.redirect(new URL("/auth", request.url));
     } else {
-      console.log('entered 13', data.message);
+      console.log('entered 14', data.message);
       return NextResponse.next();
     }
   } else if (!cookie) {
