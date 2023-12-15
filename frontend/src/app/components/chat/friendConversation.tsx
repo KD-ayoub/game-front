@@ -8,7 +8,7 @@ export default function FriendConversation() {
   const [messages, setMessages] = useState("hi");
   const [receivedMessages, setReceivedMessages] = useState("");
 
-  
+
 //   const sendMessages = () => {
 //     socket.emit("sendMessage", { messages });
 //   };
