@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 // const socket = io("");
 
 export default function FriendConversation() {
-  const [messages, setMessages] = useState("");
+  const [messages, setMessages] = useState("hi");
   const [receivedMessages, setReceivedMessages] = useState("");
 
+  
 //   const sendMessages = () => {
 //     socket.emit("sendMessage", { messages });
 //   };
@@ -19,14 +20,14 @@ export default function FriendConversation() {
 //   }, [socket]);
 
   return (
-    <div className="friendConv flex justify-center items-center">
-      <div className="bg-[#f0861c11]">
+    <div className="friendConv ">
+      <div className="bg-[#d6934fa4]">
         <input
           placeholder="Message..."
           className="bg-[#15131D] text-[#f8bebeda] w-80 h-7 rounded-md"
-          onChange={(e) => {
-            setMessages(e.target.value);
-          }}
+          // onChange={(e) => {
+          //   setMessages(e.target.value);
+          // }}
         />
         {/* <button onClick={sendMessages} className="bg-[#00000080]"> */}
         <button className="rounded-md bg-slate-600 text-white h-7 ">

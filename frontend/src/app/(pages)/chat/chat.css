@@ -91,9 +91,13 @@
     
 }
 
-.friendInfo {
+.listFriends {
   margin: 0px 10px 0px 10px;
 
+}
+
+.selectFriend:hover {
+  background-color: #252134;
 }
 
 .friendsscroll {
@@ -122,8 +126,8 @@
     background-color: rgba(216, 33, 170, 0.459);
     height: 100%;
     /* width: 866px; */
-    /* display: grid;
+    display: grid; 
     grid-column: 2 / 3;
-    grid-row: 1 / 4; */
+    grid-row: 1 / 4;
     /* grid-template-rows: 117px 747px; */
 }

@@ -24,6 +24,11 @@ export default function FriendsMessaged() {
     { name: "Akadi", picture: hic_avatar.src, unread: 1 },
   ]);
   const [searching, setSearching] = useState("");
+  const [showFriendConversation, setShowFriendConversation] = useState(false);
+
+  function handlShowFriendConversation() {
+    setShowFriendConversation(!showFriendConversation);
+  }
 
   const filterSearch = () => {
     if (!searching) {
@@ -50,27 +55,32 @@ export default function FriendsMessaged() {
           <input
             type="text"
             placeholder="Search..."
-            onChange={(e) => setSearching(e.target.value)} // Fixed the state variable name
-            className="bg-[#383546] text-white w-[230px] h-[30px] rounded-md pl-2"
+            onChange={(e) => setSearching(e.target.value)}
+            className="bg-[#383546] text-white w-[90%] h-[30px] rounded-md pl-2"
           />
         </div>
         <ul className="friendsscroll pt-2">
           {filterSearch().map(
             (
-              friend // Used filterSearch function to filter the friends
+              friend 
             ) => (
               <li className="friend" key={friend.name}>
-                <div className="friendInfo flex flex-row p-1">
-                  <img
-                    src={friend.picture}
-                    alt={friend.name}
-                    className="w-14 rounded-full"
-                  />
-                  <h4 className="text-[14px] pl-1 pt-1">{friend.name}</h4>
-                  {friend.unread > 0 ? (
-                    <span className="bg-[#E95A3A] w-[12px] h-[12px] ml-auto mt-5 text-[9px] rounded-full text-center ">{friend.unread}</span>
-                  ) : null}{" "}
+                  <button className="selectFriend w-[100%]" onClick={handlShowFriendConversation}>
+                <div className="listFriends flex flex-row p-1">
+                    <img
+                      src={friend.picture}
+                      alt={friend.name}
+                      className="w-[45px] rounded-full"
+                      />
+                    <h4 className="text-[14px] pl-2 pt-1">{friend.name}</h4>
+                    {friend.unread > 0 ? (
+                      <span className="bg-[#E95A3A] w-[12px] h-[12px] ml-auto mt-5 text-[9px] rounded-full text-center ">
+                        {friend.unread > 9 ? "+9" : friend.unread}
+                      </span>
+                    ) : null}{" "}
+                    {showFriendConversation ? <FriendConversation /> : null}
                 </div>
+                  </button>
               </li>
             )
           )}
