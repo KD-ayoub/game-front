@@ -76,19 +76,19 @@ export class SettingsService {
     if (profile.photoID !== "default_img") {
       try {
         this.cloudinaryService.deleteFile(profile.photoID);
-        await this.prisma.profile.update({
-          where: {
-            userID: userId,
-          },
-          data: {
-            photo_path: "default_img",
-            photoID: "default_img"
-          },
-        });
       } catch (err) {
         throw new ConflictException('error in cloudinary delete photo');
       }
     }
+    await this.prisma.profile.update({
+      where: {
+        userID: userId,
+      },
+      data: {
+        photo_path: "default_img",
+        photoID: "default_img"
+      },
+    });
     return {
       photo_path: "default_img"
     };
