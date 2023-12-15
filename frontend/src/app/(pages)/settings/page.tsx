@@ -15,10 +15,12 @@ import Qrcode from "@/app/assets/svg/settings/qrcode.svg";
 import getSettings from "@/app/api/Settings/getSettings";
 import PutSettings from "@/app/api/Settings/putSettings";
 import PutImage from "@/app/api/Settings/putImage";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import DeleteImage from "@/app/api/Settings/deleteImage";
 
 export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
+  const [firstRemove, setFirstRemove] = useState(true);
   const marginbody = isHumburgClicked ? "ml-6" : "";
 
   const [dataSettings, setDataSettings] = useState<SettingsType>({
@@ -76,21 +78,44 @@ export default function Settings() {
     setDataSettings(modifiednickname);
   }
   function handlRemoveImage() {
-    console.log("image:",createObjectURL);
-    console.log("image2:",dataSettings.photo_path);
+    console.log("image:", createObjectURL);
+    console.log("image2:", dataSettings.photo_path);
     if (fileinputRef.current) {
       fileinputRef.current.value = "";
     }
+    if (firstRemove) {
+      setFirstRemove(!firstRemove);
+    }
     URL.revokeObjectURL(createObjectURL);
     setCreateObjectURL(`${ProfileImg.src}`);
-    dataSettings.photo_path = `${ProfileImg.src}`;
+    dataSettings.photo_path = `default_img`;
+    setSelectedImage(undefined);
     // send an empty json
   }
-  function handlImageChange() {
+  async function handlImageChange() {
     const formData = new FormData();
-    formData.append("file", selectedImage ?? "https");
-    formData.forEach((item) => {console.log("item:",item)});
-    PutImage(formData);
+    let checkItem: string = "";
+    formData.append("file", selectedImage ?? "https://placehold.co/400");
+    formData.forEach((item) => (checkItem = item.toString()));
+    console.log("checkItem", checkItem);
+    if (selectedImage) {
+      console.log('shoul not enter');
+      const toastId = toast.loading("Saving changes", {
+        style: {
+          backgroundColor: "#383546",
+          color: "white",
+        },
+      });
+      const putted = await PutImage(formData);
+      toast.success("Saved", {
+        id: toastId,
+        style: {
+          backgroundColor: "#383546",
+          color: "white",
+        }
+      });
+      console.log("putted", putted);
+    }
   }
   async function handlSaveChanges() {
     const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
@@ -101,12 +126,32 @@ export default function Settings() {
         nickNameRegex.test(nickNamelementRef.current.value)
       ) {
         // send put method
+        console.log("ettings sent", dataSettings);
+        console.log("selected ", selectedImage);
         const twofa = await PutSettings(dataSettings);
         setDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
         handlImageChange();
+        if (dataSettings.photo_path === "default_img") {
+          console.log("deleted", dataSettings.photo_path);
+          DeleteImage();
+        }
+        if (!selectedImage) {
+          toast.success("Saved", {
+            style: {
+              backgroundColor: "#383546",
+              color: "white",
+            }
+          });
+        }
         console.log("save");
       } else {
         // make toast error
+        toast.error("Error", {
+          style: {
+            backgroundColor: "#383546",
+            color: "white",
+          }
+        });
         console.log("dont save");
       }
     }
@@ -138,10 +183,17 @@ export default function Settings() {
             Settings
           </div>
           <div className="w-auto h-auto m-2 bg-gradient-to-b from-[#110D1F] via-[#110D1F] to-[#2d2a38] rounded-[20px]">
+            <Toaster />
             <div className="flex flex-col justify-center items-center">
               <Image
                 className="m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44 rounded-full"
-                src={dataSettings.photo_path === `${ProfileImg.src}` ? createObjectURL : dataSettings.photo_path}
+                src={
+                  dataSettings.photo_path === `${ProfileImg.src}` ||
+                  dataSettings.photo_path === `default_img` ||
+                  !firstRemove
+                    ? createObjectURL
+                    : dataSettings.photo_path
+                }
                 width={60}
                 height={60}
                 alt="settings image"
@@ -187,8 +239,8 @@ export default function Settings() {
                           const file = e.target.files[0];
                           if (e.target.files.length > 0) {
                             setCreateObjectURL(URL.createObjectURL(file));
-                            dataSettings.photo_path = `${ProfileImg.src}`
-                            console.log("imagechange:",createObjectURL);
+                            dataSettings.photo_path = `${ProfileImg.src}`;
+                            console.log("imagechange:", createObjectURL);
                             setSelectedImage(file);
                           }
                         }

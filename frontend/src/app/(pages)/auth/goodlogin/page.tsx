@@ -39,6 +39,8 @@ export default function GoodLogin() {
     event.preventDefault();
     if (event.target.files) {
       if (event.target.files.length > 0) {
+        console.log("entered here");
+        userData.photo_user = `${default_avatar.src}`;
         setObjectUrl(URL.createObjectURL(event.target.files[0]));
         console.log(objectUrl);
         setFileImage(event.target.files[0]);
@@ -94,9 +96,19 @@ export default function GoodLogin() {
           full_name: userData.full_name,
           nickname: userData.nickName,
         };
-        const putData = await PutUserData(body);
+        const formData = new FormData();
+        formData.append('file', fileImage ?? 'https://placehold.co/400');
+        // in case of error
+        const toastId = toast.loading("Saving changes", {
+          style: {
+            backgroundColor: "#383546",
+            color: "white",
+          },
+        });
+        const [putImg, putData] = await Promise.all([PutImage(formData), PutUserData(body)]);
         if (putData.status === 200) {
           // redirect to profile
+          toast.remove(toastId);
           router.push("/profile");
           fetcher();
         } else if (putData.status === 409) {
@@ -139,7 +151,7 @@ export default function GoodLogin() {
               <Image
                 className="h-20 md:w-[100px] md:h-[100px] lg:w-[110px] lg:h-[110px] xl:w-[125px] xl:h-[125px] 2xl:w-[145px] 2xl:h-[145px] rounded-full"
                 src={
-                  userData.photo_user === `${default_avatar.src}`
+                  userData.photo_user === `${default_avatar.src}` || userData.photo_user === 'default_img'
                     ? objectUrl
                     : userData.photo_user
                 }

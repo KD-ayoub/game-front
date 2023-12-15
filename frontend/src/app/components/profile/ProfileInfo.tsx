@@ -46,8 +46,8 @@ export default function ProfileInfo({
     );
   }
   const Isimage =
-    dataprofile.photo_path === "defautl_img"
-      ? ProfileImg.src
+    dataprofile.photo_path === "default_img"
+      ? `${ProfileImg.src}`
       : dataprofile.photo_path;
   const textsize = dataprofile.full_name.length >= 23 ? "text-[12px]" : "";
   return (
@@ -63,7 +63,7 @@ export default function ProfileInfo({
           <div className="absolute top-[20%] md:top-[35%] -translate-y-1/2 -translate-x-1/2 left-1/2 md:left-[50px] lg:left-[70px] xl:left-[80px] 2xl:left-[122px] ">
             <Image
               className="md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 2xl:w-36 2xl:h-36 rounded-full"
-              src={dataprofile.photo_path}
+              src={Isimage}
               width={60}
               height={60}
               alt="profile image"
