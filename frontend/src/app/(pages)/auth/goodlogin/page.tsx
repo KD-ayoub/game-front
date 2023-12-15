@@ -105,21 +105,38 @@ export default function GoodLogin() {
             color: "white",
           },
         });
-        const [putImg, putData] = await Promise.all([PutImage(formData), PutUserData(body)]);
-        if (putData.status === 200) {
-          // redirect to profile
-          toast.remove(toastId);
-          router.push("/profile");
-          fetcher();
-        } else if (putData.status === 409) {
-          toast.error("nickname already exists", {
-            style: {
-              backgroundColor: "#383546",
-              color: "white",
-            },
-          });
+        if (fileImage) {
+          const [putImg, putData] = await Promise.all([PutImage(formData), PutUserData(body)]);
+          if (putData.status === 200) {
+            // redirect to profile
+            toast.remove(toastId);
+            router.push("/profile");
+            fetcher();
+          } else if (putData.status === 409) {
+            toast.error("nickname already exists", {
+              style: {
+                backgroundColor: "#383546",
+                color: "white",
+              },
+            });
+          }
+        } else {
+          const putData = await PutUserData(body);
+          if (putData.status === 200) {
+            // redirect to profile
+            toast.remove(toastId);
+            router.push("/profile");
+            fetcher();
+          } else if (putData.status === 409) {
+            toast.error("nickname already exists", {
+              style: {
+                backgroundColor: "#383546",
+                color: "white",
+              },
+            });
+          }
         }
-        await console.log("hona ", putData);
+        // await console.log("hona ", putData);
         console.log("save");
       } else {
         // make toast error
