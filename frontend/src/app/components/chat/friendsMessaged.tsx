@@ -7,7 +7,7 @@ import mo_avatar from "@/app/assets/svg/chat/mo_avatar.svg";
 import "../../(pages)/chat/chat.css";
 import { friendSelected } from "@/app/utils/library/friendsSelected";
 
-export default function FriendsMessaged() {
+export default function FriendsMessaged(props: any) {
   const [friends, setFriends] = useState([
     { name: "Hicham", picture: fakeAvatar.src, unread: 2 },
     { name: "Aissa", picture: hic_avatar.src, unread: 0 },
@@ -25,10 +25,9 @@ export default function FriendsMessaged() {
     { name: "Akadi", picture: hic_avatar.src, unread: 1 },
   ]);
   const [searching, setSearching] = useState("");
-  const [showFriendConversation, setShowFriendConversation] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
 
-  function handlShowFriendConversation(friend: friendSelected) {
+  function handlShowFriendConversation(friend: any) {
     setSelectedFriend(friend);
   }
 
@@ -66,25 +65,24 @@ export default function FriendsMessaged() {
             <li className="friend" key={friend.name}>
               <button
                 className="selectFriend w-[100%]"
-                onClick={() => handlShowFriendConversation(friend)}
+                onClick={() => {handlShowFriendConversation(friend); props.onChange(false)}}
               >
-              <div className="listFriends flex flex-row p-1">
-                <img
-                  src={friend.picture}
-                  alt={friend.name}
-                  className="w-[45px] rounded-full"
-                />
-                <h4 className="text-[14px] pl-2 pt-1">{friend.name}</h4>
-                {friend.unread > 0 ? (
-                  <span className="bg-[#E95A3A] w-[12px] h-[12px] ml-auto mt-5 text-[9px] rounded-full text-center ">
-                    {friend.unread > 9 ? "+9" : friend.unread}
-                  </span>
-                ) : null}{" "}
-              </div>
-              {selectedFriend === friend ? (
-                <FriendConversation friend={friend} />
+                <div className="listFriends flex flex-row p-1">
+                  <img
+                    src={friend.picture}
+                    alt={friend.name}
+                    className="w-[45px] rounded-full"
+                  />
+                  <h4 className="text-[14px] pl-2 pt-1">{friend.name}</h4>
+                  {friend.unread > 0 ? (
+                    <span className="bg-[#E95A3A] w-[12px] h-[12px] ml-auto mt-5 text-[9px] rounded-full text-center ">
+                      {friend.unread > 9 ? "+9" : friend.unread}
+                    </span>
+                  ) : null}{" "}
+                </div>
+                {selectedFriend === friend ? (
+                <FriendConversation  />
               ) : null}
-              
               </button>
             </li>
           ))}
