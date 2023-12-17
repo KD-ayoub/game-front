@@ -11,6 +11,7 @@ import BlockImg from "@/app/assets/svg/profileInfo/block.svg";
 import UnfollowImg from "@/app/assets/svg/profileInfo/unfollow.svg";
 import { MainProfileType } from "@/app/types/mainprofiletype";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export default function ProfileInfo({
   Isloaded,
@@ -121,7 +122,7 @@ export default function ProfileInfo({
           </div>
           {/* add follow , unfollow , challenge , block and message */}
           <div className="absolute top-[78%] w-full md:hidden flex justify-evenly">
-            { !pathname && !Follow && (
+            {!pathname && !Follow && (
               <div
                 className="w-9 h-9 rounded-full bg-[#E95A3A] relative"
                 onClick={handlFollowClick}
@@ -135,7 +136,7 @@ export default function ProfileInfo({
                 />
               </div>
             )}
-            { !pathname && Follow && (
+            {!pathname && Follow && (
               <div
                 className="w-9 h-9 rounded-full bg-[#4A4853] relative"
                 onClick={handlUnfollowClick}
@@ -149,40 +150,50 @@ export default function ProfileInfo({
                 />
               </div>
             )}
-            {!pathname &&(<div className="w-9 h-9 rounded-full bg-[#E95A3A] relative">
-              <Image
-                className="absolute top-[5px] left-[6px]"
-                src={ChallengeImg.src}
-                width={25}
-                height={20}
-                alt="follow icon"
-              />
-            </div>)}
-            { !pathname &&(<div className="w-9 h-9 rounded-full bg-[#E95A3A] relative">
-              <Image
-                className="absolute top-[5px] left-[2px]"
-                src={MessageImg.src}
-                width={31}
-                height={30}
-                alt="follow icon"
-              />
-            </div>)}
-            {!pathname &&(<div className="w-9 h-9 rounded-full bg-[#4A4853] relative">
-              <Image
-                className="absolute top-[7px] left-[7px]"
-                src={BlockImg.src}
-                width={22}
-                height={22}
-                alt="follow icon"
-              />
-            </div>)}
-            {pathname &&(<div className="flex justify-center">
-              <button
-                className={`w-32 h-8 bg-[#E95A3A] rounded-3xl ${NeuePlakFont.className}`}
-              >
-                Edit Profile
-              </button>
-            </div>)}
+            {!pathname && (
+              <div className="w-9 h-9 rounded-full bg-[#E95A3A] relative">
+                <Image
+                  className="absolute top-[5px] left-[6px]"
+                  src={ChallengeImg.src}
+                  width={25}
+                  height={20}
+                  alt="follow icon"
+                />
+              </div>
+            )}
+            {!pathname && (
+              <div className="w-9 h-9 rounded-full bg-[#E95A3A] relative">
+                <Image
+                  className="absolute top-[5px] left-[2px]"
+                  src={MessageImg.src}
+                  width={31}
+                  height={30}
+                  alt="follow icon"
+                />
+              </div>
+            )}
+            {!pathname && (
+              <div className="w-9 h-9 rounded-full bg-[#4A4853] relative">
+                <Image
+                  className="absolute top-[7px] left-[7px]"
+                  src={BlockImg.src}
+                  width={22}
+                  height={22}
+                  alt="follow icon"
+                />
+              </div>
+            )}
+            {pathname && (
+              <div className="flex justify-center">
+                <Link href={"/settings"}>
+                  <button
+                    className={`w-32 h-8 bg-[#E95A3A] rounded-3xl ${NeuePlakFont.className}`}
+                  >
+                    Edit Profile
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
           <div className="hidden md:block md:w-[70%] md:h-24 md:absolute md:left-[27%] 2xl:left-[22%] md:top-3 ">
             <p
@@ -236,23 +247,32 @@ export default function ProfileInfo({
                     Unfriend
                   </button>
                 )}
-                {!pathname &&(<button
-                  className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
-                >
-                  Challenge
-                </button>)}
-                {!pathname &&(<button
-                  className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
-                >
-                  Message
-                </button>)}
-                {!pathname &&(<button
-                  className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#4A4853] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
-                >
-                  Block
-                </button>)}
-                { !pathname &&!Follow && (
-                  <div className="w-9 h-9 rounded-full bg-[#E95A3A] relative xl:hidden" onClick={handlFollowClick}>
+                {!pathname && (
+                  <button
+                    className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
+                  >
+                    Challenge
+                  </button>
+                )}
+                {!pathname && (
+                  <button
+                    className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
+                  >
+                    Message
+                  </button>
+                )}
+                {!pathname && (
+                  <button
+                    className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#4A4853] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
+                  >
+                    Block
+                  </button>
+                )}
+                {!pathname && !Follow && (
+                  <div
+                    className="w-9 h-9 rounded-full bg-[#E95A3A] relative xl:hidden"
+                    onClick={handlFollowClick}
+                  >
                     <Image
                       className="absolute top-[2px] left-[5px]"
                       src={FollowImg.src}
@@ -262,8 +282,11 @@ export default function ProfileInfo({
                     />
                   </div>
                 )}
-                { !pathname &&Follow && (
-                  <div className="w-9 h-9 rounded-full bg-[#4A4853] relative xl:hidden" onClick={handlUnfollowClick}>
+                {!pathname && Follow && (
+                  <div
+                    className="w-9 h-9 rounded-full bg-[#4A4853] relative xl:hidden"
+                    onClick={handlUnfollowClick}
+                  >
                     <Image
                       className="absolute top-[2px] left-[6px]"
                       src={UnfollowImg.src}
@@ -273,38 +296,48 @@ export default function ProfileInfo({
                     />
                   </div>
                 )}
-                {!pathname &&(<div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#E95A3A] relative">
-                  <Image
-                    className="absolute top-[5px] left-[6px] xl:left-1 xl:top-2 xl:w-8 xl:h-6"
-                    src={ChallengeImg.src}
-                    width={25}
-                    height={20}
-                    alt="follow icon"
-                  />
-                </div>)}
-                {!pathname &&(<div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#E95A3A] relative">
-                  <Image
-                    className="absolute top-[5px] left-[2px] xl:w-9 xl:h-8"
-                    src={MessageImg.src}
-                    width={31}
-                    height={30}
-                    alt="follow icon"
-                  />
-                </div>)}
-                {!pathname &&(<div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#4A4853] relative">
-                  <Image
-                    className="absolute top-[7px] left-[7px] xl:left-[6px] xl:top-[6px] xl:w-7 xl:h-7"
-                    src={BlockImg.src}
-                    width={22}
-                    height={22}
-                    alt="follow icon"
-                  />
-                </div>)}
-                {pathname &&(<button
-                  className={`md:mt-1 md:w-20 md:h-6 lg:w-24 lg:h-7 xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} md:text-[10px] lg:text-[14px] xl:text-[18px] 2xl:text-[24px]`}
-                >
-                  Edit Profile
-                </button>)}
+                {!pathname && (
+                  <div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#E95A3A] relative">
+                    <Image
+                      className="absolute top-[5px] left-[6px] xl:left-1 xl:top-2 xl:w-8 xl:h-6"
+                      src={ChallengeImg.src}
+                      width={25}
+                      height={20}
+                      alt="follow icon"
+                    />
+                  </div>
+                )}
+                {!pathname && (
+                  <div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#E95A3A] relative">
+                    <Image
+                      className="absolute top-[5px] left-[2px] xl:w-9 xl:h-8"
+                      src={MessageImg.src}
+                      width={31}
+                      height={30}
+                      alt="follow icon"
+                    />
+                  </div>
+                )}
+                {!pathname && (
+                  <div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#4A4853] relative">
+                    <Image
+                      className="absolute top-[7px] left-[7px] xl:left-[6px] xl:top-[6px] xl:w-7 xl:h-7"
+                      src={BlockImg.src}
+                      width={22}
+                      height={22}
+                      alt="follow icon"
+                    />
+                  </div>
+                )}
+                {pathname && (
+                  <Link href={"/settings"}>
+                    <button
+                      className={`md:mt-1 md:w-20 md:h-6 lg:w-24 lg:h-7 xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} md:text-[10px] lg:text-[14px] xl:text-[18px] 2xl:text-[24px]`}
+                    >
+                      Edit Profile
+                    </button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

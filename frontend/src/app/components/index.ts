@@ -5,7 +5,7 @@ import StatusGame from "./profile/StatusGame";
 import Achievements from "./profile/Achievements";
 import GameHistory from "./profile/GameHistory";
 import Friends from "./profile/Friends";
-import Login from "./auth/Login"
+import Login from "./auth/Login";
 
 export {
     Header,
