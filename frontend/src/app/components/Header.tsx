@@ -19,7 +19,8 @@ import ProfileImg from "@/app/assets/svg/profileimg.svg";
 import Link from "next/link";
 
 import { Humburgtype } from "../types/humburgtype";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // this is only for testing need to merge with backend
 
@@ -29,6 +30,7 @@ export default function Header({
   isHumburgClicked,
   setisHumburgClicked,
 }: Humburgtype) {
+  const router = useRouter();
   const [showDropdownProfile, setshowDropdownProfile] = useState(false);
   const [dataSettings, setDataSettings] = useState<SettingsType>({
     id: "",
@@ -44,12 +46,30 @@ export default function Header({
   function handlDropdownProfile() {
     setshowDropdownProfile(!showDropdownProfile);
   }
-
+  async function handlLogout() {
+    const response = await fetch('http://localhost:3001/auth/logout', {
+      method: 'GET',
+      credentials: 'include',
+    });
+    if (response.ok) {
+      router.push('/auth');
+    }
+    //// if error need to be handled
+  }
+  const dropProfileRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     async function fetchheader() {
       setDataSettings(await getSettings());
     }
     fetchheader();
+    function handlclick(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (dropProfileRef.current && !dropProfileRef.current.contains(target)) {
+        setshowDropdownProfile(false);
+      }
+    }
+    document.addEventListener('click', handlclick);
+    return () => document.removeEventListener('click', handlclick);
   }, []);
 
   return (
@@ -64,6 +84,7 @@ export default function Header({
           <div
             className="w-[29.6px] h-[29.6px] sm:w-32 sm:h-[33.6px] md:w-36 md:h-10 lg:h-14 lg:w-56 xl:h-16 xl:w-64 2xl:h-24 2xl:w-96 bg-[#110D1F] rounded-full  relative"
             onClick={handlDropdownProfile}
+            ref={dropProfileRef}
           >
             <div className="flex absolute top-[1px] md:top-[3px] lg:top-[5px] xl:top-[6px] 2xl:top-[9px] left-[1px] md:left-1 lg:left-[5px] 2xl:left-[9px] gap-1 lg:gap-4 items-center">
               <Image
@@ -90,7 +111,7 @@ export default function Header({
             </div>
           </div>
           {showDropdownProfile && (
-            <div className="absolute w-24 sm:w-32 md:w-[136px] lg:w-[217px] xl:w-[242px] 2xl:w-[365px] bg-red-400 top-[43px] md:top-[52px] lg:top-[70px] xl:top-20 2xl:top-32 right-[10px] sm:right-1 rounded-xl">
+            <div className="absolute w-24 sm:w-32 md:w-[136px] lg:w-[217px] xl:w-[242px] 2xl:w-[365px] bg-[#252134] top-[43px] md:top-[52px] lg:top-[70px] xl:top-20 2xl:top-32 right-[10px] sm:right-1 rounded-xl">
               <ul>
                 <Link href={"/profile"}>
                   <DropdownMenu
@@ -105,7 +126,12 @@ export default function Header({
                   />
                 </Link>
                 {/* need to do logout */}
-                <DropdownMenu ImageSource={LogoutDropNotif.src} Item="Logout" />
+                <div onClick={handlLogout}>
+                  <DropdownMenu
+                    ImageSource={LogoutDropNotif.src}
+                    Item="Logout"
+                  />
+                </div>
               </ul>
             </div>
           )}
