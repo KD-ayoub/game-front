@@ -6,6 +6,9 @@ import Achievements from "./profile/Achievements";
 import GameHistory from "./profile/GameHistory";
 import Friends from "./profile/Friends";
 import Login from "./auth/Login";
+import PlayMode from "./game/PlayMode";
+import LittleSearchBar from "./game/LittleSearchBar";
+import GameLevel from "./game/GameLevel";
 
 export {
     Header,
@@ -16,4 +19,7 @@ export {
     GameHistory,
     Friends,
     Login,
+    PlayMode,
+    LittleSearchBar,
+    GameLevel,
 }
