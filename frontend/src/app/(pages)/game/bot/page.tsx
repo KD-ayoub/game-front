@@ -7,6 +7,7 @@ import { Header, SideBar } from "@/app/components";
 import { useRef } from "react";
 import Ball from "./botcode/Ball";
 import Paddle from "./botcode/Paddle";
+import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 
 export default function Chat() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -15,16 +16,19 @@ export default function Chat() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     let table = canvasRef.current;
+    console.log("client", table?.clientWidth, table?.clientHeight);
     if (!table) return;
-    table.width = 200;
-    table.height = 400;
+    table.width = table.clientWidth;
+    table.height = table.clientHeight;
 
     const context = table.getContext("2d");
     if (!context) return;
     const ball = new Ball(context, {
-      radius: 10,
+      radius: table.width / 25,
       speed: 0.3,
       color: "#fff",
+      width: table.width,
+      height: table.height,
     });
     const paddleWidth = table.width / 3;
     const paddleHeight = 10;
@@ -36,7 +40,7 @@ export default function Chat() {
     const downPaddle = new Paddle(context, {
       x: xdownPaddle,
       y: ydownPaddle,
-      speed: 0.4,
+      speed: 0.9,
       color: "#fff",
     });
 
@@ -52,7 +56,7 @@ export default function Chat() {
       downPaddle.reset(xdownPaddle, ydownPaddle);
       upPaddle.reset(xupPaddle, yupPaddle);
     };
-    let lastTime:number;
+    let lastTime: number;
     function update(time: number) {
       if (lastTime) {
         const delta = time - lastTime;
@@ -65,8 +69,8 @@ export default function Chat() {
           width: paddleWidth,
           height: paddleHeight,
         });
-        //downPaddle.updatePaddle();
-        //upPaddle.updateBotPaddle(ball.x);
+        // downPaddle.updatePaddle();
+        // upPaddle.updateBotPaddle(ball.x);
       }
       lastTime = time;
       window.requestAnimationFrame(update);
@@ -84,7 +88,6 @@ export default function Chat() {
           break;
       }
     });
-
     console.log("dim", table.width, table.height);
   }, []);
   return (
@@ -98,12 +101,35 @@ export default function Chat() {
       <div
         className={`grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 lg:mt-[72px] xl:mt-[96px] 2xl:mt-[128px] ${marginbody} //flex justify-center items-center//`}
       >
-        <div className="flex justify-center m-5">
-          <canvas
-            className=" bg-[#E95A3A] rounded-[8px]"
-            ref={canvasRef}
-            id="table"
-          ></canvas>
+        <div
+          className={`ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className} `}
+        >
+          Game
+        </div>
+        <div className="flex flex-col items-center w-full h-full">
+          <div>Bot</div>
+          <div
+            className="relative w-[200px] h-[400px] sm:w-[300px] sm:h-[500px] md:w-[400px] md:h-[600px] lg:w-[500px] lg:h-[700px] xl:w-[600px] xl:h-[800px] 2xl:w-[700px] 2xl:h-[900px] bg-[#E95A3A] rounded-[8px] md:rounded-[12px] lg:rounded-[18px] xl:rounded-[25px] 2xl:rounded-[28px]"
+            style={{
+              background:
+                "linear-gradient( to bottom, #E95A3A 0%,#E95A3A 50%, #F07559 50%, #F07559 100%);",
+            }}
+          >
+            {/* <div
+            className="relative top-[47%] left-0"
+              style={{
+                margin: "3px 0",
+                height: "10px",
+                background:
+                  "repeating-linear-gradient(to right,transparent,transparent 10px,white 10px,white 20px);",
+              }}
+            ></div> dashed line  */}
+            <canvas
+              className="w-full h-full absolute top-0 z-10"
+              ref={canvasRef}
+              id="table"
+            ></canvas>
+          </div>
         </div>
       </div>
     </main>

@@ -17,8 +17,8 @@ export default class Ball {
         this.radius = data.radius;
         this.color = data.color;
         this.speed = data.speed;
-        this.tableWidth = 200;
-        this.tableHeight = 400;
+        this.tableWidth = data.width;
+        this.tableHeight = data.height;
         this.xpos = 0;
         this.ypos = 0;
         this.dx = 0;
@@ -85,23 +85,23 @@ export default class Ball {
             this.dy = -this.dy;
 
         //touch the paddle
-        if (((data.yUp + data.height) >= (this.ypos - this.radius)) &&
-            (((this.xpos - this.radius) >= data.xUp &&
-                (this.xpos - this.radius) <= (data.xUp + data.width)) ||
-                ((this.xpos + this.radius) >= data.xUp &&
-                    (this.xpos + this.radius) <= (data.xUp + data.width)))) {
-            this.dy = -this.dy;
-            console.log('cool 1');
-        }
+        // if (((data.yUp + data.height) >= (this.ypos - this.radius)) &&
+        //    (((this.xpos - this.radius) >= data.xUp &&
+        //        (this.xpos - this.radius) <= (data.xUp + data.width)) ||
+        //        ((this.xpos + this.radius) >= data.xUp &&
+        //            (this.xpos + this.radius) <= (data.xUp + data.width)))) {
+        //    this.dy = -this.dy;
+        //    console.log('cool 1');
+        // }
 
-        else if ((data.yDown <= (this.ypos + this.radius)) &&
-            (((this.xpos - this.radius) >= data.xDown &&
-                (this.xpos - this.radius) <= (data.xDown + data.width)) ||
-                ((this.xpos + this.radius) >= data.xDown &&
-                    (this.xpos + this.radius) <= (data.xDown + data.width)))) {
-            this.dy = -this.dy;
-            console.log('cool 2');
-        }
+        // if ((data.yDown <= (this.ypos + this.radius)) &&
+        //    (((this.xpos - this.radius) >= data.xDown &&
+        //        (this.xpos - this.radius) <= (data.xDown + data.width)) ||
+        //        ((this.xpos + this.radius) >= data.xDown &&
+        //            (this.xpos + this.radius) <= (data.xDown + data.width)))) {
+        //    this.dy = -this.dy;
+        //    console.log('cool 2');
+        // }
 
         //touch the paddle side
         //if ((data.yDown <= (this.ypos + this.radius)) &&

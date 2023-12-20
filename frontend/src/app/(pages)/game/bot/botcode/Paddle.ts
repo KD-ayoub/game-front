@@ -17,8 +17,8 @@ export default class Paddle {
     this.context = context;
     this.color = data.color;
     this.speed = data.speed;
-    this.tableWidth = 200;
-    this.tableHeight = 400;
+    this.tableWidth = 300;
+    this.tableHeight = 600;
     this.paddleWidth = 100;
     this.paddleHeight = 10;
     this.paddleSpeed = 7;
