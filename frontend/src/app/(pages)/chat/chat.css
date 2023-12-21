@@ -1,99 +1,124 @@
+
+/* start chat */
+
 .chat {
-    background-color: rgb(66, 129, 129);
-    height: 100%;
-    width: 1266px;
-    height: 864px;
-    display: grid;
-    grid-template-columns: 100%;
-    grid-template-rows: 117px 40px 707px;
+  background-color: #15131D;
+  height: 80%;
+  width: 90%;
+  /* height: 90v; */
+  display: flex;
+
 
 }
 
+.chat-left-side {
+  height: 80%;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* start onlineNow */
 .onlineNow {
-    background-color: #15131D;
-    height: 100%;
-    /* width: 361px; */
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
-    display: grid;
-    /* grid-template-rows: 117px 747px; */
+  display: flex;
+  flex-direction: column;
+  background-color: #15131D;
+  /* height: 100%; */
+
 }
 
 .onlineList {
-    max-height: 110px;
-    display: flex;
-    justify-content: left;
-    /* align-items: center; */
-    overflow-x: auto;
-    /* margin: 0px 10px 0px 10px; */
-    /* scroll-behavior: smooth; */
+  background: #15131D;
+  display: flex;
+  max-height: 110px;
+  justify-content: left;
+  align-items: center;
+  overflow-x: auto;
+  /* margin: 0px 10px 0px 10px; */
+  /* scroll-behavior: smooth; */
 }
 
 .onlineList::-webkit-scrollbar {
-    height: 10px;
-  }
-  
-  .onlineList::-webkit-scrollbar-track {
-    background-color: #15131D;
-  }
-  
-  .onlineList::-webkit-scrollbar-thumb {
-    background-color: #70686749;
-  }
-  
-  .onlineList::-webkit-scrollbar-thumb:hover {
-    background-color: #6664646c;
-  }
-
-  
-  
-  .onlineList .onlineUser {
-      min-width: 60px;
-      height: 80px;
-      text-align: center;
-      /* margin: auto; */
-      display: flex;
-      flex-direction: column;
-    }
-
-
-    .msgSelect {
-        background-color: #15131D;
-        height: 100%;
-        /* width: 866px; */
-        display: grid;
-        grid-column: 1 / 2;
-        grid-row: 2 / 3;
-        /* grid-template-rows: 117px 747px; */
-    }
-    
-    .sentMessages {
-        background-color: rgb(19, 182, 73);
-    height: 100%;
-    /* width: 866px; */
-    display: grid;
-    grid-column: 1 / 2;
-    grid-row: 3 / 4;
-    /* grid-template-rows: 117px 747px; */
+  height: 10px;
 }
 
-.friendsMessaged {
-    background-color: #15131D;
-    height: 100%;
-    /* margin: 0px 10px 0px 10px; */
+.onlineList::-webkit-scrollbar-track {
+  background-color: #15131D;
+}
 
-    /* width: 866px; */
-    display: flex;
-    flex-direction: column;
-    /* grid-column: 1 / 2;
-    grid-row: 3 / 4; */
-    /* grid-template-rows: 117px 747px; */
-    
+.onlineList::-webkit-scrollbar-thumb {
+  background-color: #70686749;
+}
+
+.onlineList::-webkit-scrollbar-thumb:hover {
+  background-color: #6664646c;
+}
+
+
+
+.onlineList .onlineUser {
+  min-width: 60px;
+  height: 80px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  /* margin: auto; */
+  display: flex;
+  flex-direction: column;
+}
+/* end onlineNow */
+
+/* start option select friends or channel */
+.msgSelect {
+  background-color: #15131D;
+  font-size: 16px;
+  height: 90%;
+  width: 100%;
+  padding: 5px;
+  /* width: 866px; */
+}
+/* end option select friends or channel */
+
+/* start friends list */
+.friendsMessaged {
+  display: flex;
+  flex-direction: column;
+  background-color: #15131D;
+  min-height: 100%;
+  /* visibility: none; */
+  /* margin: 0px 10px 0px 10px; */
+
+  /* width: 866px; */
+
+}
+
+.searchBar {
+  background-color: #15131D;
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .listFriends {
-  margin: 0px 10px 0px 10px;
+  display: flex;
+  /* flex-direction: ; */
+  padding: 0px 6px 0px 10px;
 
+  /* margin: 0px 10px 0px 10px; */
+
+}
+
+.unread {
+  background: #E95A3A;
+  width: 12px;
+  height: 12px;
+  font-size: 9px;
+  border-radius: 999px;
+  text-align: center;
+  margin: auto 5px 10px auto;
+
+  
 }
 
 .selectFriend:hover {
@@ -101,36 +126,101 @@
 }
 
 .friendsscroll {
-    overflow-y: auto;
-  }
-  
-  /* For Chrome and Safari */
-  .friendsscroll::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  .friendsscroll::-webkit-scrollbar-track {
-    background-color: #252134;
-  }
-  
-  .friendsscroll::-webkit-scrollbar-thumb {
-    background-color: #70686749;
-  }
-  
-  .friendsscroll::-webkit-scrollbar-thumb:hover {
-    background-color: #6664646c;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  background-color: #15131D;
+  overflow-y: auto;
+}
 
-/* .friendConv {
-    background-color: rgba(219, 59, 94, 0.473);
-    height: 100vh;
-    width: 100%;
-    /* width: 866px; */
-    /* display: grid ; 
-    grid-template-rows: 50px 735px 70px;      
-} */
+/* For Chrome and Safari */
+.friendsscroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.friendsscroll::-webkit-scrollbar-track {
+  background-color: #252134;
+}
+
+.friendsscroll::-webkit-scrollbar-thumb {
+  background-color: #70686749;
+}
+
+.friendsscroll::-webkit-scrollbar-thumb:hover {
+  background-color: #6664646c;
+}
+/* end friend list */
+
+/* start conv */
+.friendConv {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  height: 100%;
+  background-color: rgba(109, 95, 100, 0.692);
+  /* background-color: #15131D; */
+
+}
 
 .barInfo {
-  grid-row: 1 / 2;
+  display: flex;
+  height: 10%;
+  /* justify-content: center; */
+  align-items: center;
+  background-color: #15131D;
 }
+
+.optionUser {
+  
+  font-size: 9px;
+  border-radius: 999px;
+  text-align: center;
+  margin: 0 15px 0 auto;
+
+}
+
+.btn-back {
+  width: 42px;
+  /* height: 42px; */
+  font-size: 20px;
+  color: #ff6d4c;
+  /* padding-top: 5px; */
+}
+
+.btn-back:hover {
+  color: #fffbfa;
+  transition: color .15s ease-in-out;
+}
+
+.UserInfo {
+  display : flex;
+  font-size: 16px;
+}
+
+.UserStatus {
+  display: flex;
+  flex-direction: column;
+  padding-left: 5px;
+}
+
+.statusUser {
+  font-size: 12px;
+  /* color: #717273; */
+}
+
+.pictureUser {
+  min-width: 45px;
+  min-height: 45px;
+  width: 50px;
+  border-radius: 9999px;
+  /* padding-top: 5px; */
+}
+
+.historyChat {
+  display: flex;
+  flex-direction: column;
+  height: 85%;
+  background-color: #8976d4;
+  overflow-y: auto;
+}
+
+/* end conv */

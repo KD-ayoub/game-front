@@ -1,5 +1,5 @@
 
-export default function ChannelMessaged() {
+export default function ChannelMessaged(props: any) {
 
     return (
         <div className="channelMessaged">

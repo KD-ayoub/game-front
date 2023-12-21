@@ -9,16 +9,16 @@ export default function OnlineNow() {
   const [friends, setFriends] = useState([
     { id: 1, name: "Johnoe", picture: fakeAvatar.src, isOnline: true },
     { id: 2, name: "Ausso", picture: hic_avatar.src, isOnline: true },
-    { id: 3, name: "Moka", picture: mo_avatar.src, isOnline: true },
-    { id: 4, name: "Aissa", picture: hic_avatar.src, isOnline: true },
-    { id: 5, name: "Mimo", picture: fakeAvatar.src, isOnline: true },
-    { id: 6, name: "Mortelle", picture: hic_avatar.src, isOnline: false },
-    { id: 7, name: "HICHAM", picture: fakeAvatar.src, isOnline: true },
-    { id: 8, name: "youness", picture: hic_avatar.src, isOnline: true },
-    { id: 9, name: "hicham", picture: fakeAvatar.src, isOnline: true },
-    { id: 10, name: "ido", picture: mo_avatar.src, isOnline: true },
-    { id: 11, name: "AKADI", picture: mo_avatar.src, isOnline: true },
-    { id: 12, name: "master", picture: fakeAvatar.src, isOnline: true },
+    // { id: 3, name: "Moka", picture: mo_avatar.src, isOnline: true },
+    // { id: 4, name: "Aissa", picture: hic_avatar.src, isOnline: true },
+    // { id: 5, name: "Mimo", picture: fakeAvatar.src, isOnline: true },
+    // { id: 6, name: "Mortelle", picture: hic_avatar.src, isOnline: false },
+    // { id: 7, name: "HICHAM", picture: fakeAvatar.src, isOnline: true },
+    // { id: 8, name: "youness", picture: hic_avatar.src, isOnline: true },
+    // { id: 9, name: "hicham", picture: fakeAvatar.src, isOnline: true },
+    // { id: 10, name: "ido", picture: mo_avatar.src, isOnline: true },
+    // { id: 11, name: "AKADI", picture: mo_avatar.src, isOnline: true },
+    // { id: 12, name: "master", picture: fakeAvatar.src, isOnline: true },
   ]);
 
   // useEffect(() => {
@@ -33,7 +33,7 @@ export default function OnlineNow() {
   return (
     <div className="onlineNow">
       <h2>Online Friends</h2>
-      <div className="onlineList flex">
+      <div className="onlineList">
         {onlineFriends.map((friend) => (
           <button className="btnOnlineNow">
             <div

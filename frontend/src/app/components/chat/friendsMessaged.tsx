@@ -11,18 +11,18 @@ export default function FriendsMessaged(props: any) {
   const [friends, setFriends] = useState([
     { name: "Hicham", picture: fakeAvatar.src, unread: 2 },
     { name: "Aissa", picture: hic_avatar.src, unread: 0 },
-    { name: "JAAFAR", picture: hic_avatar.src, unread: 0 },
-    { name: "AISSA", picture: hic_avatar.src, unread: 0 },
-    { name: "AKOUAME", picture: hic_avatar.src, unread: 20 },
-    { name: "HKADDOUR", picture: hic_avatar.src, unread: 10 },
-    { name: "LEONA", picture: hic_avatar.src, unread: 0 },
-    { name: "DOG", picture: hic_avatar.src, unread: 30 },
-    { name: "EKKO", picture: hic_avatar.src, unread: 0 },
-    { name: "MASTER", picture: hic_avatar.src, unread: 0 },
-    { name: "younes", picture: fakeAvatar.src, unread: 3 },
-    { name: "smart", picture: fakeAvatar.src, unread: 3 },
-    { name: "ido", picture: fakeAvatar.src, unread: 3 },
-    { name: "Akadi", picture: hic_avatar.src, unread: 1 },
+    // { name: "JAAFAR", picture: hic_avatar.src, unread: 0 },
+    // { name: "AISSA", picture: hic_avatar.src, unread: 0 },
+    // { name: "AKOUAME", picture: hic_avatar.src, unread: 20 },
+    // { name: "HKADDOUR", picture: hic_avatar.src, unread: 10 },
+    // { name: "LEONA", picture: hic_avatar.src, unread: 0 },
+    // { name: "DOG", picture: hic_avatar.src, unread: 30 },
+    // { name: "EKKO", picture: hic_avatar.src, unread: 0 },
+    // { name: "MASTER", picture: hic_avatar.src, unread: 0 },
+    // { name: "younes", picture: fakeAvatar.src, unread: 3 },
+    // { name: "smart", picture: fakeAvatar.src, unread: 3 },
+    // { name: "ido", picture: fakeAvatar.src, unread: 3 },
+    // { name: "Akadi", picture: hic_avatar.src, unread: 1 },
   ]);
   const [searching, setSearching] = useState("");
   const [selectedFriend, setSelectedFriend] = useState(null);
@@ -52,7 +52,7 @@ export default function FriendsMessaged(props: any) {
   return (
     <>
       <div className="friendsMessaged">
-        <div className="searchBar flex justify-center ">
+        <div className="searchBar ">
           <input
             type="text"
             placeholder="Search..."
@@ -60,14 +60,14 @@ export default function FriendsMessaged(props: any) {
             className="bg-[#383546] text-white w-[90%] h-[30px] rounded-md pl-2"
           />
         </div>
-        <ul className="friendsscroll pt-2">
+        <ul className="friendsscroll">
           {filterSearch().map((friend) => (
-            <li className="friend" key={friend.name}>
+            // <li className="friend" key={friend.name}>
               <button
                 className="selectFriend w-[100%]"
                 onClick={() => {handlShowFriendConversation(friend); props.onChange(false)}}
               >
-                <div className="listFriends flex flex-row p-1">
+                <div className="listFriends">
                   <img
                     src={friend.picture}
                     alt={friend.name}
@@ -75,20 +75,16 @@ export default function FriendsMessaged(props: any) {
                   />
                   <h4 className="text-[14px] pl-2 pt-1">{friend.name}</h4>
                   {friend.unread > 0 ? (
-                    <span className="bg-[#E95A3A] w-[12px] h-[12px] ml-auto mt-5 text-[9px] rounded-full text-center ">
+                    <span className="unread">
                       {friend.unread > 9 ? "+9" : friend.unread}
                     </span>
                   ) : null}{" "}
                 </div>
-                {selectedFriend === friend ? (
-                <FriendConversation  />
-              ) : null}
               </button>
-            </li>
+            // </li>
           ))}
         </ul>
       </div>
-      {/* <FriendConversation /> */}
     </>
   );
 }
