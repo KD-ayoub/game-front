@@ -80,7 +80,7 @@ export default function Chat() {
             )}
           </div>
           {/* {showConv && <FriendConversation />} only render if showConv */}
-          < FriendConversation />
+          < FriendConversation showConv />
         </div>
       </div>
     </main>

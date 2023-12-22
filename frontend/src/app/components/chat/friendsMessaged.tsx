@@ -62,7 +62,7 @@ export default function FriendsMessaged(props: any) {
         </div>
         <ul className="friendsscroll">
           {filterSearch().map((friend) => (
-            // <li className="friend" key={friend.name}>
+            <li className="friend" key={friend.name}>
               <button
                 className="selectFriend w-[100%]"
                 onClick={() => {handlShowFriendConversation(friend); props.onChange(false)}}
@@ -81,7 +81,7 @@ export default function FriendsMessaged(props: any) {
                   ) : null}{" "}
                 </div>
               </button>
-            // </li>
+            </li>
           ))}
         </ul>
       </div>

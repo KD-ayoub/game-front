@@ -148,6 +148,12 @@
 .friendsscroll::-webkit-scrollbar-thumb:hover {
   background-color: #6664646c;
 }
+
+.friend :active {
+  background-color: #5ca517;
+
+}
+
 /* end friend list */
 
 /* start conv */
