@@ -15,80 +15,108 @@ export default function Chat() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    let table = canvasRef.current;
-    console.log("client", table?.clientWidth, table?.clientHeight);
-    if (!table) return;
-    table.width = table.clientWidth;
-    table.height = table.clientHeight;
+    function handlresize() {
+      let table = canvasRef.current;
+      console.log("client", table?.clientWidth, table?.clientHeight);
+      if (!table) return;
+      table.width = table.clientWidth;
+      table.height = table.clientHeight;
+      const context = table.getContext("2d");
+      if (!context) return;
+      const wallGap = (table.width < 400) ? 3 : 5;
+      const paddleWidth = table.width / 3;
+      const paddleHeight = (table.width < 400) ? 6 : 12;
+      const xdownPaddle = table.width - paddleWidth - wallGap;
+      const ydownPaddle = table.height - paddleHeight - wallGap;
+      const xupPaddle = wallGap;
+      const yupPaddle = wallGap;
 
-    const context = table.getContext("2d");
-    if (!context) return;
-    const ball = new Ball(context, {
-      radius: table.width / 25,
-      speed: 0.3,
-      color: "#fff",
-      width: table.width,
-      height: table.height,
-    });
-    const paddleWidth = table.width / 3;
-    const paddleHeight = 10;
-    const xdownPaddle = table.width - paddleWidth - 3;
-    const ydownPaddle = table.height - paddleHeight - 3;
-    const xupPaddle = 3;
-    const yupPaddle = 3;
+      const ball = new Ball(context, {
+        radius: table.width / 30,
+        speed: (table.width < 400) ? 0.2 : 0.3,
+        color: "#fff",
+        gap: wallGap,
+        tableWidth: table.width,
+        tableHeight: table.height,
+      });
 
-    const downPaddle = new Paddle(context, {
-      x: xdownPaddle,
-      y: ydownPaddle,
-      speed: 0.9,
-      color: "#fff",
-    });
+      const downPaddle = new Paddle(context, {
+        x: xdownPaddle,
+        y: ydownPaddle,
+        gap: wallGap,
+        speed: 5,
+        color: "#fff",
+        width: paddleWidth,
+        height: paddleHeight,
+        tableWidth: table.width,
+        tableHeight: table.height
+      });
 
-    const upPaddle = new Paddle(context, {
-      x: xupPaddle,
-      y: yupPaddle,
-      speed: 0.4,
-      color: "#fff",
-    });
+      const upPaddle = new Paddle(context, {
+        x: xupPaddle,
+        y: yupPaddle,
+        gap: wallGap,
+        speed: 5,
+        color: "#fff",
+        width: paddleWidth,
+        height: paddleHeight,
+        tableWidth: table.width,
+        tableHeight: table.height
+      });
 
-    const resetAll = function () {
-      ball.reset();
-      downPaddle.reset(xdownPaddle, ydownPaddle);
-      upPaddle.reset(xupPaddle, yupPaddle);
-    };
-    let lastTime: number;
-    function update(time: number) {
-      if (lastTime) {
-        const delta = time - lastTime;
-        //if (ball.checkLoss()) resetAll();
-        ball.updateBall(delta, {
-          xDown: downPaddle.x,
-          xUp: upPaddle.x,
-          yDown: downPaddle.x,
-          yUp: upPaddle.y,
-          width: paddleWidth,
-          height: paddleHeight,
-        });
-        // downPaddle.updatePaddle();
-        // upPaddle.updateBotPaddle(ball.x);
+      const resetAll = function () {
+        ball.reset();
+        downPaddle.reset(xdownPaddle, ydownPaddle);
+        upPaddle.reset(xupPaddle, yupPaddle);
+      };
+
+      let lastTime: number;
+      function update(time: number) {
+        if (lastTime) {
+          const delta = time - lastTime;
+          const data = {
+            xDown: downPaddle.x,
+            yDown: downPaddle.y,
+            xUp: upPaddle.x,
+            yUp: upPaddle.y,
+            width: paddleWidth,
+            height: paddleHeight,
+          };
+          if (ball.checkLoss(data))
+            resetAll();
+          ball.updateBall(delta, data);
+          downPaddle.updatePaddle();
+          upPaddle.updateBotPaddle(ball.x);
+        }
+        lastTime = time;
+        window.requestAnimationFrame(update);
       }
-      lastTime = time;
       window.requestAnimationFrame(update);
+      document.addEventListener("keydown", (e) => {
+        switch (e.code) {
+          case "ArrowRight":
+            if (!downPaddle.checkRightWall()) downPaddle.movePaddle(e.code);
+            break;
+            case "ArrowLeft":
+            if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
+            break;
+        }
+      });
+      //document.addEventListener('visibilitychange', function() {
+      //  if (document.hidden) {
+      //    chk = false;
+      //    window.requestAnimationFrame(update);
+      //    console.log('bey');
+      //  } else {
+      //    chk = true;
+      //    resetAll();
+      //    window.requestAnimationFrame(update);
+      //    console.log('hey');
+      //  }
+      //});
+
     }
-
-    window.requestAnimationFrame(update);
-
-    document.addEventListener("keydown", (e) => {
-      switch (e.code) {
-        case "ArrowRight":
-          if (!downPaddle.checkRightWall()) downPaddle.movePaddle(e.code);
-          break;
-        case "ArrowLeft":
-          if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
-          break;
-      }
-    });
-    console.log("dim", table.width, table.height);
+    window.addEventListener('resize', handlresize);
   }, []);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">

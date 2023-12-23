@@ -17,8 +17,9 @@ export default class Ball {
         this.radius = data.radius;
         this.color = data.color;
         this.speed = data.speed;
-        this.tableWidth = data.width;
-        this.tableHeight = data.height;
+        this.gap = data.gap;
+        this.tableWidth = data.tableWidth;
+        this.tableHeight = data.tableHeight;
         this.xpos = 0;
         this.ypos = 0;
         this.dx = 0;
@@ -53,10 +54,8 @@ export default class Ball {
         this.xpos = this.tableWidth / 2;
         this.ypos = this.tableHeight / 2;
         let sight = 0;
-        while (!this.checkAngle(sight * 180 / Math.PI)) {
+        while (!this.checkAngle(sight * 180 / Math.PI))
             sight = this.randomNumber(0, 2 * Math.PI);
-            //console.log(sight * 180 / Math.PI);
-        }
         const direction = {
             x: Math.cos(sight),
             y: Math.sin(sight)
@@ -65,44 +64,50 @@ export default class Ball {
         this.dy = direction.y * this.speed;
     }
 
-    checkLoss() {
-        if ((this.ypos + this.radius) > (this.tableHeight - 3) ||
-            (this.ypos - this.radius) < 3)
+    checkLoss(data: UpdateDataType) {
+        //if ((this.ypos + this.radius) > (this.tableHeight - this.gap) ||
+        //    (this.ypos - this.radius) < this.gap)`j
+        if ((!this.checkBallTouchPaddle(data, false)) &&
+            (((this.ypos - this.radius) < (data.yUp + data.height)) ||
+            ((this.ypos + this.radius) > data.yDown)))
+                return true;
+        return false;
+    }
+
+    checkBallTouchPaddle(data: UpdateDataType, chk: boolean) {
+        if (((data.yUp + data.height) >= (this.ypos - this.radius)) &&
+            (((this.xpos - this.radius) >= data.xUp &&
+              (this.xpos - this.radius) <= (data.xUp + data.width)) ||
+                  ((this.xpos + this.radius) >= data.xUp &&
+                   (this.xpos + this.radius) <= (data.xUp + data.width)))) {
+            if (chk)
+                this.dy = -this.dy;
             return true;
+        }
+        if ((data.yDown <= (this.ypos + this.radius)) &&
+            (((this.xpos - this.radius) >= data.xDown &&
+              (this.xpos - this.radius) <= (data.xDown + data.width)) ||
+                  ((this.xpos + this.radius) >= data.xDown &&
+                   (this.xpos + this.radius) <= (data.xDown + data.width)))) {
+            if (chk)
+                this.dy = -this.dy;
+            return true;
+        }
         return false;
     }
 
     updateBall(delta: number, data: UpdateDataType) {
         this.context.clearRect(0, 0, this.tableWidth, this.tableHeight);
-        this.drawBall();
         if ((this.xpos + this.radius) >= this.tableWidth)
             this.dx = -this.dx;
-        if ((this.xpos - this.radius) <= 0)
+        else if ((this.xpos - this.radius) <= 0)
             this.dx = -this.dx;
-        if ((this.ypos + this.radius) >= this.tableHeight)
+        else if ((this.ypos + this.radius) >= this.tableHeight)
             this.dy = -this.dy;
-        if ((this.ypos - this.radius) <= 0)
+        else if ((this.ypos - this.radius) <= 0)
             this.dy = -this.dy;
-
         //touch the paddle
-        // if (((data.yUp + data.height) >= (this.ypos - this.radius)) &&
-        //    (((this.xpos - this.radius) >= data.xUp &&
-        //        (this.xpos - this.radius) <= (data.xUp + data.width)) ||
-        //        ((this.xpos + this.radius) >= data.xUp &&
-        //            (this.xpos + this.radius) <= (data.xUp + data.width)))) {
-        //    this.dy = -this.dy;
-        //    console.log('cool 1');
-        // }
-
-        // if ((data.yDown <= (this.ypos + this.radius)) &&
-        //    (((this.xpos - this.radius) >= data.xDown &&
-        //        (this.xpos - this.radius) <= (data.xDown + data.width)) ||
-        //        ((this.xpos + this.radius) >= data.xDown &&
-        //            (this.xpos + this.radius) <= (data.xDown + data.width)))) {
-        //    this.dy = -this.dy;
-        //    console.log('cool 2');
-        // }
-
+        this.checkBallTouchPaddle(data, true);
         //touch the paddle side
         //if ((data.yDown <= (this.ypos + this.radius)) &&
         //    ((this.xpos - this.radius) <= (data.xDown + data.width) ||
@@ -114,8 +119,10 @@ export default class Ball {
         //    console.log('cool 3');
         //}
 
+        //console.log(`here ${this.dx} && ${this.dy}`);
         this.xpos += this.dx * delta;
         this.ypos += this.dy * delta;
+        this.drawBall();
     }
 
     get x() {

@@ -34,6 +34,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	async handleConnection(client: Socket, ...args: any[]) {
 		//console.log(`${client.id} is connect size = ${this.socketUser.size}`);
+		console.log('hey ', client.id);
 		const clientSocket = this.server.sockets.sockets.get(client.id);
 		const cookie = client.request.headers.cookie;
 		if (!cookie) {
@@ -63,6 +64,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(client: Socket) {
 		let findValue;
+		console.log('bye');
 		this.socketUser.forEach((value, key) => {
 			findValue = value === client.id ? client.id : "";
 		})

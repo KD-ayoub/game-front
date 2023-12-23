@@ -2,8 +2,9 @@ export type BallType = {
   radius: number;
   speed: number;
   color: string;
-  width: number;
-  height: number;
+  gap: number;
+  tableWidth: number;
+  tableHeight: number;
 };
 
 export type UpdateDataType = {

@@ -9,7 +9,6 @@ export default class Paddle {
   private paddleWidth: number;
   private paddleHeight: number;
   private paddleSpeed: number;
-  private chk: boolean;
   private xpos: number;
   private ypos: number;
 
@@ -17,18 +16,17 @@ export default class Paddle {
     this.context = context;
     this.color = data.color;
     this.speed = data.speed;
-    this.tableWidth = 300;
-    this.tableHeight = 600;
-    this.paddleWidth = 100;
-    this.paddleHeight = 10;
-    this.paddleSpeed = 7;
+    this.gap = data.gap;
+    this.tableWidth = data.tableWidth;
+    this.tableHeight = data.tableHeight;
+    this.paddleWidth = data.width;
+    this.paddleHeight = data.height;
+    this.paddleSpeed = data.speed;
     //check
-    this.xpos = 0;
-    this.ypos = 0;
+    this.xpos = data.x;
+    this.ypos = data.y;
     ////
     this.reset(data.x, data.y);
-    this.chk = false;
-
   }
 
   get x() {
@@ -40,12 +38,12 @@ export default class Paddle {
   }
 
   checkRightWall() {
-    if (this.xpos + this.paddleWidth >= this.tableWidth - 3) return true;
+    if ((this.xpos + this.paddleWidth + this.paddleSpeed) >= this.tableWidth - this.gap) return true;
     return false;
   }
 
   checkLeftWall() {
-    if (this.xpos <= 3) return true;
+    if ((this.xpos - this.paddleSpeed) <= this.gap) return true;
     return false;
   }
 
@@ -62,7 +60,7 @@ export default class Paddle {
   }
 
   reset(x: number, y: number) {
-    this.xpos = x;
+    this.xpos = !this.checkRightWall() ? x : x - 7;
     this.ypos = y;
   }
 
@@ -77,18 +75,15 @@ export default class Paddle {
 
   updateBotPaddle(x: number) {
     if (
-      !(x > this.tableWidth - this.paddleWidth / 2 - 3) &&
-      !(x < this.paddleWidth / 2 + 3) &&
+      !(x > this.tableWidth - this.paddleWidth / 2 - this.gap) &&
+      !(x < this.paddleWidth / 2 + this.gap) &&
       (!this.checkRightWall() || !this.checkLeftWall())
     ) {
       //if (x > this.tableWidth / 2)
       //    this.xpos += 5;
       //else
       //    this.xpos -= 5;
-      if (this.chk) {
-        this.xpos = x - this.paddleWidth / 2;
-        this.chk = false;
-      } else this.chk = true;
+      this.xpos = x - this.paddleWidth / 2;
     }
 
     this.drawPaddle();

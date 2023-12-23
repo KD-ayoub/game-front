@@ -9,7 +9,6 @@ export default class Paddle {
         this.paddleHeight = 20;
         this.paddleSpeed = 10;
         this.reset(data.x, data.y);
-        this.chk =false;
     }
 
     get x() {
@@ -61,22 +60,15 @@ export default class Paddle {
     //}
 
     updateBotPaddle(x) {
-        if (!(x > this.tableWidth - (this.paddleWidth / 2) - 5) &&
-            !(x < (this.paddleWidth / 2) + 5) &&
+        if (!(x >= this.tableWidth - (this.paddleWidth / 2) - 5) &&
+            !(x <= (this.paddleWidth / 2) + 5) &&
             (!this.checkRightWall() || !this.checkLeftWall())) {
             //if (x > this.tableWidth / 2)
             //    this.xpos += 5;
             //else
             //    this.xpos -= 5;
-            if (this.chk) {
-                this.xpos = x - (this.paddleWidth / 2);
-                this.chk = false;
-            }
-            else
-                this.chk = true;
+            this.xpos = x - (this.paddleWidth / 2);
         }
-
-
         this.drawPaddle();
     }
 
