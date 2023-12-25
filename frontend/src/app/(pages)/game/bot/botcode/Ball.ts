@@ -11,6 +11,7 @@ export default class Ball {
     private ypos: number;
     private dx: number;
     private dy: number;
+    private gap: number;
 
     constructor(context: CanvasRenderingContext2D, data: BallType) {
         this.context = context;

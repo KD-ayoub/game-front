@@ -49,14 +49,16 @@ export default class Paddle {
   }
 
   movePaddle(key: string) {
-    if (key === "ArrowRight") this.xpos +=  this.paddleSpeed * 5;
-    else if (key === "ArrowLeft") this.xpos -= this.paddleSpeed * 5;
+    if (key === "ArrowRight") this.xpos +=  this.paddleSpeed * 3.5 ;
+    else if (key === "ArrowLeft") this.xpos -= this.paddleSpeed * 3.5;
   }
 
   drawPaddle() {
     const paddle = new Path2D();
-    paddle.rect(this.xpos, this.ypos, this.paddleWidth, this.paddleHeight);
+    paddle.roundRect(this.xpos, this.ypos, this.paddleWidth, this.paddleHeight, 4);
+    // paddle.rect(this.xpos, this.ypos, this.paddleWidth, this.paddleHeight);
     this.context.fillStyle = this.color;
+    this.context.fillStyle = 'border-radius: 10px'
     this.context.fill(paddle);
   }
 
