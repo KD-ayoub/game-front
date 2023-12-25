@@ -83,7 +83,10 @@ export default function Chat() {
           width: paddleWidth,
           height: paddleHeight,
         };
-        if (ball.checkLoss(data)) resetAll();
+        if (ball.checkLoss(data)) {
+          console.log("win", data.yUp);
+          resetAll();
+        }
         ball.updateBall(delta, data);
         downPaddle.updatePaddle();
         upPaddle.updateBotPaddle(ball.x);
@@ -136,39 +139,41 @@ export default function Chat() {
           Game
         </div>
         <div className="flex flex-col items-center w-full h-full gap-2 mt-20">
-          <div className="w-[200px] h-12 p-2 flex justify-between">
+          <div className="w-[200px] h-12 sm:w-[300px] sm:h-14 md:w-[400px] md:h-16 lg:w-[500px] lg:h-[70px] xl:w-[600px] xl:h-[75px] 2xl:w-[700px] 2xl:h-[100px] p-2 flex justify-between">
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
+                  className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16"
                   src={ProfileImg.src}
                   width={20}
                   height={20}
                   alt="profile pic"
                 />
                 <p
-                  className={`${NeuePlakFont.className} text-white text-[12px]`}
+                  className={`${NeuePlakFont.className} text-white text-[12px] sm:text-[14px] md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px]`}
                 >
                   Nickname
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
-              <p className={`${NeuePlakFont.className} text-white`}>0</p>
-              <p className={`${NeuePlakFont.className} text-white`}>:</p>
-              <p className={`${NeuePlakFont.className} text-white`}>0</p>
+            <div className="flex gap-2 items-center">
+              <p className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>0</p>
+              <p className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>:</p>
+              <p className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>0</p>
             </div>
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
+                  className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16"
                   src={ProfileImg.src}
                   width={20}
                   height={20}
                   alt="profile pic"
                 />
                 <p
-                  className={`${NeuePlakFont.className} text-white text-[12px]`}
+                  className={`${NeuePlakFont.className} text-white text-[12px] sm:text-[14px] md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px]`}
                 >
-                  Bot
+                  PongBot
                 </p>
               </div>
             </div>
