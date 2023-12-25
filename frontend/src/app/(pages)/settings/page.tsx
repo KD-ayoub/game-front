@@ -178,7 +178,7 @@ export default function Settings() {
       >
         <div className="w-full h-full">
           <div
-            className={`ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className}`}
+            className={`text-white ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className}`}
           >
             Settings
           </div>
@@ -208,7 +208,7 @@ export default function Settings() {
                     alt="trash icon"
                   />
                   <p
-                    className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}
+                    className={`${NeuePlakFont.className} text-white text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}
                     onClick={handlRemoveImage}
                   >
                     Remove
@@ -218,7 +218,7 @@ export default function Settings() {
                   className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px] cursor-pointer`}
                   htmlFor="profile-img"
                 >
-                  <div className="w-[94px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[130px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
+                  <div className=" text-white w-[94px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[130px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
                     <Image
                       className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
                       src={ChangeImg.src}
@@ -255,13 +255,13 @@ export default function Settings() {
               <div className="m-3 sm:flex sm:gap-20 md:gap-32 justify-evenly">
                 <form>
                   <p
-                    className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px] `}
+                    className={`${NeuePlakFont.className} text-white text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px] `}
                   >
                     Full name
                   </p>
                   <input
                     style={{ outline: "none" }}
-                    className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
                     ref={fullNamelementRef}
                     value={dataSettings.full_name}
@@ -274,13 +274,13 @@ export default function Settings() {
                 </form>
                 <form>
                   <p
-                    className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px]`}
+                    className={`${NeuePlakFont.className} text-white text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px]`}
                   >
                     Nickname
                   </p>
                   <input
                     style={{ outline: "none" }}
-                    className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
                     ref={nickNamelementRef}
                     value={dataSettings.nickName}
@@ -297,7 +297,7 @@ export default function Settings() {
             <div className="m-3 mt-9 md:m-11 lg:m-16 xl:m-40 flex flex-col md:flex-row justify-center items-center">
               <div className="md:w-[70%] xl:p-20 2xl:p-[90px]">
                 <p
-                  className={`${NeuePlakFont.className} md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
+                  className={`${NeuePlakFont.className} text-white md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
                 >
                   Two-Factor Authentication
                 </p>
@@ -312,14 +312,14 @@ export default function Settings() {
                 </p>
                 {dataSettings.fac_auth && (
                   <p
-                    className={`${NeuePlakFontBold.className} md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
+                    className={`${NeuePlakFontBold.className} text-white md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
                   >
                     Save Changes and Scan The Qr
                   </p>
                 )}
                 {!dataSettings.fac_auth && (
                   <button
-                    className={`w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#E95A3A]`}
+                    className={` text-white w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#E95A3A]`}
                     onClick={() => {
                       const modified = { ...dataSettings, fac_auth: true };
                       setDataSettings(modified);
@@ -330,7 +330,7 @@ export default function Settings() {
                 )}
                 {dataSettings.fac_auth && (
                   <button
-                    className={`w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#4A4853]`}
+                    className={`text-white w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#4A4853]`}
                     onClick={() => {
                       const modified = { ...dataSettings, fac_auth: false };
                       setDataSettings(modified);
@@ -370,13 +370,13 @@ export default function Settings() {
             </div>
             <div className="flex flex-col md:flex-row md:justify-evenly justify-center items-center">
               <button
-                className={`m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 border-solid border rounded-[15px] lg:rounded-[20px] xl:rounded-[25px] 2xl:rounded-[30px] ${NeuePlakFont.className} text-[14px] md:text-[18px] lg:text-[20px] xl:text-[25px] 2xl:text-[32px] bg-[#15131D]`}
+                className={` text-white m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 border-solid border rounded-[15px] lg:rounded-[20px] xl:rounded-[25px] 2xl:rounded-[30px] ${NeuePlakFont.className} text-[14px] md:text-[18px] lg:text-[20px] xl:text-[25px] 2xl:text-[32px] bg-[#15131D]`}
                 onClick={handlSaveChanges}
               >
                 Save changes
               </button>
               <button
-                className={`m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 ${NeuePlakFont.className} text-[14px] md:text-[18px]  lg:text-[20px] xl:text-[25px] 2xl:text-[32px] text-[#DA373C]`}
+                className={` m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 ${NeuePlakFont.className} text-[14px] md:text-[18px]  lg:text-[20px] xl:text-[25px] 2xl:text-[32px] text-[#DA373C]`}
               >
                 Delete account
               </button>

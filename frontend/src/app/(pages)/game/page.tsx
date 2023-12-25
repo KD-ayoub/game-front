@@ -45,7 +45,7 @@ export default function Game() {
         className={`grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 lg:mt-[72px] xl:mt-[96px] 2xl:mt-[128px] ${marginbody} //flex justify-center items-center//`}
       >
         <div
-          className={`ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className} `}
+          className={`text-white ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className} `}
         >
           Game
         </div>
@@ -59,7 +59,7 @@ export default function Game() {
                 <div className="w-[220px] h-[370px] md:w-[260px] md:h-[390px] lg:w-[300px] lg:h-[450px] xl:w-[370px] xl:h-[520px] 2xl:w-[550px] 2xl:h-[620px] bg-[#15131D] rounded-[15px]">
                   <div className="flex justify-center p-4 xl:p-5 2xl:p-7">
                     <p
-                      className={`${NeuePlakFont.className} md:text-[20px] lg:text-[25px] xl:text-[30px] 2xl:text-[38px]`}
+                      className={`${NeuePlakFont.className} text-white md:text-[20px] lg:text-[25px] xl:text-[30px] 2xl:text-[38px]`}
                     >
                       Search for a friend
                     </p>

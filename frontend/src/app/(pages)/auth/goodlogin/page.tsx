@@ -180,7 +180,7 @@ export default function GoodLogin() {
                 className={`${NeuePlakFont.className} text-[14px] lg:text-[20px] xl:text-[24px] 2xl:text-[34px] cursor-pointer`}
                 htmlFor="profile-img"
               >
-                <div className="w-[94px] sm:w-[96px] sm:h-[26px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[140px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 lg:gap-2 xl:gap-3 2xl:gap-6 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
+                <div className="text-white w-[94px] sm:w-[96px] sm:h-[26px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[140px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 lg:gap-2 xl:gap-3 2xl:gap-6 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
                   <Image
                     className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
                     src={ChangeImg.src}
@@ -202,13 +202,13 @@ export default function GoodLogin() {
             <div>
               <form>
                 <p
-                  className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px] `}
+                  className={`${NeuePlakFont.className} text-white text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px] `}
                 >
                   Full name
                 </p>
                 <input
                   style={{ outline: "none" }}
-                  className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                  className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                   type="text"
                   id="full-name"
                   ref={fullNameRef}
@@ -221,13 +221,13 @@ export default function GoodLogin() {
               </form>
               <form>
                 <p
-                  className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px]`}
+                  className={`${NeuePlakFont.className} text-white text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px]`}
                 >
                   Nickname
                 </p>
                 <input
                   style={{ outline: "none" }}
-                  className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                  className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                   type="text"
                   id="nick-name"
                   ref={nickNameRef}
@@ -244,7 +244,7 @@ export default function GoodLogin() {
               onClick={handlSubmit}
             >
               <button
-                className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[20px] xl:text-[24px] 2xl:text-[28px]`}
+                className={`${NeuePlakFont.className} text-white text-[16px] md:text-[18px] lg:text-[20px] xl:text-[24px] 2xl:text-[28px]`}
               >
                 Submit
               </button>

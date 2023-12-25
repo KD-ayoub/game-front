@@ -68,7 +68,7 @@ export default function LittleSearchBar() {
                 alt="profile pic"
               />
               <p
-                className={`${NeuePlakFont.className} sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px] 2xl:text-[40px]`}
+                className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px] 2xl:text-[40px]`}
               >
                 {user.nickName}
               </p>

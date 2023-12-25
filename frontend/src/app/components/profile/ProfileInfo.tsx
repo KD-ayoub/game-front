@@ -73,7 +73,7 @@ export default function ProfileInfo({
           </div>
           <div className="absolute top-[35%] md:top-[65%] md:left-[3%] w-full">
             <p
-              className={`text-center ${textsize} md:text-left md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px] ${NeuePlakFontBold.className}`}
+              className={`text-center ${textsize} md:text-left md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px] ${NeuePlakFontBold.className} text-white`}
             >
               {dataprofile.full_name}
             </p>
@@ -87,17 +87,17 @@ export default function ProfileInfo({
           <div className="absolute top-[55%] w-full md:hidden">
             <div className="flex justify-around items-center">
               <div className="flex flex-col items-center">
-                <p className={`${NeuePlakFontBold.className} text-[14px] `}>
+                <p className={`${NeuePlakFontBold.className} text-[14px] text-white`}>
                   {dataprofile.friend_number}
                 </p>
                 <p
-                  className={`${NeuePlakFontBold.className} text-[12px] text-[#717273] `}
+                  className={`${NeuePlakFontBold.className} text-[12px] text-[#717273]`}
                 >
                   Friends
                 </p>
               </div>
               <div className="flex flex-col items-center">
-                <p className={`${NeuePlakFontBold.className} text-[14px]`}>
+                <p className={`${NeuePlakFontBold.className} text-[14px] text-white`}>
                   {dataprofile.level}
                 </p>
                 <p
@@ -187,7 +187,7 @@ export default function ProfileInfo({
               <div className="flex justify-center">
                 <Link href={"/settings"}>
                   <button
-                    className={`w-32 h-8 bg-[#E95A3A] rounded-3xl ${NeuePlakFont.className}`}
+                    className={`w-32 h-8 bg-[#E95A3A] text-white rounded-3xl ${NeuePlakFont.className}`}
                   >
                     Edit Profile
                   </button>
@@ -203,18 +203,18 @@ export default function ProfileInfo({
             </p>
             <div className="md:w-full md:h-10">
               <p
-                className={`${NeuePlakFont.className} text-[9px] lg:text-[11px] xl:text-[14px] 2xl:text-[20px] text-end`}
+                className={`${NeuePlakFont.className} text-white text-[9px] lg:text-[11px] xl:text-[14px] 2xl:text-[20px] text-end`}
               >
                 80%
               </p>
               {/* calcul the percentage and adjust the width  */}
               <div>
-                <div className="md:w-full md:bg-gray-200 md:rounded-full md:h-2.5 xl:h-3 md:dark:bg-[#4A4953]">
+                <div className="md:w-full md:bg-[#4A4953] md:rounded-full md:h-2.5 xl:h-3 ">
                   <div className="md:bg-[#E95A3A] md:h-2.5 xl:h-3 md:rounded-full md:w-[80%]"></div>
                 </div>
               </div>
               <p
-                className={`${NeuePlakFont.className} text-[9px] lg:text-[11px] xl:text-[14px] 2xl:text-[20px] text-end`}
+                className={`${NeuePlakFont.className} text-[9px] lg:text-[11px] xl:text-[14px] 2xl:text-[20px] text-end text-white`}
               >
                 {`Level ${dataprofile.level}`}
               </p>
@@ -226,14 +226,14 @@ export default function ProfileInfo({
                     Friends
                   </p>
                   <p
-                    className={`${NeuePlakFont.className} md:text-[10px] lg:text-[14px] xl:text-[18px] 2xl:text-[24px] md:text-center`}
+                    className={`${NeuePlakFont.className} text-white md:text-[10px] lg:text-[14px] xl:text-[18px] 2xl:text-[24px] md:text-center`}
                   >
                     {dataprofile.friend_number}
                   </p>
                 </div>
                 {!pathname && !Follow && (
                   <button
-                    className={`hidden xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
+                    className={`hidden xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} text-white xl:text-[18px] 2xl:text-[24px]`}
                     onClick={handlFollowClick}
                   >
                     Add Friend
@@ -241,7 +241,7 @@ export default function ProfileInfo({
                 )}
                 {!pathname && Follow && (
                   <button
-                    className={`hidden xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#4A4853] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
+                    className={`hidden xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#4A4853] md:rounded-3xl ${NeuePlakFont.className} text-white xl:text-[18px] 2xl:text-[24px]`}
                     onClick={handlUnfollowClick}
                   >
                     Unfriend
@@ -249,21 +249,21 @@ export default function ProfileInfo({
                 )}
                 {!pathname && (
                   <button
-                    className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
+                    className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} text-white xl:text-[18px] 2xl:text-[24px]`}
                   >
                     Challenge
                   </button>
                 )}
                 {!pathname && (
                   <button
-                    className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
+                    className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} text-white xl:text-[18px] 2xl:text-[24px]`}
                   >
                     Message
                   </button>
                 )}
                 {!pathname && (
                   <button
-                    className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#4A4853] md:rounded-3xl ${NeuePlakFont.className} xl:text-[18px] 2xl:text-[24px]`}
+                    className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#4A4853] md:rounded-3xl ${NeuePlakFont.className} text-white xl:text-[18px] 2xl:text-[24px]`}
                   >
                     Block
                   </button>
@@ -332,7 +332,7 @@ export default function ProfileInfo({
                 {pathname && (
                   <Link href={"/settings"}>
                     <button
-                      className={`md:mt-1 md:w-20 md:h-6 lg:w-24 lg:h-7 xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} md:text-[10px] lg:text-[14px] xl:text-[18px] 2xl:text-[24px]`}
+                      className={`md:mt-1 md:w-20 md:h-6 lg:w-24 lg:h-7 xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} text-white md:text-[10px] lg:text-[14px] xl:text-[18px] 2xl:text-[24px]`}
                     >
                       Edit Profile
                     </button>
