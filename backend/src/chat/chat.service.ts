@@ -174,29 +174,10 @@ export class chatService {
 	{
 		const friends = await this.prisma.friendship.findMany({
 			where: {
-				OR: [
-					{
 						userId : userid
-					},
-					{
-						friendId : userid
-					}
-				],
-				is_blocked: false
 			},
 			select: {
 				friend : {
-					select: {
-						id: true,
-						nickName: true,
-						profile: {
-							select: {
-								photo_path: true,
-							}
-						}		
-					}
-				},
-				user: {
 					select: {
 						id: true,
 						nickName: true,
@@ -210,13 +191,7 @@ export class chatService {
 			}
 		})
 		const reshapedResult = friends.map(user => {
-			const obj = {};
-			if (user.friend.id != userid)
-			{
 				return {id : user.friend.id,nickname: user.friend.nickName, photo: user.friend.profile.photo_path}
-			}
-			else
-				return {id : user.user.id,nickname: user.user.nickName, photo: user.user.profile.photo_path}
 		});
 		return reshapedResult;
 	}
