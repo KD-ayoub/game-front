@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, ForbiddenException, BadRequestException, Session } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { SettingsDto } from './dto';
@@ -9,18 +9,19 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class SettingsService {
-  private hld: string;
+  //private hld: string;
   constructor(private prisma: PrismaService, private cloudinaryService: CloudinaryService) {}
 
   async getSettingsData(userId: string): Promise<{}> {
-    const img = await this.prisma.profile.findUnique({
+    const profile = await this.prisma.profile.findUnique({
       where: {
         userID: userId,
       },
       select: {
         photo_path: true,
+        QR_url: true
       }
-    })
+    });
     const commingData = await this.prisma.user.findUnique({
       where: {
         id: userId,
@@ -32,14 +33,16 @@ export class SettingsService {
         fac_auth: true
       }
     });
-    if (!img || !commingData)
+    if (!profile || !commingData)
       throw new NotFoundException();
-    commingData['photo_path'] = await img.photo_path;
+    commingData['photo_path'] = await profile.photo_path;
+    if (commingData.fac_auth)
+      commingData['qr_code_url'] = await qrcode.toDataURL(profile.QR_url);
     return commingData;
   }
 
   //take it off
-  async checkIfQrCodeIsRight(userId: string, token: string): Promise<{}> {
+  async checkIfQrCodeIsRight(userId: string, token: string): Promise<boolean> {
     const profile = await this.prisma.profile.findUnique({
       where: {
         userID: userId,
@@ -48,15 +51,14 @@ export class SettingsService {
         TwoFac_pass: true
       }
     });
+
     let verify = speakeasy.totp.verify({
       secret: profile.TwoFac_pass,
       encoding: 'base32',
       token
-    })
-    if (verify)
-		return true;
-    else
-		return false
+    });
+    console.log('otp ', verify);
+    return verify;
   }
 
   async deleteImageData(userId: string) {
@@ -74,19 +76,19 @@ export class SettingsService {
     if (profile.photoID !== "default_img") {
       try {
         this.cloudinaryService.deleteFile(profile.photoID);
-        await this.prisma.profile.update({
-          where: {
-            userID: userId,
-          },
-          data: {
-            photo_path: "default_img",
-            photoID: "default_img"
-          },
-        });
       } catch (err) {
         throw new ConflictException('error in cloudinary delete photo');
       }
     }
+    await this.prisma.profile.update({
+      where: {
+        userID: userId,
+      },
+      data: {
+        photo_path: "default_img",
+        photoID: "default_img"
+      },
+    });
     return {
       photo_path: "default_img"
     };
@@ -119,7 +121,7 @@ export class SettingsService {
     }
   }
 
-  async changeSettingsData(userId: string, data: SettingsDto): Promise<{}> {
+  async changeSettingsData(userId: string, data: SettingsDto, session: any): Promise<{}> {
     try {
       let objFac;
       let profile;
@@ -133,16 +135,23 @@ export class SettingsService {
         }
       });
       if (!facCheck.fac_auth && data.fac_auth) {
+		    const user = session.passport.user;
         objFac = speakeasy.generateSecret();
+		    session.passport.user['code'] = speakeasy.totp({
+          secret: objFac.base32,
+          encoding: 'base32'
+        });
+        console.log('dd ', objFac);
         profile = await this.prisma.profile.update({
           where: {
             userID: userId,
           },
           data: {
-            TwoFac_pass: objFac.base32
+            TwoFac_pass: objFac.base32,
+            QR_url: objFac.otpauth_url
           },
           select: {
-            TwoFac_pass: true
+            QR_url: true
           }
         });
       }
@@ -152,7 +161,7 @@ export class SettingsService {
             userID: userId,
           },
           select: {
-            TwoFac_pass: true
+            QR_url: true
           }
         });
       }
@@ -174,7 +183,7 @@ export class SettingsService {
       });
       if (data.fac_auth) {
         try {
-          user['qr_code_url'] = await qrcode.toDataURL(profile.TwoFac_pass);
+          user['qr_code_url'] = await qrcode.toDataURL(profile.QR_url);
         } catch (err) {
           throw (err);
         }

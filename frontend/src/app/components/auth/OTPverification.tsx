@@ -4,18 +4,19 @@ import "./otpstyle.css";
 import { NeuePlakFont } from "@/app/utils/NeuePlakFont";
 
 let currentOtpindex: number;
-export default function OTPVerification() {
+interface OTPVerificationProps {
+  GetOTP: (otp: string) => void;
+}
+export default function OTPVerification({ GetOTP }: OTPVerificationProps) {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const inputRef = useRef<HTMLInputElement>(null);
   const [activeInput, setActiveInput] = useState(0);
 
   function handlInputChange(event: ChangeEvent<HTMLInputElement>) {
-    console.log(currentOtpindex);
     const newOtp: string[] = [...otp];
     newOtp[currentOtpindex] = event.target.value.substring(
       event.target.value.length - 1
     );
-    console.log(newOtp);
     setOtp(newOtp);
     if (!event.target.value) {
       setActiveInput(currentOtpindex - 1);
@@ -24,20 +25,29 @@ export default function OTPVerification() {
     }
   }
   function handlKeyDown(event: KeyboardEvent<HTMLInputElement>, index: number) {
-    console.log("ke", event.key);
     if (isNaN(parseInt(event.key)) && event.key !== "Backspace") {
       event.preventDefault();
+    }
+    if (!otp[index - 1]) {
+      const newOtp = [...otp];
+      newOtp[index] = '';
+      setOtp(newOtp);
     }
     currentOtpindex = index;
     if (event.key === "Backspace") {
       setActiveInput(currentOtpindex - 1);
-    }
+      }
   }
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, [activeInput]);
+  }, [activeInput, currentOtpindex]);
+
+  useEffect(() => {
+    const enteredOTP = otp.join('');
+    GetOTP(enteredOTP);
+  }, [otp, GetOTP]);
 
   return (
     <>

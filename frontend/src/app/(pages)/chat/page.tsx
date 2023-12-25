@@ -12,8 +12,10 @@ import {
 import "./chat.css";
 import { NeuePlakFont } from "@/app/utils/NeuePlakFont";
 import io from "socket.io-client";
-
-const socket = io("http://localhost:3001/chat/conv");
+import { FriendsChatType } from "@/app/types/friendsChat";
+import { get } from "http";
+import { error } from "console";
+// const socket = io("http://localhost:3001/chat/conv");
 
 export default function Chat() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -22,17 +24,23 @@ export default function Chat() {
   const [messages, setMessages] = useState<string[]>([]);
   const [messageText, setMessageText] = useState<string>("");
   const [showConv, setShowConv] = useState(false); // set initial value to false
+  const [idOfuserSelected, setIdOfuserSelected] = useState<FriendsChatType>();
+  // const [friends, setFriends] = useState<FriendsChatType[]>([]);
 
-  useEffect(() => {
-    socket.on("message", (message: string) => {
-      setMessages([...messages, message]);
-    });
-  }, [messages]);
-
-  const sendMessage = () => {
-    socket.emit("sendMessage", { text: messageText });
-    setMessageText("");
+  const hundleIdOfuserSelected = (infoUser: FriendsChatType) => {
+    setIdOfuserSelected(infoUser);
   };
+  
+  // useEffect(() => {
+  //   socket.on("message", (message: string) => {
+  //     setMessages([...messages, message]);
+  //   });
+  // }, [messages]);
+
+  // const sendMessage = () => {
+  //   socket.emit("sendMessage", { text: messageText });
+  //   setMessageText("");
+  // };
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -49,10 +57,8 @@ export default function Chat() {
       <SideBar isHumburgClicked={isHumburgClicked} />
       <div
         className={`grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 lg:mt-[72px] xl:mt-[96px] 2xl:mt-[128px] ${marginbody} flex justify-center items-center`}
-        >
-        <div
-          className={`chat ${NeuePlakFont.className}`}
-        >
+      >
+        <div className={`chat ${NeuePlakFont.className}`}>
           <div className="chat-left-side">
             {!showConv && <OnlineNow />} {/* only render if !showConv */}
             {!showConv && (
@@ -70,7 +76,8 @@ export default function Chat() {
             )}
             {option === "Friends" && !showConv && (
               <FriendsMessaged
-                onChange={(value: boolean) => setShowConv(value)}
+                onSelect={hundleIdOfuserSelected}
+                // onChange={(value: boolean) => setShowConv(value)}
               />
             )}
             {option === "Channels" && !showConv && (
@@ -80,7 +87,7 @@ export default function Chat() {
             )}
           </div>
           {/* {showConv && <FriendConversation />} only render if showConv */}
-          <FriendConversation />
+          <FriendConversation friendSelected={idOfuserSelected} />
         </div>
       </div>
     </main>

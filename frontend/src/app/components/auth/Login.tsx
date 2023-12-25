@@ -1,7 +1,7 @@
-"use client";
+
 
 import { NeuePlakFontBold, NeuePlakFont } from "@/app/utils/NeuePlakFont";
-import React, { SyntheticEvent, useEffect, useState } from "react";
+// import React, { SyntheticEvent, useEffect, useState } from "react";
 import Image from "next/image";
 // import BlueAchiev from "@/app/assets/svg/blueachiev.svg";
 import intra_logo from "@/app/assets/svg/42_logo.svg";
@@ -19,7 +19,7 @@ export default function Login() {
         className="m-3 md:w-9 md:h-9 lg:w-14 lg:h-14 xl:w-[72px] xl:h-[72px] 2xl:w-[85px]"
       />
       <p
-        className={`${NeuePlakFontBold.className} text-[22px] text-center md:text-[26px] lg:text-[28px] xl:text-[34px] 2xl:text-[38px]`}
+        className={`${NeuePlakFontBold.className} text-white text-[22px] text-center md:text-[26px] lg:text-[28px] xl:text-[34px] 2xl:text-[38px]`}
       >
         Welcome Back again!
       </p>
@@ -29,13 +29,13 @@ export default function Login() {
       <Link href="http://localhost:3001/auth/login">
         <div className="lg:w-56 lg:h-16 xl:w-60 xl:h-20 2xl:w-64 2xl:h-24 border m-2 p-2 flex flex-col rounded-xl hover:bg-[#ff5555bb]">
           <p
-            className={`${NeuePlakFont.className} text-[18px] xl:text-[22px] 2xl:text-[24px] text-center`}
+            className={`${NeuePlakFont.className} text-white text-[18px] xl:text-[22px] 2xl:text-[24px] text-center`}
           >
             Log with Your
           </p>
           <div className="flex justify-center gap-3">
             <Image src={intra_logo.src} width={20} height={20} alt="42 logo" />
-            <p className={`${NeuePlakFont.className} text-[18px] xl:text-[22px] 2xl:text-[24px] text-center`}>Intra</p>
+            <p className={`${NeuePlakFont.className} text-white text-[18px] xl:text-[22px] 2xl:text-[24px] text-center`}>Intra</p>
           </div>
         </div>
       </Link>

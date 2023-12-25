@@ -21,6 +21,7 @@ import getStatusGame from "@/app/api/Profile/getStatusGame";
 import getAchievement from "@/app/api/Profile/getAchievement";
 import getFriends from "@/app/api/Profile/getFriends";
 import getGamesHistory from "@/app/api/Profile/getGamesHistory";
+import { useUserContext } from "@/app/components/useUserContext";
 
 export default function Profile() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -53,18 +54,22 @@ export default function Profile() {
   });
   const [dataFriends, setdataFriends] = useState<Array<FriendsType>>([]);
   const [dataGamesHistory, setdataGamesHistory] = useState<Array<GamesHistoryType>>([]);
+  const {userData} = useUserContext();
+  console.log("context in profile", userData.id);
   useEffect(() => {
     async function fetchdata() {
-      setdataProfile(await getProfileInfo());
-      setdataStatusGame(await getStatusGame());
-      setdataAchievement(await getAchievement());
-      setdataFriends(await getFriends());
-      setdataGamesHistory(await getGamesHistory());
-      setIsloaded(false);
+      if (userData.id) {
+        setdataProfile(await getProfileInfo(userData.id));
+        setdataStatusGame(await getStatusGame(userData.id));
+        setdataAchievement(await getAchievement(userData.id));
+        setdataFriends(await getFriends(userData.id));
+        setdataGamesHistory(await getGamesHistory(userData.id));
+        setIsloaded(false);
+      }
     }
     fetchdata();
-  }, []);
-
+  }, [userData.id]);
+  console.log("gameeeehisto", dataGamesHistory);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="h-[80px] w-[80px] sm:w-28 sm:h-28 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-[480px] xl:h-[480px] 2xl:w-[550px] 2xl:h-[550px] rounded-full fixed -top-5 sm:-top-10 md:-top-32 lg:-top-40 xl:-top-64 right-0 opacity-70 sm:opacity-60 md:opacity-30 lg:opacity-25 xl:opacity-20 2xl:opacity-[0.19] bg-gradient-to-b from-[#323138] via-[#E95A3A] to-[#60C58D] blur-3xl "></div>
@@ -78,7 +83,7 @@ export default function Profile() {
       >
         <div className="w-full h-full">
           <div
-            className={`ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className} `}
+            className={`text-white ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className} `}
           >
             Profile
           </div>

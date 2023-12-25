@@ -170,7 +170,58 @@ export class chatService {
 		return messagehistory;
 	}
 
-	async get_all_conv(id: string)
+	async get_all_friends(userid :string)
+	{
+		const friends = await this.prisma.friendship.findMany({
+			where: {
+				OR: [
+					{
+						userId : userid
+					},
+					{
+						friendId : userid
+					}
+				],
+				is_blocked: false
+			},
+			select: {
+				friend : {
+					select: {
+						id: true,
+						nickName: true,
+						profile: {
+							select: {
+								photo_path: true,
+							}
+						}		
+					}
+				},
+				user: {
+					select: {
+						id: true,
+						nickName: true,
+						profile: {
+							select: {
+								photo_path: true,
+							}
+						}		
+					}
+				}
+			}
+		})
+		const reshapedResult = friends.map(user => {
+			const obj = {};
+			if (user.friend.id != userid)
+			{
+				return {id : user.friend.id,nickname: user.friend.nickName, photo: user.friend.profile.photo_path}
+			}
+			else
+				return {id : user.user.id,nickname: user.user.nickName, photo: user.user.profile.photo_path}
+		});
+		return reshapedResult;
+	}
+
+	/*async get_all_conv(id: string)
 	{
 		const conversations = await this.prisma.directMessage.findMany({
     		where: {
@@ -225,5 +276,5 @@ export class chatService {
 			}
 		})
 		return users;
-	}
+	}*/
 }

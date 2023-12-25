@@ -5,12 +5,16 @@ import StatusGame from "./profile/StatusGame";
 import Achievements from "./profile/Achievements";
 import GameHistory from "./profile/GameHistory";
 import Friends from "./profile/Friends";
-import Login from "./auth/Login"
-import OnlineNow from "./chat/onlineNow";
-import FriendsMessaged from "./chat/friendsMessaged";
-import FriendConversation from "./chat/friendConversation";
-import ChannelMessaged from "./chat/channelMessaged";
+import Login from "./auth/Login";
+import PlayMode from "./game/PlayMode";
+import LittleSearchBar from "./game/LittleSearchBar";
+import GameLevel from "./game/GameLevel";
 import ChannelConversation from "./chat/channelConversation";
+import ChannelMessaged from "./chat/channelMessaged";
+import FriendConversation from "./chat/friendConversation";
+import FriendsMessaged from "./chat/friendsMessaged";
+import OnlineNow from "./chat/onlineNow";
+
 
 export {
     Header,
@@ -21,10 +25,13 @@ export {
     GameHistory,
     Friends,
     Login,
-    OnlineNow,
-    FriendsMessaged,
-    FriendConversation,
-    ChannelMessaged,
+    PlayMode,
+    LittleSearchBar,
+    GameLevel,
     ChannelConversation,
-
+    ChannelMessaged,
+    FriendConversation,
+    FriendsMessaged,
+    OnlineNow,
+    
 }

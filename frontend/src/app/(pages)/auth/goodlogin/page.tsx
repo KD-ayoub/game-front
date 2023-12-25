@@ -15,6 +15,7 @@ import { redirect, useRouter, useSearchParams } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import CheckUserStatus from "@/app/api/checkUserStatus";
 import { loginStatus } from "@/app/utils/library/authEnum";
+import { useUserContext } from "@/app/components/useUserContext";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function GoodLogin() {
@@ -32,10 +33,14 @@ export default function GoodLogin() {
   const router = useRouter();
   const searchParam = useSearchParams();
 
+  const {fetcher} = useUserContext();
+
   function handlImageChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
     if (event.target.files) {
       if (event.target.files.length > 0) {
+        console.log("entered here");
+        userData.photo_user = `${default_avatar.src}`;
         setObjectUrl(URL.createObjectURL(event.target.files[0]));
         console.log(objectUrl);
         setFileImage(event.target.files[0]);
@@ -91,19 +96,47 @@ export default function GoodLogin() {
           full_name: userData.full_name,
           nickname: userData.nickName,
         };
-        const putData = await PutUserData(body);
-        if (putData.status === 200) {
-          // redirect to profile
-          router.push("/profile");
-        } else if (putData.status === 409) {
-          toast.error("nickname already exists", {
-            style: {
-              backgroundColor: "#383546",
-              color: "white",
-            },
-          });
+        const formData = new FormData();
+        formData.append('file', fileImage ?? 'https://placehold.co/400');
+        // in case of error
+        const toastId = toast.loading("Saving changes", {
+          style: {
+            backgroundColor: "#383546",
+            color: "white",
+          },
+        });
+        if (fileImage) {
+          const [putImg, putData] = await Promise.all([PutImage(formData), PutUserData(body)]);
+          if (putData.status === 200) {
+            // redirect to profile
+            toast.remove(toastId);
+            router.push("/profile");
+            fetcher();
+          } else if (putData.status === 409) {
+            toast.error("nickname already exists", {
+              style: {
+                backgroundColor: "#383546",
+                color: "white",
+              },
+            });
+          }
+        } else {
+          const putData = await PutUserData(body);
+          if (putData.status === 200) {
+            // redirect to profile
+            toast.remove(toastId);
+            router.push("/profile");
+            fetcher();
+          } else if (putData.status === 409) {
+            toast.error("nickname already exists", {
+              style: {
+                backgroundColor: "#383546",
+                color: "white",
+              },
+            });
+          }
         }
-        await console.log("hona ", putData);
+        // await console.log("hona ", putData);
         console.log("save");
       } else {
         // make toast error
@@ -120,22 +153,7 @@ export default function GoodLogin() {
 
   useEffect(() => {
     async function fetcher() {
-      const responseStatus = await CheckUserStatus();
-      if (responseStatus.status === 403) {
-        const body = await responseStatus.json();
-        if (body.message === loginStatus.FirstTime) {
-          console.log("first time");
-        } else if (body.message === loginStatus.NotLogged) {
-          console.log("not logged");
-        } else if (body.message === loginStatus.TwoFactor) {
-          console.log("two factor");
-        }
-        await console.log("bbbbbb", body);
-      } else {
-        console.log("you are alrady logged");
-        router.push("/profile");
-        return null;
-      }
+      //
       setUserData(await getUserData());
     }
     fetcher();
@@ -150,7 +168,7 @@ export default function GoodLogin() {
               <Image
                 className="h-20 md:w-[100px] md:h-[100px] lg:w-[110px] lg:h-[110px] xl:w-[125px] xl:h-[125px] 2xl:w-[145px] 2xl:h-[145px] rounded-full"
                 src={
-                  userData.photo_user === `${default_avatar.src}`
+                  userData.photo_user === `${default_avatar.src}` || userData.photo_user === 'default_img'
                     ? objectUrl
                     : userData.photo_user
                 }
@@ -162,7 +180,7 @@ export default function GoodLogin() {
                 className={`${NeuePlakFont.className} text-[14px] lg:text-[20px] xl:text-[24px] 2xl:text-[34px] cursor-pointer`}
                 htmlFor="profile-img"
               >
-                <div className="w-[94px] sm:w-[96px] sm:h-[26px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[140px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 lg:gap-2 xl:gap-3 2xl:gap-6 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
+                <div className="text-white w-[94px] sm:w-[96px] sm:h-[26px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[140px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 lg:gap-2 xl:gap-3 2xl:gap-6 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
                   <Image
                     className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
                     src={ChangeImg.src}
@@ -184,13 +202,13 @@ export default function GoodLogin() {
             <div>
               <form>
                 <p
-                  className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px] `}
+                  className={`${NeuePlakFont.className} text-white text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px] `}
                 >
                   Full name
                 </p>
                 <input
                   style={{ outline: "none" }}
-                  className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                  className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                   type="text"
                   id="full-name"
                   ref={fullNameRef}
@@ -203,13 +221,13 @@ export default function GoodLogin() {
               </form>
               <form>
                 <p
-                  className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px]`}
+                  className={`${NeuePlakFont.className} text-white text-[16px] md:text-[18px] lg:text-[24px] xl:text-[27px] 2xl:text-[38px]`}
                 >
                   Nickname
                 </p>
                 <input
                   style={{ outline: "none" }}
-                  className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                  className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[180px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                   type="text"
                   id="nick-name"
                   ref={nickNameRef}
@@ -226,7 +244,7 @@ export default function GoodLogin() {
               onClick={handlSubmit}
             >
               <button
-                className={`${NeuePlakFont.className} text-[16px] md:text-[18px] lg:text-[20px] xl:text-[24px] 2xl:text-[28px]`}
+                className={`${NeuePlakFont.className} text-white text-[16px] md:text-[18px] lg:text-[20px] xl:text-[24px] 2xl:text-[28px]`}
               >
                 Submit
               </button>
