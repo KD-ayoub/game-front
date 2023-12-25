@@ -13,6 +13,7 @@ import Logout from "@/app/assets/svg/logout.svg";
 import Sideimg from "@/app/assets/svg/sideimg.svg";
 
 import NavbarIcons from "./NavbarIcons";
+import { useRouter } from "next/navigation";
 
 export default function SideBar({
   isHumburgClicked,
@@ -20,7 +21,17 @@ export default function SideBar({
   isHumburgClicked: boolean;
 }) {
   const hidden = isHumburgClicked ? "hidden" : "";
-
+  const router = useRouter();
+  async function handlLogout() {
+    const response = await fetch('http://localhost:3001/auth/logout', {
+      method: 'GET',
+      credentials: 'include',
+    });
+    if (response.ok) {
+      router.push('/auth');
+    }
+    //// if error need to be handled
+  }
   return (
     <section
       className={`w-10 sm:w-11 md:w-14 lg:w-[72px] xl:w-24 2xl:w-32 h-screen bg-gradient-to-b from-[#110D1F] ${hidden} sm:block relative shrink-0`}
@@ -31,6 +42,7 @@ export default function SideBar({
         alt="Sideimg"
         width={0}
         height={0}
+        priority={true}
       />
       <div className="flex flex-col items-center gap-10 xl:gap-12 2xl:gap-20 pt-20 sm:pt-24 md:pt-24 lg:pt-32 xl:pt-40 2xl:pt-72">
         <div className="relative">
@@ -72,7 +84,10 @@ export default function SideBar({
           </Link>
         </div>
       </div>
-      <div className="flex justify-center pt-40 sm:pt-36 md:pt-32 lg:pt-40 xl:pt-60 2xl:pt-96 brightness-200">
+      <div
+        className="flex justify-center pt-40 sm:pt-36 md:pt-32 lg:pt-40 xl:pt-60 2xl:pt-96 brightness-200"
+        onClick={handlLogout}
+      >
         <Image
           className="sm:w-5 md:w-6 lg:w-8 xl:w-10 2xl:w-14"
           src={Logout.src}

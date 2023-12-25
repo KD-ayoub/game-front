@@ -8,11 +8,12 @@ import CheckUserStatus from "@/app/api/checkUserStatus";
 import { loginStatus } from "@/app/utils/library/authEnum";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+import { useUserContext } from "@/app/components/useUserContext";
 
 // sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 export default function TwoFactor() {
   const router = useRouter();
-
+  const {fetcher} = useUserContext();
   const [enteredOTP, setEnteredOTP] = useState("");
 
   function handleGetOTP(otp: string) {
@@ -50,6 +51,8 @@ export default function TwoFactor() {
       });
       return;
     }
+    router.push('/profile');
+    fetcher();
     //////////////////////////:
   }
   

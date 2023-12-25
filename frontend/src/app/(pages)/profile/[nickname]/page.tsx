@@ -22,11 +22,15 @@ import getStatusGame from "@/app/api/Profile/getStatusGame";
 import getAchievement from "@/app/api/Profile/getAchievement";
 import getFriends from "@/app/api/Profile/getFriends";
 import getGamesHistory from "@/app/api/Profile/getGamesHistory";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import getAllUsers from "@/app/api/Profile/getAllUsers";
 import { useUserContext } from "@/app/components/useUserContext";
 
-export default function ProfileUser({ params }: { params: { nickname: string } }) {
+export default function ProfileUser({
+  params,
+}: {
+  params: { nickname: string };
+}) {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
   // check the nickname
@@ -62,40 +66,54 @@ export default function ProfileUser({ params }: { params: { nickname: string } }
   const [dataGamesHistory, setdataGamesHistory] = useState<
     Array<GamesHistoryType>
   >([]);
-  const context = useUserContext();
+  const {userData} = useUserContext();
+  const router = useRouter();
+  console.log("context in [nick]", userData.id);
   useEffect(() => {
     async function fetchallusers() {
-      if (context.id) {
-        const allusers: AllUsersType[] = await getAllUsers(context.id);
+      if (userData.id) {
+        console.log("entered here", params.nickname);
+        if (userData.nickName === params.nickname) {
+          router.push('/profile');
+          return;
+        }
+        const allusers: AllUsersType[] = await getAllUsers(userData.id);
         for (let data = 0; data < allusers.length; data++) {
           if (allusers[data].nickName === params.nickname) {
+            console.log("found id of ", params.nickname);
             userid = allusers[data].id;
             console.log(userid);
+            setdataProfile(await getProfileInfo(userid));
+            setdataStatusGame(await getStatusGame(userid));
+            setdataAchievement(await getAchievement(userid));
+            setdataFriends(await getFriends(userid));
+            setdataGamesHistory(await getGamesHistory(userid));
+            setIsloaded(false);
             setdataAllUsers(allusers);
             return;
-          } 
+          }
         }
         // error user does not exist, return to main profile
-        setdataAllUsers([]);
       }
+      setdataAllUsers([]);
     }
     fetchallusers();
-  }, [context.id]);
-  useEffect(() => {
-    async function fetchdata() {
-      if (dataAllUsers.length !== 0 && context.id) {
-        // pass userid as param
-        setdataProfile(await getProfileInfo(userid));
-        setdataStatusGame(await getStatusGame(userid));
-        setdataAchievement(await getAchievement(userid));
-        setdataFriends(await getFriends(userid));
-        setdataGamesHistory(await getGamesHistory(userid));
-        setIsloaded(false);
-      }
-    }
-    fetchdata();
-  }, [dataAllUsers, context.id]);
-  // console.log(params.nickname);
+  }, [userData.id]);
+  // useEffect(() => {
+  //   async function fetchdata() {
+  //     if (dataAllUsers.length !== 0 && userid) {
+  //       // pass userid as param
+  //       setdataProfile(await getProfileInfo(userid));
+  //       setdataStatusGame(await getStatusGame(userid));
+  //       setdataAchievement(await getAchievement(userid));
+  //       setdataFriends(await getFriends(userid));
+  //       setdataGamesHistory(await getGamesHistory(userid));
+  //       setIsloaded(false);
+  //     }
+  //   }
+  //   fetchdata();
+  // }, [context.id]);
+  console.log("full name", dataprofile.full_name);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="h-[80px] w-[80px] sm:w-28 sm:h-28 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-[480px] xl:h-[480px] 2xl:w-[550px] 2xl:h-[550px] rounded-full fixed -top-5 sm:-top-10 md:-top-32 lg:-top-40 xl:-top-64 right-0 opacity-70 sm:opacity-60 md:opacity-30 lg:opacity-25 xl:opacity-20 2xl:opacity-[0.19] bg-gradient-to-b from-[#323138] via-[#E95A3A] to-[#60C58D] blur-3xl "></div>

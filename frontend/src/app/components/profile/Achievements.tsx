@@ -18,7 +18,7 @@ export default function Achievements({
   return (
     <div className="m-3 mt-2">
       <div
-        className={`${NeuePlakFontBold.className} md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[45px]`}
+        className={`${NeuePlakFontBold.className} text-white md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[45px]`}
       >
         Achievement
       </div>

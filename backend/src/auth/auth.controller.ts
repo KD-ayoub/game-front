@@ -29,13 +29,18 @@ export class AuthController {
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
 		const user = session.passport.user;
-		if (checkFirstTime)
+		if (checkFirstTime) {
 			res.redirect('http://localhost:3000/auth/goodlogin');
+			return ;
+		}
 			//throw new ForbiddenException({message: loginStatus.FirstTime});
-		if (twoFacCheck && !user.hasOwnProperty('code'))
+		if (twoFacCheck && !user.hasOwnProperty('code')) {
 			res.redirect('http://localhost:3000/auth/twofactor');
+			return ;
+		}
 			//throw new ForbiddenException({message: loginStatus.TwoFactor});
 		res.redirect('http://localhost:3000/profile');
+		return ;
 		//return {message: 'Good'};
 	}
 
@@ -107,8 +112,8 @@ export class AuthController {
 		if (!checkFirstTime) {
 			//if (twoFacCheck)
 			//	redirectUrl = "http://localhost:3000/twofactor";
-			//res.redirect(redirectUrl);
-			return 'Good';
+			//res.redirect("http://localhost:3000/profile");
+			return {message: 'Good'};
 			//throw new ForbiddenException({message: loginStatus.NotLogged});
 		}
 		console.log(body);
@@ -155,8 +160,11 @@ export class AuthController {
 	@UseGuards(AuthenticatedGuard)
 	@Post('2fa')
 	//async _2fa(@Req() req: Request, @Body() body: _2fa, @Session() session: any,@Res() res)
-	async _2fa(@Req() req: any, @Body() body: _2fa, @Session() session: any, @Res() res: Response) {
+	async _2fa(@Req() req: any, @Body() body: _2fa, @Session() session: any) {
 		//this will get taken down and putting in guard
+		//console.log('ll = ', body);
+		//return {message: 'Good'};
+
 		console.log('ll = ', body);
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
@@ -166,13 +174,18 @@ export class AuthController {
 		//idk what to send here 200 or 403
 		//if (!twoFacCheck || (twoFacCheck && session.passport.user.code))
 		//console.log('dugg ', session.passport.user);
-		if (!twoFacCheck || (twoFacCheck && user.hasOwnProperty('code')))
+		if (!twoFacCheck || (twoFacCheck && user.hasOwnProperty('code'))) {
 			//return {message: 'Good'};
-			res.redirect('http://localhost:3000/profile');
-			//throw new ForbiddenException({message: loginStatus.TwoFactor});
+			//res.redirect('http://localhost:3000/profile');
+			////throw new ForbiddenException({message: loginStatus.TwoFactor});
+			//return ;
+			return {message: 'Good'};
+
+		}
 		////
 		
 		const verify = await this.settingService.checkIfQrCodeIsRight(user.id, body.code);
+		console.log(`2fa ${verify}`);
 		if (!verify)
 			throw new ConflictException({message: "CodeNotValid"});
 		session.passport.user['code'] = body.code;
@@ -180,8 +193,9 @@ export class AuthController {
 		//console.log(req.user);
 		//console.log(session.passport.user);
 		//console.log('body = ', body);
-		res.redirect('http://localhost:3000/profile');
-		//return {message: 'Good'};
+		//res.redirect('http://localhost:3000/profile');
+		//return ;
+		return {message: 'Good'};
 
 
 

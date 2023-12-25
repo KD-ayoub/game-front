@@ -26,7 +26,7 @@ export default function StatusGame({
           <div className="flex justify-around">
             <div className="flex flex-col items-center">
               <p
-                className={`${NeuePlakFontBold.className} text-[14px] md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[35px]`}
+                className={`${NeuePlakFontBold.className} text-white text-[14px] md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[35px]`}
               >
                 {dataStatusGame.games}
               </p>
@@ -38,19 +38,19 @@ export default function StatusGame({
             </div>
             <div className="flex flex-col items-center">
               <p
-                className={`${NeuePlakFontBold.className} text-[14px] md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[35px]`}
+                className={`${NeuePlakFontBold.className} text-white text-[14px] md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[35px]`}
               >
                 {dataStatusGame.win}
               </p>
               <p
-                className={`${NeuePlakFontBold.className} text-[9px] md:text-[12px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px] text-[#717273]`}
+                className={`${NeuePlakFontBold.className}  text-[9px] md:text-[12px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px] text-[#717273]`}
               >
                 WINNINGS
               </p>
             </div>
             <div className="flex flex-col items-center">
               <p
-                className={`${NeuePlakFontBold.className} text-[14px] md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[35px]`}
+                className={`${NeuePlakFontBold.className} text-white text-[14px] md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[35px]`}
               >
                 {dataStatusGame.lose}
               </p>

@@ -17,7 +17,7 @@ export default function Friends({
   return (
     <div className="m-3 mt-2 md:ml-5 lg:ml-10 lg:basis-1/2">
       <div
-        className={`${NeuePlakFontBold.className} md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[45px] `}
+        className={`${NeuePlakFontBold.className} text-white md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[45px] `}
       >
         Friends
       </div>
@@ -59,7 +59,7 @@ export default function Friends({
                     alt="profile image"
                   />
                   <p
-                    className={`${NeuePlakFont.className} md:text-[18px] lg:text-[22px] xl:text-[24px] 2xl:text-[38px]`}
+                    className={`${NeuePlakFont.className} text-white md:text-[18px] lg:text-[22px] xl:text-[24px] 2xl:text-[38px]`}
                   >
                     {data.nickName}
                   </p>

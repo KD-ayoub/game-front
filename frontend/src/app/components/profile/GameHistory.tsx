@@ -15,7 +15,7 @@ export default function GameHistory({
   return (
     <div className="m-3 mt-2 md:ml-5 lg:ml-10 2xl:ml-16 lg:mr-[60px] lg:basis-1/2">
       <div
-        className={`${NeuePlakFontBold.className} md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[45px]`}
+        className={`${NeuePlakFontBold.className} text-white md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[45px]`}
       >
         Game History
       </div>
@@ -34,22 +34,22 @@ export default function GameHistory({
               <thead className="border-b-[1px]">
                 <tr>
                   <th
-                    className={`${NeuePlakFont.className} text-[14px] md:text-[16px] lg:text-[20px] xl:text-[24px] 2xl:text-[35px] pl-3 `}
+                    className={`${NeuePlakFont.className} text-white text-[14px] md:text-[16px] lg:text-[20px] xl:text-[24px] 2xl:text-[35px] pl-3 `}
                   >
                     Player
                   </th>
                   <th
-                    className={`${NeuePlakFont.className} text-[14px] md:text-[16px] lg:text-[20px] xl:text-[24px] 2xl:text-[35px] pl-5`}
+                    className={`${NeuePlakFont.className} text-white text-[14px] md:text-[16px] lg:text-[20px] xl:text-[24px] 2xl:text-[35px] pl-5`}
                   >
                     Result
                   </th>
                   <th
-                    className={`${NeuePlakFont.className} text-[14px] md:text-[16px] lg:text-[20px] xl:text-[24px] 2xl:text-[35px] pl-5`}
+                    className={`${NeuePlakFont.className} text-white text-[14px] md:text-[16px] lg:text-[20px] xl:text-[24px] 2xl:text-[35px] pl-5`}
                   >
                     Level xp
                   </th>
                   <th
-                    className={`${NeuePlakFont.className} text-[14px] md:text-[16px] lg:text-[20px] xl:text-[24px] 2xl:text-[35px] pl-5`}
+                    className={`${NeuePlakFont.className} text-white text-[14px] md:text-[16px] lg:text-[20px] xl:text-[24px] 2xl:text-[35px] pl-5`}
                   >
                     Time
                   </th>
@@ -65,7 +65,7 @@ export default function GameHistory({
                   return (
                     <tr key={data.id} className="text-center even:bg-[#0C0914] ">
                       <td
-                        className={`flex ${NeuePlakFont.className} text-[14px] sm:text-[18px] lg:text-[22px] xl:text-[24px] 2xl:text-[35px] p-2 xl:p-3 2xl:p-5 gap-1 md:gap-5 items-center`}
+                        className={`flex ${NeuePlakFont.className} text-white text-[14px] sm:text-[18px] lg:text-[22px] xl:text-[24px] 2xl:text-[35px] p-2 xl:p-3 2xl:p-5 gap-1 md:gap-5 items-center`}
                       >
                         <Image
                           className="sm:w-[20px] sm:h-[20px] md:w-[30px] md:h-[30px] lg:w-[36px] lg:h-[36px] xl:w-10 xl:h-10 2xl:w-14 2xl:h-14"

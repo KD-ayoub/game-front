@@ -15,10 +15,12 @@ import Qrcode from "@/app/assets/svg/settings/qrcode.svg";
 import getSettings from "@/app/api/Settings/getSettings";
 import PutSettings from "@/app/api/Settings/putSettings";
 import PutImage from "@/app/api/Settings/putImage";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import DeleteImage from "@/app/api/Settings/deleteImage";
 
 export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
+  const [firstRemove, setFirstRemove] = useState(true);
   const marginbody = isHumburgClicked ? "ml-6" : "";
 
   const [dataSettings, setDataSettings] = useState<SettingsType>({
@@ -68,7 +70,7 @@ export default function Settings() {
     }
   }
   function handlNameChange(event: ChangeEvent<HTMLInputElement>) {
-    const modifiedname = { ...dataSettings, name: event.target.value };
+    const modifiedname = { ...dataSettings, full_name: event.target.value };
     setDataSettings(modifiedname);
   }
   function handlNickNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -76,21 +78,44 @@ export default function Settings() {
     setDataSettings(modifiednickname);
   }
   function handlRemoveImage() {
-    console.log("image:",createObjectURL);
-    console.log("image2:",dataSettings.photo_path);
+    console.log("image:", createObjectURL);
+    console.log("image2:", dataSettings.photo_path);
     if (fileinputRef.current) {
       fileinputRef.current.value = "";
     }
+    if (firstRemove) {
+      setFirstRemove(!firstRemove);
+    }
     URL.revokeObjectURL(createObjectURL);
     setCreateObjectURL(`${ProfileImg.src}`);
-    dataSettings.photo_path = `${ProfileImg.src}`;
+    dataSettings.photo_path = `default_img`;
+    setSelectedImage(undefined);
     // send an empty json
   }
-  function handlImageChange() {
+  async function handlImageChange() {
     const formData = new FormData();
-    formData.append("file", selectedImage ?? "https");
-    formData.forEach((item) => {console.log("item:",item)});
-    PutImage(formData);
+    let checkItem: string = "";
+    formData.append("file", selectedImage ?? "https://placehold.co/400");
+    formData.forEach((item) => (checkItem = item.toString()));
+    console.log("checkItem", checkItem);
+    if (selectedImage) {
+      console.log('shoul not enter');
+      const toastId = toast.loading("Saving changes", {
+        style: {
+          backgroundColor: "#383546",
+          color: "white",
+        },
+      });
+      const putted = await PutImage(formData);
+      toast.success("Saved", {
+        id: toastId,
+        style: {
+          backgroundColor: "#383546",
+          color: "white",
+        }
+      });
+      console.log("putted", putted);
+    }
   }
   async function handlSaveChanges() {
     const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
@@ -101,12 +126,32 @@ export default function Settings() {
         nickNameRegex.test(nickNamelementRef.current.value)
       ) {
         // send put method
+        console.log("ettings sent", dataSettings);
+        console.log("selected ", selectedImage);
         const twofa = await PutSettings(dataSettings);
         setDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
         handlImageChange();
+        if (dataSettings.photo_path === "default_img") {
+          console.log("deleted", dataSettings.photo_path);
+          DeleteImage();
+        }
+        if (!selectedImage) {
+          toast.success("Saved", {
+            style: {
+              backgroundColor: "#383546",
+              color: "white",
+            }
+          });
+        }
         console.log("save");
       } else {
         // make toast error
+        toast.error("Error", {
+          style: {
+            backgroundColor: "#383546",
+            color: "white",
+          }
+        });
         console.log("dont save");
       }
     }
@@ -133,15 +178,22 @@ export default function Settings() {
       >
         <div className="w-full h-full">
           <div
-            className={`ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className}`}
+            className={`text-white ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className}`}
           >
             Settings
           </div>
           <div className="w-auto h-auto m-2 bg-gradient-to-b from-[#110D1F] via-[#110D1F] to-[#2d2a38] rounded-[20px]">
+            <Toaster />
             <div className="flex flex-col justify-center items-center">
               <Image
                 className="m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44 rounded-full"
-                src={dataSettings.photo_path === `${ProfileImg.src}` ? createObjectURL : dataSettings.photo_path}
+                src={
+                  dataSettings.photo_path === `${ProfileImg.src}` ||
+                  dataSettings.photo_path === `default_img` ||
+                  !firstRemove
+                    ? createObjectURL
+                    : dataSettings.photo_path
+                }
                 width={60}
                 height={60}
                 alt="settings image"
@@ -156,7 +208,7 @@ export default function Settings() {
                     alt="trash icon"
                   />
                   <p
-                    className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}
+                    className={`${NeuePlakFont.className} text-white text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px]`}
                     onClick={handlRemoveImage}
                   >
                     Remove
@@ -166,7 +218,7 @@ export default function Settings() {
                   className={`${NeuePlakFont.className} text-[14px] lg:text-[18px] xl:text-[22px] 2xl:text-[28px] cursor-pointer`}
                   htmlFor="profile-img"
                 >
-                  <div className="w-[94px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[130px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
+                  <div className=" text-white w-[94px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[130px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
                     <Image
                       className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
                       src={ChangeImg.src}
@@ -187,8 +239,8 @@ export default function Settings() {
                           const file = e.target.files[0];
                           if (e.target.files.length > 0) {
                             setCreateObjectURL(URL.createObjectURL(file));
-                            dataSettings.photo_path = `${ProfileImg.src}`
-                            console.log("imagechange:",createObjectURL);
+                            dataSettings.photo_path = `${ProfileImg.src}`;
+                            console.log("imagechange:", createObjectURL);
                             setSelectedImage(file);
                           }
                         }
@@ -203,13 +255,13 @@ export default function Settings() {
               <div className="m-3 sm:flex sm:gap-20 md:gap-32 justify-evenly">
                 <form>
                   <p
-                    className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px] `}
+                    className={`${NeuePlakFont.className} text-white text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px] `}
                   >
                     Full name
                   </p>
                   <input
                     style={{ outline: "none" }}
-                    className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
                     ref={fullNamelementRef}
                     value={dataSettings.full_name}
@@ -222,13 +274,13 @@ export default function Settings() {
                 </form>
                 <form>
                   <p
-                    className={`${NeuePlakFont.className} text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px]`}
+                    className={`${NeuePlakFont.className} text-white text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px]`}
                   >
                     Nickname
                   </p>
                   <input
                     style={{ outline: "none" }}
-                    className={`${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
                     ref={nickNamelementRef}
                     value={dataSettings.nickName}
@@ -245,7 +297,7 @@ export default function Settings() {
             <div className="m-3 mt-9 md:m-11 lg:m-16 xl:m-40 flex flex-col md:flex-row justify-center items-center">
               <div className="md:w-[70%] xl:p-20 2xl:p-[90px]">
                 <p
-                  className={`${NeuePlakFont.className} md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
+                  className={`${NeuePlakFont.className} text-white md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
                 >
                   Two-Factor Authentication
                 </p>
@@ -260,14 +312,14 @@ export default function Settings() {
                 </p>
                 {dataSettings.fac_auth && (
                   <p
-                    className={`${NeuePlakFontBold.className} md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
+                    className={`${NeuePlakFontBold.className} text-white md:text-[18px] lg:text-[22px] xl:text-[25px] 2xl:text-[38px]`}
                   >
                     Save Changes and Scan The Qr
                   </p>
                 )}
                 {!dataSettings.fac_auth && (
                   <button
-                    className={`w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#E95A3A]`}
+                    className={` text-white w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#E95A3A]`}
                     onClick={() => {
                       const modified = { ...dataSettings, fac_auth: true };
                       setDataSettings(modified);
@@ -278,7 +330,7 @@ export default function Settings() {
                 )}
                 {dataSettings.fac_auth && (
                   <button
-                    className={`w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#4A4853]`}
+                    className={`text-white w-[90px] h-[30px] lg:w-[110px] lg:h-[35px] xl:w-[130px] 2xl:w-[170px] xl:h-[45px] 2xl:h-[60px] rounded-[15px] 2xl:rounded-[27px] xl:rounded-[22px] ${NeuePlakFont.className} m-2 lg:text-[18px] xl:text-[22px] 2xl:text-[32px] bg-[#4A4853]`}
                     onClick={() => {
                       const modified = { ...dataSettings, fac_auth: false };
                       setDataSettings(modified);
@@ -318,13 +370,13 @@ export default function Settings() {
             </div>
             <div className="flex flex-col md:flex-row md:justify-evenly justify-center items-center">
               <button
-                className={`m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 border-solid border rounded-[15px] lg:rounded-[20px] xl:rounded-[25px] 2xl:rounded-[30px] ${NeuePlakFont.className} text-[14px] md:text-[18px] lg:text-[20px] xl:text-[25px] 2xl:text-[32px] bg-[#15131D]`}
+                className={` text-white m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 border-solid border rounded-[15px] lg:rounded-[20px] xl:rounded-[25px] 2xl:rounded-[30px] ${NeuePlakFont.className} text-[14px] md:text-[18px] lg:text-[20px] xl:text-[25px] 2xl:text-[32px] bg-[#15131D]`}
                 onClick={handlSaveChanges}
               >
                 Save changes
               </button>
               <button
-                className={`m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 ${NeuePlakFont.className} text-[14px] md:text-[18px]  lg:text-[20px] xl:text-[25px] 2xl:text-[32px] text-[#DA373C]`}
+                className={` m-3 w-[160px] h-[30px] md:h-10 lg:w-[180px] lg:h-12 xl:w-[220px] 2xl:w-[270px] xl:h-14 2xl:h-16 ${NeuePlakFont.className} text-[14px] md:text-[18px]  lg:text-[20px] xl:text-[25px] 2xl:text-[32px] text-[#DA373C]`}
               >
                 Delete account
               </button>
