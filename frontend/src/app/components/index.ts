@@ -9,6 +9,12 @@ import Login from "./auth/Login";
 import PlayMode from "./game/PlayMode";
 import LittleSearchBar from "./game/LittleSearchBar";
 import GameLevel from "./game/GameLevel";
+import ChannelConversation from "./chat/channelConversation";
+import ChannelMessaged from "./chat/channelMessaged";
+import FriendConversation from "./chat/friendConversation";
+import FriendsMessaged from "./chat/friendsMessaged";
+import OnlineNow from "./chat/onlineNow";
+
 
 export {
     Header,
@@ -22,4 +28,10 @@ export {
     PlayMode,
     LittleSearchBar,
     GameLevel,
+    ChannelConversation,
+    ChannelMessaged,
+    FriendConversation,
+    FriendsMessaged,
+    OnlineNow,
+    
 }
