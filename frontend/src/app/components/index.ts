@@ -9,6 +9,7 @@ import Login from "./auth/Login";
 import PlayMode from "./game/PlayMode";
 import LittleSearchBar from "./game/LittleSearchBar";
 import GameLevel from "./game/GameLevel";
+import ModalGameComponent from "./game/ModalGameComponent";
 
 export {
     Header,
@@ -22,4 +23,5 @@ export {
     PlayMode,
     LittleSearchBar,
     GameLevel,
+    ModalGameComponent,
 }
