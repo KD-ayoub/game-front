@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
 import { errorMonitor } from "events";
 import { PrismaService } from "prisma/prisma.service";
@@ -252,4 +252,44 @@ export class chatService {
 		})
 		return users;
 	}*/
+	async block_a_friend(userid: string, friendid: string)
+	{
+		try {
+			const friends = await this.prisma.friendship.update({
+				where: {
+					userId_friendId: {
+						userId: userid,
+						friendId: friendid,
+					  },
+				},
+				data:{
+					is_blocked: true
+				}
+			});
+			return true;
+
+		} catch (error) {
+			return false;
+		}
+	}
+	async unblock_a_friend(userid: string, friendid: string)
+	{
+		try {
+			const friends = await this.prisma.friendship.update({
+				where: {
+					userId_friendId: {
+						userId: userid,
+						friendId: friendid,
+					  },
+				},
+				data:{
+					is_blocked: false
+				}
+			});
+			return true;
+
+		} catch (error) {
+			return false;
+		}
+	}
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Session } from "@nestjs/common";
+import { BadRequestException, Controller, Get, HttpException, HttpStatus, Param, Session } from "@nestjs/common";
 import { chatService } from "./chat.service";
 import { Record } from "@prisma/client/runtime/library";
 
@@ -28,5 +28,22 @@ export class ChatController{
 	@Get('block/:id')
 	async block(@Session() session : Record<string,any>,@Param('id') id: string)
 	{
+		const value = await this.chatService.block_a_friend(session.passport.user.id,id);
+		if (!value)
+			throw new HttpException('bad',HttpStatus.BAD_REQUEST);
+		else
+			throw new HttpException('good',HttpStatus.OK);
+
+	}
+
+	@Get('unblock/:id')
+	async unblock(@Session() session : Record<string,any>,@Param('id') id: string)
+	{
+		const value = await this.chatService.unblock_a_friend(session.passport.user.id,id);
+		if (!value)
+			throw new HttpException('bad',HttpStatus.BAD_REQUEST);
+		else
+			throw new HttpException('good',HttpStatus.OK);
+
 	}
 }
