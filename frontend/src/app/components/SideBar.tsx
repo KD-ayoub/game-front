@@ -76,7 +76,7 @@ export default function SideBar({
           </div>
         </div>
         <div
-          className="flex justify-center p-4 brightness-200"
+          className="flex justify-center pb-4 brightness-200"
           onClick={handlLogout}
         >
           <Image
