@@ -58,7 +58,6 @@ export default class Paddle {
     paddle.roundRect(this.xpos, this.ypos, this.paddleWidth, this.paddleHeight, 4);
     // paddle.rect(this.xpos, this.ypos, this.paddleWidth, this.paddleHeight);
     this.context.fillStyle = this.color;
-    this.context.fillStyle = 'border-radius: 10px'
     this.context.fill(paddle);
   }
 

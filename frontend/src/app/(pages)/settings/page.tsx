@@ -49,7 +49,7 @@ export default function Settings() {
   function handlFullNameFocus() {
     if (fullNamelementRef.current) {
       const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
-      const old = `${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
+      const old = `${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
       fullNamelementRef.current.className = fullNameRegex.test(
         fullNamelementRef.current.value
       )
@@ -61,7 +61,7 @@ export default function Settings() {
     if (nickNamelementRef.current) {
       const fullNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
       console.log(fullNameRegex.test(nickNamelementRef.current.value));
-      const old = `${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
+      const old = `${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
       nickNamelementRef.current.className = fullNameRegex.test(
         nickNamelementRef.current.value
       )
