@@ -1,8 +1,11 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
+import { RoomType } from "@prisma/client";
 import { errorMonitor } from "events";
 import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
+import { create_channel } from "src/utils/types";
+import * as bcrypt from  'bcrypt'
 
 @Injectable()
 export class chatService {
@@ -196,62 +199,7 @@ export class chatService {
 		return reshapedResult;
 	}
 
-	/*async get_all_conv(id: string)
-	{
-		const conversations = await this.prisma.directMessage.findMany({
-    		where: {
-    		  OR: [
-    		    {
-    		      sender: {
-    		        id,
-    		      },
-    		    },
-    		    {
-    		      receiver: {
-    		        id,
-    		      },
-    		    },
-    		  ],
-    		},
-    		select: {
-    		  sender: {
-    		    select: {
-    		      id: true,
-    		      nickName: true,
-    		    },
-    		  },
-    		  receiver: {
-    		    select: {
-    		      id: true,
-    		      nickName: true,
-    		    },
-    		  },
-    		},
-		});
-
-		const uniqueUserIds = Array.from(
-			new Set([
-				...conversations.map((conv) => conv.sender.id),
-      			...conversations.map((conv) => conv.receiver.id),
-			])
-		);
-		const conv = uniqueUserIds.filter((userid) => userid !== id);
-
-		const users = await this.prisma.user.findMany({
-			where:{
-				id: {in: conv}
-			},
-			select:{
-				nickName: true,
-				profile:{
-					select: {
-						photo_path: true,
-					}
-				}
-			}
-		})
-		return users;
-	}*/
+	
 	async block_a_friend(userid: string, friendid: string)
 	{
 		try {
@@ -291,5 +239,51 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
+	}
+
+	// type : [private | public | protected]
+	// password if private : 
+	// name 
+	async create_channel(obj : create_channel,userid: string)
+	{
+		try {
+			const room = await this.prisma.room.create({
+				data: {
+					name : obj.name,
+					type: obj.permission,
+					ownerId: userid,
+				},
+				select: {
+					id: true,
+				}
+			})
+			if (obj.permission == RoomType.PROTECTED)
+			{
+				const private_room = await this.prisma.room.update({
+					where: {
+						id: room.id
+					},
+					data:{
+						password: await this.hash_password(obj.password)
+					}
+				})
+			}
+
+			
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
+
+	async hash_password(pass: string)
+	{
+		console.log(pass)
+		return await bcrypt.hash(pass,10);
+	}
+
+	async compare_password(pass:string, hash: string)
+	{
+		return await bcrypt.compare(pass,hash);
 	}
 }

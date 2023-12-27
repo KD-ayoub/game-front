@@ -169,7 +169,7 @@ model DirectMessage {
 // Define the Room entity
 model Room {
   id       String      @id @default(uuid())
-  name     String
+  name     String		@unique
   type     RoomType
   password String?
   // ... other room fields

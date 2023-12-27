@@ -1,6 +1,8 @@
-import { BadRequestException, Controller, Get, HttpException, HttpStatus, Param, Session } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Session } from "@nestjs/common";
 import { chatService } from "./chat.service";
 import { Record } from "@prisma/client/runtime/library";
+import { create_channel } from "src/utils/types";
+import { RoomType } from "@prisma/client";
 
 @Controller('chat')
 export class ChatController{
@@ -44,6 +46,20 @@ export class ChatController{
 			throw new HttpException('bad',HttpStatus.BAD_REQUEST);
 		else
 			throw new HttpException('good',HttpStatus.OK);
+
+	}
+
+	@Post('create_channel')
+	async create_channel(@Body() body: create_channel,@Session() session : Record<string,any>)
+	{
+		if (!body.name || !body.permission|| !body.photo) 
+			throw new HttpException('bad',HttpStatus.BAD_REQUEST);
+		if  (body.permission == RoomType.PROTECTED && !body.password)
+			throw new HttpException('password not found',HttpStatus.NOT_FOUND)
+		if ((await this.chatService.create_channel(body,session.passport.user.id)) == false)
+		{
+			throw new HttpException("name is already taken",HttpStatus.CONFLICT);
+		}
 
 	}
 }
