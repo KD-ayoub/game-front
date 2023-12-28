@@ -18,7 +18,9 @@ export default function Bot() {
   const marginbody = isHumburgClicked ? "ml-6" : "";
   const [openModal, setOpenMoadl] = useState(true);
   const searchParams = useSearchParams();
-  console.log(searchParams.get('level'));
+  const paddleSpeed = searchParams.get('paddle');
+  const ballSpeed = searchParams.get('ball');
+  console.log('paddle\nspeed', parseFloat(paddleSpeed!), parseFloat(ballSpeed!));
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function Bot() {
     const ball = new Ball(context, {
       radius: table.width / 30,
       // 0.3 easy - 10 paddle / 0.6 medium 15 paddle / 1.2 hard 17 paddle
-      speed: table.width < 400 ? 0.2 : 0.3,
+      speed: table.width < 400 ? 0.2 : parseFloat(ballSpeed!),
       color: "#fff",
       gap: wallGap,
       tableWidth: table.width,
@@ -51,7 +53,7 @@ export default function Bot() {
       x: xdownPaddle,
       y: ydownPaddle,
       gap: wallGap,
-      speed: 10,
+      speed: parseFloat(paddleSpeed!),
       color: "#fff",
       width: paddleWidth,
       height: paddleHeight,
@@ -119,6 +121,7 @@ export default function Bot() {
     return () => {
       window.removeEventListener("resize", handlresize);
       document.removeEventListener("keydown", handlKeyDown);
+      resetAll();
     }
   }, [!openModal]);
   useEffect(() => {

@@ -12,7 +12,9 @@ export default function GameLevel() {
   }
   function handlNextClick() {
     if (level) {
-      router.push('/game/bot?level=y');
+      if (level === 'Easy') router.push('/game/bot?paddle=10&ball=0.3');
+      if (level === 'Medium') router.push('/game/bot?paddle=15&ball=0.6');
+      if (level === 'Hard') router.push('/game/bot?paddle=17&ball=1.2');
         console.log("go next");
     }
   }

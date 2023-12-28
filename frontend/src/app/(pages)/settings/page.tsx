@@ -49,24 +49,24 @@ export default function Settings() {
   function handlFullNameFocus() {
     if (fullNamelementRef.current) {
       const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
-      const old = `${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
+      const old = `${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] focus:outline-none focus:ring-0 focus:ring-transparent h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
       fullNamelementRef.current.className = fullNameRegex.test(
         fullNamelementRef.current.value
       )
         ? old
-        : fullNamelementRef.current.className.concat(" border border-red-600");
+        : fullNamelementRef.current.className.concat(" border focus:border-red-600");
     }
   }
   function handlNickNameFocus() {
     if (nickNamelementRef.current) {
       const fullNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
       console.log(fullNameRegex.test(nickNamelementRef.current.value));
-      const old = `${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
+      const old = `${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] focus:outline-none focus:ring-0 focus:ring-transparent h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
       nickNamelementRef.current.className = fullNameRegex.test(
         nickNamelementRef.current.value
       )
         ? old
-        : nickNamelementRef.current.className.concat(" border border-red-600");
+        : nickNamelementRef.current.className.concat(" border focus:border-red-600");
     }
   }
   function handlNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -255,13 +255,12 @@ export default function Settings() {
               <div className="m-3 sm:flex sm:gap-20 md:gap-32 justify-evenly">
                 <form>
                   <p
-                    className={`${NeuePlakFont.className} text-white text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px] `}
+                    className={`${NeuePlakFont.className} text-white text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px]  2xl:text-[33px] `}
                   >
                     Full name
                   </p>
                   <input
-                    style={{ outline: "none" }}
-                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    className={`${NeuePlakFont.className} text-white  bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] focus:outline-none focus:ring-0 focus:ring-transparent md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
                     ref={fullNamelementRef}
                     value={dataSettings.full_name}
@@ -279,8 +278,7 @@ export default function Settings() {
                     Nickname
                   </p>
                   <input
-                    style={{ outline: "none" }}
-                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] focus:outline-none focus:ring-0 focus:ring-transparent md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
                     ref={nickNamelementRef}
                     value={dataSettings.nickName}

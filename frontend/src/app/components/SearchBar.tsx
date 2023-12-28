@@ -25,7 +25,7 @@ export default function SearchBar() {
   const [dataAllUsers, setdataAllUsers] = useState<Array<AllUsersType>>([]);
   const { userData } = useUserContext();
   async function handlChange(event: ChangeEvent<HTMLInputElement>) {
-    setInputValue(event.target.value);
+    setInputValue(event.target.value.toLowerCase());
     if (userData.id) {
       const result = await getAllUsers(userData.id);
       setdataAllUsers(
@@ -34,7 +34,7 @@ export default function SearchBar() {
             event.target.value &&
             value &&
             value.nickName &&
-            value.nickName.toLocaleLowerCase().includes(event.target.value)
+            value.nickName.toLocaleLowerCase().includes(event.target.value.toLowerCase())
           );
         })
       );
@@ -59,7 +59,7 @@ export default function SearchBar() {
           alt="Search icon"
         />
         <input
-          className={`h-full w-[90%] bg-transparent border-0 text-white mr-1 ${NeuePlakFont.className} md:text-[18px] lg:text-[25px] xl:text-[30px] 2xl:text-[38px]`}
+          className={`h-full w-[90%] bg-transparent border-0 focus:outline-none focus:ring-0 focus:ring-transparent text-white mr-1 ${NeuePlakFont.className} md:text-[18px] lg:text-[25px] xl:text-[30px] 2xl:text-[38px]`}
           style={inputValue ? inputStyle : plceholderStyle}
           type="search"
           placeholder="Search"
@@ -70,7 +70,7 @@ export default function SearchBar() {
       </div>
       {/* need to work on tomorrow  */}
       {dataAllUsers.length > 0 && (
-        <div className="w-full h-28 md:h-32 max-w-[700px] bg-[#252134] absolute top-[2.5rem] md:top-[3rem] lg:top-16 lg:left-3 xl:top-[4.75rem] 2xl:top-[6.75rem] rounded-[10px] overflow-y-auto">
+        <div className="w-full h-28 md:h-72 max-w-[700px] bg-[#252134] absolute top-[2.5rem] md:top-[3rem] lg:top-16 lg:left-3 xl:top-[4.75rem] 2xl:top-[6.75rem] rounded-[10px] overflow-y-auto">
           {dataAllUsers.map((user, index) => {
             return (
               <div
