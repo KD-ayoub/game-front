@@ -10,6 +10,9 @@ import submitBtn from "@/app/assets/svg/chat/submitBtn.svg";
 import { GetChatConverssationType } from "@/app/types/getChatConverssation";
 import { FriendsChatType } from "@/app/types/friendsChat";
 import Image from "next/image";
+import ioClient from "../../api/instance";
+import moment from "moment";
+
 // const socket = io("");
 
 export default function FriendConversation({
@@ -21,8 +24,8 @@ export default function FriendConversation({
   const [dataConversation, setDataConversation] = useState<
     GetChatConverssationType[]
   >([]);
-
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
 
   const handleTextareaChange = () => {
     if (textareaRef.current) {
@@ -34,6 +37,19 @@ export default function FriendConversation({
 
   const handleClickBtnBack = () => {
     // showConv = false;
+  };
+
+  // handle send message
+  const handleSendMessage = () => {
+    fetch(`http://localhost:3001/chat/ansiftLkMsg`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ messageSent: textareaRef.current!.value }),
+    });
+    textareaRef.current!.value = "";
   };
 
   // Here we fetch the conversation with friend:
@@ -60,8 +76,10 @@ export default function FriendConversation({
     handlShowFriendConversation();
   }, [friendSelected]);
 
-  console.log("dataConversation", dataConversation);
-  console.log("friendSelected", friendSelected);
+  
+
+  console.log("dataConversation-->", dataConversation);
+  console.log("friendSelected-->", friendSelected);
 
   return (
     <>
@@ -83,8 +101,12 @@ export default function FriendConversation({
         </div>
         <div className="optionUser">
           <button onClick={handleClickBtnBack}>
+              <select name="optionsChatUser" id="optionsChatUser">
             <Image src={pointsOption.src} alt="." width={5} height={5} />
-            {/* hna 7ta nchuf wesh ghadi n9ad les options wla blach  */}
+                <option value="profile"></option>
+                <option value="block"></option>
+                <option value="Challenge"></option>
+              </select>
           </button>
         </div>
       </div>
@@ -97,7 +119,7 @@ export default function FriendConversation({
                 {message.mine === true ? (
                   <div className="send-msg">
                     <div className="message-details ">
-                      <span className="infoTime">{message.sended_at}</span>
+                      <span className="infoTime">{moment(message.sended_at).calendar()}</span>
                       <span className="infoName pl-4">You</span>
                     </div>
                     <div className="message-text-sender">{message.content}</div>
@@ -106,7 +128,7 @@ export default function FriendConversation({
                   <div className="recieve-msg">
                     <div className="message-details ">
                       <span className="infoName pr-4">{message.name}</span>
-                      <span className="infoTime">{message.sended_at}</span>
+                      <span className="infoTime">{moment(message.sended_at).calendar()}</span>
                     </div>
                     <div className="message-text-recieve">
                       {message.content}
@@ -118,16 +140,17 @@ export default function FriendConversation({
           ))}
       </div>
       <div className="sendYourMsg">
-        <div>
+        <div className="textAreaDiv">
           <textarea
             className="textArea"
             placeholder="Type here..."
             required
             ref={textareaRef}
             onKeyUp={handleTextareaChange}
+            maxLength={300}
           ></textarea>
         </div>
-        <button type="button" className=" submitMsg">
+        <button type="button" className=" submitMsg" onClick={handleSendMessage}>
           <Image src={submitBtn.src} alt="submit" className="submitBtn" width={60} height={60} />
         </button>
       </div>
