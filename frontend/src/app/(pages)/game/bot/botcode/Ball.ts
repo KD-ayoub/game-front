@@ -74,8 +74,8 @@ export default class Ball {
       (this.ypos - this.radius < data.yUp + data.height ||
         this.ypos + this.radius > data.yDown)
     ) {
-      console.log("x: ", this.xpos);
-      console.log("y: ", this.ypos);
+      // console.log("x: ", this.xpos);
+      // console.log("y: ", this.ypos);
       return true;
     }
     return false;
