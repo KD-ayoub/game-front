@@ -10,10 +10,10 @@ import Paddle from "./botcode/Paddle";
 import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 import ProfileImg from "@/app/assets/svg/game/withBot.svg";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SettingsType } from "@/app/types/settingsType";
 import getSettings from "@/app/api/Settings/getSettings";
-
+import Swal from "sweetalert2";
 
 export default function Bot() {
   const [dataSettings, setDataSettings] = useState<SettingsType>({
@@ -27,10 +27,16 @@ export default function Bot() {
   const marginbody = isHumburgClicked ? "ml-6" : "";
   const [openModal, setOpenMoadl] = useState(true);
   const searchParams = useSearchParams();
-  const paddleSpeed = searchParams.get('paddle') ? searchParams.get('paddle') : '10';
-  const ballSpeed = searchParams.get('ball') ? searchParams.get('ball') : '0.3';
-  console.log('paddle\nspeed', parseFloat(paddleSpeed!), parseFloat(ballSpeed!));
-
+  const paddleSpeed = searchParams.get("paddle")
+    ? searchParams.get("paddle")
+    : "10";
+  const ballSpeed = searchParams.get("ball") ? searchParams.get("ball") : "0.3";
+  console.log(
+    "paddle\nspeed",
+    parseFloat(paddleSpeed!),
+    parseFloat(ballSpeed!)
+  );
+  const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const playerRef = useRef<HTMLParagraphElement>(null);
   const unmounted = useRef(false);
@@ -105,10 +111,29 @@ export default function Bot() {
         };
         if (ball.checkLoss(data)) {
           resetAll();
-          playerRef.current!.innerHTML = (parseInt(playerRef.current!.innerHTML) + 1).toString();
-          if (playerRef.current!.innerHTML === '7') {
-            //show modal 
+          playerRef.current!.innerHTML = (
+            parseInt(playerRef.current!.innerHTML) + 1
+          ).toString();
+          if (playerRef.current!.innerHTML === "7") {
+            //show modal
             // redirect to profile
+            Swal.fire({
+              title: "You have lost",
+              text: "",
+              imageUrl: `${ProfileImg.src}`,
+              imageWidth: 400,
+              imageHeight: 200,
+              imageAlt: "Custom image",
+              allowOutsideClick: false,
+            }).then(res => {
+              router.push('/game')
+            });
+            return () => {
+              window.removeEventListener("resize", handlresize);
+              document.removeEventListener("keydown", handlKeyDown);
+              window.cancelAnimationFrame(animationFrameRef.current);
+              resetAll();
+            }
           }
         }
         ball.updateBall(delta, data);
@@ -141,7 +166,7 @@ export default function Bot() {
       document.removeEventListener("keydown", handlKeyDown);
       window.cancelAnimationFrame(animationFrameRef.current);
       resetAll();
-    }
+    };
   }, [!openModal]);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -149,7 +174,7 @@ export default function Bot() {
     }, 5000);
     return () => {
       clearTimeout(timer);
-    }
+    };
   }, [openModal]);
   useEffect(() => {
     async function fetcher() {
@@ -163,19 +188,21 @@ export default function Bot() {
       <Header
         isHumburgClicked={isHumburgClicked}
         setisHumburgClicked={setisHumburgClicked}
-        />
+      />
       <SideBar isHumburgClicked={isHumburgClicked} />
       <div
         className={`grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 lg:mt-[72px] xl:mt-[96px] 2xl:mt-[128px] ${marginbody} //flex justify-center items-center//`}
-        >
+      >
         <div
           className={`text-white ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className} `}
-          >
+        >
           Game
         </div>
         <div className="flex flex-col items-center w-full h-full gap-2 mt-20">
           <div className="w-[200px] h-12 sm:w-[300px] sm:h-14 md:w-[400px] md:h-16 lg:w-[500px] lg:h-[70px] xl:w-[600px] xl:h-[75px] 2xl:w-[700px] 2xl:h-[100px] p-2 flex justify-between">
-          {openModal && <ModalGameComponent onClick={() => setOpenMoadl(false)}/>}
+            {openModal && (
+              <ModalGameComponent onClick={() => setOpenMoadl(false)} />
+            )}
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
@@ -194,9 +221,22 @@ export default function Bot() {
               </div>
             </div>
             <div className="flex gap-2 items-center">
-              <p ref={playerRef} className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>0</p>
-              <p className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>:</p>
-              <p className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>0</p>
+              <p
+                ref={playerRef}
+                className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}
+              >
+                0
+              </p>
+              <p
+                className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}
+              >
+                :
+              </p>
+              <p
+                className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}
+              >
+                0
+              </p>
             </div>
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
@@ -232,11 +272,13 @@ export default function Bot() {
                   "repeating-linear-gradient(to right,transparent,transparent 10px,white 10px,white 20px);",
               }}
             ></div> dashed line  */}
-            {!openModal && <canvas
-              className="w-full h-full absolute top-0 z-10"
-              ref={canvasRef}
-              id="table"
-            ></canvas>}
+            {!openModal && (
+              <canvas
+                className="w-full h-full absolute top-0 z-10"
+                ref={canvasRef}
+                id="table"
+              ></canvas>
+            )}
           </div>
         </div>
       </div>
