@@ -340,8 +340,6 @@ export class chatService {
 				b.id = rooms.id;
 				b.name = rooms.name;
 				b.type = rooms.type;
-				
-				//console.log("blan : ", rooms);
 				return b;
 			}
 		}

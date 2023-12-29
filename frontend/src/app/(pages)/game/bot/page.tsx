@@ -3,17 +3,24 @@
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Header, SideBar } from "@/app/components";
+import { Header, SideBar, ModalGameComponent } from "@/app/components";
 import { useRef } from "react";
 import Ball from "./botcode/Ball";
 import Paddle from "./botcode/Paddle";
 import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 import ProfileImg from "@/app/assets/svg/profileimg.svg";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
-export default function Chat() {
+
+export default function Bot() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
+  const [openModal, setOpenMoadl] = useState(true);
+  const searchParams = useSearchParams();
+  const paddleSpeed = searchParams.get('paddle');
+  const ballSpeed = searchParams.get('ball');
+  console.log('paddle\nspeed', parseFloat(paddleSpeed!), parseFloat(ballSpeed!));
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -34,7 +41,8 @@ export default function Chat() {
 
     const ball = new Ball(context, {
       radius: table.width / 30,
-      speed: table.width < 400 ? 0.2 : 0.3,
+      // 0.3 easy - 10 paddle / 0.6 medium 15 paddle / 1.2 hard 17 paddle
+      speed: table.width < 400 ? 0.2 : parseFloat(ballSpeed!),
       color: "#fff",
       gap: wallGap,
       tableWidth: table.width,
@@ -45,7 +53,7 @@ export default function Chat() {
       x: xdownPaddle,
       y: ydownPaddle,
       gap: wallGap,
-      speed: 10,
+      speed: parseFloat(paddleSpeed!),
       color: "#fff",
       width: paddleWidth,
       height: paddleHeight,
@@ -95,7 +103,7 @@ export default function Chat() {
       window.requestAnimationFrame(update);
     }
     window.requestAnimationFrame(update);
-    document.addEventListener("keydown", (e) => {
+    function handlKeyDown(e: KeyboardEvent) {
       switch (e.code) {
         case "ArrowRight":
           if (!downPaddle.checkRightWall()) downPaddle.movePaddle(e.code);
@@ -104,42 +112,42 @@ export default function Chat() {
           if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
           break;
       }
-    });
-    //document.addEventListener('visibilitychange', function() {
-    //  if (document.hidden) {
-    //    chk = false;
-    //    window.requestAnimationFrame(update);
-    //    console.log('bey');
-    //  } else {
-    //    chk = true;
-    //    resetAll();
-    //    window.requestAnimationFrame(update);
-    //    console.log('hey');
-    //  }
-    //});
+    }
+    document.addEventListener("keydown", handlKeyDown);
     function handlresize() {
       ball.reset();
     }
     window.addEventListener("resize", handlresize);
-  }, []);
+    return () => {
+      window.removeEventListener("resize", handlresize);
+      document.removeEventListener("keydown", handlKeyDown);
+      resetAll();
+    }
+  }, [!openModal]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpenMoadl(false);
+    }, 5000);
+  }, [openModal])
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="h-[80px] w-[80px] sm:w-28 sm:h-28 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-[480px] xl:h-[480px] 2xl:w-[550px] 2xl:h-[550px] rounded-full fixed -top-5 sm:-top-10 md:-top-32 lg:-top-40 xl:-top-64 right-0 opacity-70 sm:opacity-60 md:opacity-30 lg:opacity-25 xl:opacity-20 2xl:opacity-[0.19] bg-gradient-to-b from-[#323138] via-[#E95A3A] to-[#60C58D] blur-3xl "></div>
       <Header
         isHumburgClicked={isHumburgClicked}
         setisHumburgClicked={setisHumburgClicked}
-      />
+        />
       <SideBar isHumburgClicked={isHumburgClicked} />
       <div
         className={`grow overflow-y-auto mt-[41px] sm:mt-11 md:mt-14 lg:mt-[72px] xl:mt-[96px] 2xl:mt-[128px] ${marginbody} //flex justify-center items-center//`}
-      >
+        >
         <div
           className={`text-white ml-[10px] text-[20px] md:text-[30px] lg:text-[38px] xl:text-[44px] 2xl:text-[60px] ${NeuePlakFontBold.className} `}
-        >
+          >
           Game
         </div>
         <div className="flex flex-col items-center w-full h-full gap-2 mt-20">
           <div className="w-[200px] h-12 sm:w-[300px] sm:h-14 md:w-[400px] md:h-16 lg:w-[500px] lg:h-[70px] xl:w-[600px] xl:h-[75px] 2xl:w-[700px] 2xl:h-[100px] p-2 flex justify-between">
+          {openModal && <ModalGameComponent onClick={() => setOpenMoadl(false)}/>}
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
@@ -194,11 +202,11 @@ export default function Chat() {
                   "repeating-linear-gradient(to right,transparent,transparent 10px,white 10px,white 20px);",
               }}
             ></div> dashed line  */}
-            <canvas
+            {!openModal && <canvas
               className="w-full h-full absolute top-0 z-10"
               ref={canvasRef}
               id="table"
-            ></canvas>
+            ></canvas>}
           </div>
         </div>
       </div>
