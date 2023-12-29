@@ -8,21 +8,33 @@ import { useRef } from "react";
 import Ball from "./botcode/Ball";
 import Paddle from "./botcode/Paddle";
 import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
-import ProfileImg from "@/app/assets/svg/profileimg.svg";
+import ProfileImg from "@/app/assets/svg/game/withBot.svg";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import { SettingsType } from "@/app/types/settingsType";
+import getSettings from "@/app/api/Settings/getSettings";
 
 
 export default function Bot() {
+  const [dataSettings, setDataSettings] = useState<SettingsType>({
+    id: "",
+    full_name: "",
+    nickName: "",
+    fac_auth: false,
+    photo_path: `${ProfileImg.src}`,
+  });
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
   const [openModal, setOpenMoadl] = useState(true);
   const searchParams = useSearchParams();
-  const paddleSpeed = searchParams.get('paddle');
-  const ballSpeed = searchParams.get('ball');
+  const paddleSpeed = searchParams.get('paddle') ? searchParams.get('paddle') : '10';
+  const ballSpeed = searchParams.get('ball') ? searchParams.get('ball') : '0.3';
   console.log('paddle\nspeed', parseFloat(paddleSpeed!), parseFloat(ballSpeed!));
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const playerRef = useRef<HTMLParagraphElement>(null);
+  const unmounted = useRef(false);
+  const animationFrameRef = useRef(-1);
   useEffect(() => {
     let table = canvasRef.current;
     console.log("client", table?.clientWidth, table?.clientHeight);
@@ -92,17 +104,23 @@ export default function Bot() {
           height: paddleHeight,
         };
         if (ball.checkLoss(data)) {
-          console.log("win", data.yUp);
           resetAll();
+          playerRef.current!.innerHTML = (parseInt(playerRef.current!.innerHTML) + 1).toString();
+          if (playerRef.current!.innerHTML === '7') {
+            //show modal 
+            // redirect to profile
+          }
         }
         ball.updateBall(delta, data);
         downPaddle.updatePaddle();
         upPaddle.updateBotPaddle(ball.x);
       }
       lastTime = time;
-      window.requestAnimationFrame(update);
+      if (!unmounted.current) {
+        animationFrameRef.current = window.requestAnimationFrame(update);
+      }
     }
-    window.requestAnimationFrame(update);
+    animationFrameRef.current = window.requestAnimationFrame(update);
     function handlKeyDown(e: KeyboardEvent) {
       switch (e.code) {
         case "ArrowRight":
@@ -121,6 +139,7 @@ export default function Bot() {
     return () => {
       window.removeEventListener("resize", handlresize);
       document.removeEventListener("keydown", handlKeyDown);
+      window.cancelAnimationFrame(animationFrameRef.current);
       resetAll();
     }
   }, [!openModal]);
@@ -128,7 +147,16 @@ export default function Bot() {
     const timer = setTimeout(() => {
       setOpenMoadl(false);
     }, 5000);
-  }, [openModal])
+    return () => {
+      clearTimeout(timer);
+    }
+  }, [openModal]);
+  useEffect(() => {
+    async function fetcher() {
+      setDataSettings(await getSettings());
+    }
+    fetcher();
+  }, []);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="h-[80px] w-[80px] sm:w-28 sm:h-28 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-[480px] xl:h-[480px] 2xl:w-[550px] 2xl:h-[550px] rounded-full fixed -top-5 sm:-top-10 md:-top-32 lg:-top-40 xl:-top-64 right-0 opacity-70 sm:opacity-60 md:opacity-30 lg:opacity-25 xl:opacity-20 2xl:opacity-[0.19] bg-gradient-to-b from-[#323138] via-[#E95A3A] to-[#60C58D] blur-3xl "></div>
@@ -151,8 +179,9 @@ export default function Bot() {
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
-                  className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16"
-                  src={ProfileImg.src}
+                  draggable={false}
+                  className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
+                  src={dataSettings.photo_path}
                   width={20}
                   height={20}
                   alt="profile pic"
@@ -160,19 +189,20 @@ export default function Bot() {
                 <p
                   className={`${NeuePlakFont.className} text-white text-[12px] sm:text-[14px] md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px]`}
                 >
-                  Nickname
+                  {dataSettings.nickName}
                 </p>
               </div>
             </div>
             <div className="flex gap-2 items-center">
-              <p className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>0</p>
+              <p ref={playerRef} className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>0</p>
               <p className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>:</p>
               <p className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}>0</p>
             </div>
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
-                  className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16"
+                  draggable={false}
+                  className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
                   src={ProfileImg.src}
                   width={20}
                   height={20}

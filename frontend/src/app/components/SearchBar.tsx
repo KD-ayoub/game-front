@@ -52,6 +52,7 @@ export default function SearchBar() {
     <div className="h-[29.6px] sm:h-[33.6px] md:h-10 lg:h-14 xl:h-16 2xl:h-24 w-1/3 bg-[#252134] rounded-full  flex-grow mx-[5px] xl:mx-5 flex items-center relative">
       <div className="flex  gap-1 sm:gap-2 justify-start items-center w-full h-full">
         <Image
+          draggable={false}
           className="ml-3 sm:w-[17px] sm:h-[15px] md:w-5 md:h-4 lg:w-9 lg:h-6 xl:w-[3.25rem] xl:h-8 2xl:w-[5.25rem] 2xl:h-[2.5rem]"
           src={SearchIcon.src}
           width={14}
@@ -79,6 +80,7 @@ export default function SearchBar() {
                 onClick={() => handlClick(user)}
               >
                 <Image
+                  draggable={false}
                   className="sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
                   src={user.photo_path}
                   width={22}

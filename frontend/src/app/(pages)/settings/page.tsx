@@ -186,6 +186,7 @@ export default function Settings() {
             <Toaster />
             <div className="flex flex-col justify-center items-center">
               <Image
+                draggable={false}
                 className="m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44 rounded-full"
                 src={
                   dataSettings.photo_path === `${ProfileImg.src}` ||
@@ -201,6 +202,7 @@ export default function Settings() {
               <div className="flex justify-center gap-4 md:gap-12">
                 <div className="w-[94px] md:h-8 md:w-[100px] lg:w-[130px] xl:w-[170px] 2xl:w-[240px] lg:h-9 xl:h-12 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 border-solid border rounded-[15px] 2xl:rounded-[30px] justify-center items-center cursor-pointer">
                   <Image
+                    draggable={false}
                     className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9 "
                     src={TrashImg.src}
                     width={14}
@@ -220,6 +222,7 @@ export default function Settings() {
                 >
                   <div className=" text-white w-[94px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[130px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
                     <Image
+                      draggable={false}
                       className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
                       src={ChangeImg.src}
                       width={14}
@@ -340,6 +343,7 @@ export default function Settings() {
               </div>
               <div className="flex justify-center md:w-[10%]">
                 <Image
+                  draggable={false}
                   className="md:hidden"
                   src={Horizontal.src}
                   width={119}
@@ -347,6 +351,7 @@ export default function Settings() {
                   alt="horizontal red"
                 />
                 <Image
+                  draggable={false}
                   className="hidden md:block xl:w-[5px] 2xl:w-[6px]"
                   src={Vertical.src}
                   width={2}
@@ -357,6 +362,7 @@ export default function Settings() {
               {dataSettings.fac_auth && dataSettings.qr_code_url && (
                 <div className="m-5 flex justify-center items-center md:w-[20%] bg-slate-50">
                   <Image
+                    draggable={false}
                     className="md:w-full md:h-full"
                     src={dataSettings.qr_code_url}
                     width={132}

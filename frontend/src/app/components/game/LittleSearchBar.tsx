@@ -15,7 +15,7 @@ export default function LittleSearchBar() {
   const [dataAllUsers, setdataAllUsers] = useState<Array<AllUsersType>>([]);
   const { userData } = useUserContext();
   async function handlChange(event: ChangeEvent<HTMLInputElement>) {
-    setInputValue(event.target.value);
+    setInputValue(event.target.value.toLowerCase());
     if (userData.id) {
       const result = await getAllUsers(userData.id);
       setdataAllUsers(
@@ -24,7 +24,7 @@ export default function LittleSearchBar() {
             event.target.value &&
             value &&
             value.nickName &&
-            value.nickName.toLocaleLowerCase().includes(event.target.value)
+            value.nickName.toLocaleLowerCase().includes(event.target.value.toLowerCase())
           );
         })
       );
@@ -35,6 +35,7 @@ export default function LittleSearchBar() {
       <div className="flex justify-center items-center w-full h-full">
         <div className="flex justify-center items-center md:w-[80%] xl:w-[90%] h-[80%] bg-[#252134] rounded-[8px]">
           <Image
+            draggable={false}
             className="mr-1 md:w-5 md:h-5 xl:w-7 xl:h-7 2xl:w-9 2xl:h-9"
             src={SearchIcon.src}
             width={14}
@@ -42,7 +43,7 @@ export default function LittleSearchBar() {
             alt="Search icon"
           />
           <input
-            className={`w-[80%] ml-1 border-0 text-white ${NeuePlakFont.className} bg-transparent md:text-[18px] xl:text-[24px] 2xl:text-[30px]`}
+            className={`w-[80%] ml-1 border-0 text-white ${NeuePlakFont.className} bg-transparent focus:outline-none focus:ring-0 focus:ring-transparent md:text-[18px] xl:text-[24px] 2xl:text-[30px]`}
             style={{ outline: "none" }}
             type="search"
             placeholder="Search"
@@ -61,6 +62,7 @@ export default function LittleSearchBar() {
               onClick={() => console.log('send a chanllenge to the user')}
             >
               <Image
+                draggable={false}
                 className="sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
                 src={user.photo_path}
                 width={22}

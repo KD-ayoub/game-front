@@ -75,6 +75,7 @@ export default function Game() {
               {randomCard && (
                 <div className="flex justify-center items-center w-[178px] h-[179px] sm:w-[220px] sm:h-[221px] lg:w-[320px] lg:h-[321px] xl:w-[420px] xl:h-[421px] 2xl:w-[620px] 2xl:h-[621px] bg-[#15131D] rounded-[10px] md:rounded-[13px] lg:rounded-[15px] xl:rounded-[20px] 2xl:rounded-[25px]">
                   <Image
+                    draggable={false}
                     className="sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44"
                     src={Profilepic.src}
                     width={80}

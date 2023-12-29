@@ -18,6 +18,7 @@ export default function Home() {
           >
             By{' '}
             <Image
+              draggable={false}
               src="/vercel.svg"
               alt="Vercel Logo"
               className="dark:invert"
@@ -37,6 +38,7 @@ export default function Home() {
           width={180}
           height={37}
           priority
+          draggable={false}
         />
       </div>
 

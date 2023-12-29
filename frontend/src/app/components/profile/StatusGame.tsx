@@ -17,6 +17,7 @@ export default function StatusGame({
       {Isloaded && (<div className="w-auto h-[79px] lg:h-[125px] xl:h-[140px] 2xl:h-[190px] rounded-[20px] relative bg-[#302B43] animate-pulse"></div>)}
       { !Isloaded && (<div className="w-auto h-[79px] lg:h-[125px] xl:h-[140px] 2xl:h-[190px] relative">
         <Image
+          draggable={false}
           className="object-cover rounded-[20px]"
           src={BgStatusgame.src}
           alt="bg profile info"

@@ -12,6 +12,7 @@ export default function DropdownMenu({
   return (
     <div className="flex pl-1 gap-2  items-center">
       <Image
+        draggable={false}
         className="sm:w-[14px] sm:h-[14px] lg:w-[20px] lg:h-[20px] xl:w-[30px] xl:h-[30px] 2xl:w-[45px] 2xl:h-[45px]"
         src={ImageSource}
         width={12}
