@@ -41,6 +41,7 @@ export default function Auth() {
     <main className="h-screen w-full bg-[#252134] max-w-[5120px]">
       <div className="w-full h-full flex justify-around items-center ">
         <Image
+          draggable={false}
           src={picture_login.src}
           width={728}
           height={1024}

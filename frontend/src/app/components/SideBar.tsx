@@ -37,6 +37,7 @@ export default function SideBar({
       className={`w-10 sm:w-11 md:w-14 lg:w-[72px] xl:w-24 2xl:w-32 h-screen bg-gradient-to-b from-[#110D1F] ${hidden} sm:block relative shrink-0`}
     >
       <Image
+        draggable={false}
         className="object-cover w-full h-full absolute"
         src={Sideimg.src}
         alt="Sideimg"
@@ -80,6 +81,7 @@ export default function SideBar({
           onClick={handlLogout}
         >
           <Image
+            draggable={false}
             className="sm:w-5 md:w-6 lg:w-8 xl:w-10 2xl:w-14"
             src={Logout.src}
             width={18}

@@ -24,6 +24,7 @@ export default function Achievements({
       </div>
       <div className="w-full flex gap-2 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6 2xl:gap-7 overflow-x-auto">
         { !Isloaded && dataAchievement.kickstart && ( <Image
+          draggable={false}
           className="md:w-[50px] md:h-[46px] lg:w-[60px] lg:h-[55px] xl:w-[65px] xl:h-[60px] 2xl:w-[90px] 2xl:h-[80px] "
           src={BlueAchiev.src}
           width={45}
@@ -31,6 +32,7 @@ export default function Achievements({
           alt="kickstart achievement"
         />)}
         { !Isloaded && dataAchievement.social && (<Image
+          draggable={false}
           className="md:w-[50px] md:h-[46px] lg:w-[60px] lg:h-[55px] xl:w-[65px] xl:h-[60px] 2xl:w-[90px] 2xl:h-[80px]"
           src={PinkAchiev.src}
           width={45}
@@ -38,6 +40,7 @@ export default function Achievements({
           alt="social achievement"
         />)}
         { !Isloaded && dataAchievement.first_game && (<Image
+          draggable={false}
           className="md:w-[50px] md:h-[46px] lg:w-[60px] lg:h-[55px] xl:w-[65px] xl:h-[60px] 2xl:w-[90px] 2xl:h-[80px]"
           src={RaketAchiev.src}
           width={45}
@@ -45,6 +48,7 @@ export default function Achievements({
           alt="first game achievement"
         />)}
         { !Isloaded && dataAchievement.level_1 && (<Image
+          draggable={false}
           className="md:w-[50px] md:h-[46px] lg:w-[60px] lg:h-[55px] xl:w-[65px] xl:h-[60px] 2xl:w-[90px] 2xl:h-[80px]"
           src={Manachiev.src}
           width={45}
@@ -52,6 +56,7 @@ export default function Achievements({
           alt="level 1 achievement"
         />)}
         { !Isloaded && dataAchievement.level_5 && (<Image
+          draggable={false}
           className="md:w-[50px] md:h-[46px] lg:w-[60px] lg:h-[55px] xl:w-[65px] xl:h-[60px] 2xl:w-[90px] 2xl:h-[80px]"
           src={TrophiAchiev.src}
           width={45}

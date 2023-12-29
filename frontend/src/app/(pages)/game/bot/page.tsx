@@ -11,15 +11,24 @@ import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 import ProfileImg from "@/app/assets/svg/game/withBot.svg";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import { SettingsType } from "@/app/types/settingsType";
+import getSettings from "@/app/api/Settings/getSettings";
 
 
 export default function Bot() {
+  const [dataSettings, setDataSettings] = useState<SettingsType>({
+    id: "",
+    full_name: "",
+    nickName: "",
+    fac_auth: false,
+    photo_path: `${ProfileImg.src}`,
+  });
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
   const [openModal, setOpenMoadl] = useState(true);
   const searchParams = useSearchParams();
-  const paddleSpeed = searchParams.get('paddle');
-  const ballSpeed = searchParams.get('ball');
+  const paddleSpeed = searchParams.get('paddle') ? searchParams.get('paddle') : '10';
+  const ballSpeed = searchParams.get('ball') ? searchParams.get('ball') : '0.3';
   console.log('paddle\nspeed', parseFloat(paddleSpeed!), parseFloat(ballSpeed!));
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -141,7 +150,13 @@ export default function Bot() {
     return () => {
       clearTimeout(timer);
     }
-  }, [openModal])
+  }, [openModal]);
+  useEffect(() => {
+    async function fetcher() {
+      setDataSettings(await getSettings());
+    }
+    fetcher();
+  }, []);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="h-[80px] w-[80px] sm:w-28 sm:h-28 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-[480px] xl:h-[480px] 2xl:w-[550px] 2xl:h-[550px] rounded-full fixed -top-5 sm:-top-10 md:-top-32 lg:-top-40 xl:-top-64 right-0 opacity-70 sm:opacity-60 md:opacity-30 lg:opacity-25 xl:opacity-20 2xl:opacity-[0.19] bg-gradient-to-b from-[#323138] via-[#E95A3A] to-[#60C58D] blur-3xl "></div>
@@ -164,8 +179,9 @@ export default function Bot() {
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
+                  draggable={false}
                   className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
-                  src={ProfileImg.src}
+                  src={dataSettings.photo_path}
                   width={20}
                   height={20}
                   alt="profile pic"
@@ -173,7 +189,7 @@ export default function Bot() {
                 <p
                   className={`${NeuePlakFont.className} text-white text-[12px] sm:text-[14px] md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px]`}
                 >
-                  Nickname
+                  {dataSettings.nickName}
                 </p>
               </div>
             </div>
@@ -185,6 +201,7 @@ export default function Bot() {
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
+                  draggable={false}
                   className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
                   src={ProfileImg.src}
                   width={20}

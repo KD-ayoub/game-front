@@ -64,6 +64,7 @@ export default function TwoFactor() {
         <div className="w-52 h-[400px] sm:w-72 sm:h-[450px] md:w-80 md:h-[480px] lg:w-[368px] lg:h-[550px] xl:w-[500px] xl:h-[650px] 2xl:w-[600px] 2xl:h-[850px] bg-[#15131D] border border-solid border-white rounded-[20px] flex flex-col justify-evenly items-center ">
           <div className="flex flex-col justify-center items-center gap-3 lg:gap-5 2xl:gap-7">
             <Image
+              draggable={false}
               className="sm:w-44 sm:h-44 lg:w-52 lg:h-52 xl:w-60 xl:h-60 2xl:w-[272px] 2xl:h-[272px]"
               src={Qrimage.src}
               width={100}
@@ -71,7 +72,7 @@ export default function TwoFactor() {
               alt="qr image scan"
             />
             <p
-              className={`${NeuePlakFont.className} text-[16px] sm:text-[20px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}
+              className={`${NeuePlakFont.className} text-white text-[16px] sm:text-[20px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}
             >
               Enter the code
             </p>
@@ -81,7 +82,7 @@ export default function TwoFactor() {
               onClick={handlLogin}
             >
               <button
-                className={`${NeuePlakFont.className} text-[16px] sm:text-[18px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}
+                className={`${NeuePlakFont.className} text-white text-[16px] sm:text-[18px] lg:text-[23px] xl:text-[28px] 2xl:text-[33px]`}
               >
                 Login
               </button>

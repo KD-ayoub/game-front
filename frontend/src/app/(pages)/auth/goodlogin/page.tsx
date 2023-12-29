@@ -175,6 +175,7 @@ export default function GoodLogin() {
                 width={80}
                 height={80}
                 alt="avatar"
+                draggable={false}
               />
               <label
                 className={`${NeuePlakFont.className} text-[14px] lg:text-[20px] xl:text-[24px] 2xl:text-[34px] cursor-pointer`}
@@ -182,6 +183,7 @@ export default function GoodLogin() {
               >
                 <div className="text-white w-[94px] sm:w-[96px] sm:h-[26px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[140px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 lg:gap-2 xl:gap-3 2xl:gap-6 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
                   <Image
+                    draggable={false}
                     className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
                     src={ChangeImg.src}
                     width={14}
