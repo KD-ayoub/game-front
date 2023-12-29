@@ -325,6 +325,7 @@ export class chatService {
 				b.joined = true;
 				b.name = private_room.name;
 				b.type = private_room.type;
+
 			}
 			return b;
 		}
@@ -333,6 +334,28 @@ export class chatService {
 			const rooms  = await this.prisma.room.findUnique({
 				where: {
 					id: channel.id
+				},
+				select:{
+					name: true,
+					id: true,
+					type: true,
+					password: true,
+					admins: {
+						select: {
+							id : true
+						}
+					},
+					owner: {
+						select: {
+							id : true
+						}
+					},
+					members: {
+						select: {
+							id : true
+						}
+					}
+
 				}
 			});
 			if (rooms)
@@ -340,6 +363,24 @@ export class chatService {
 				b.id = rooms.id;
 				b.name = rooms.name;
 				b.type = rooms.type;
+				if (rooms.owner.id == userid)
+					b.joined = true;
+				for (let i = 0; i < rooms.members.length; i++)
+				{
+					if (rooms.members[i].id == userid)
+					{
+						b.joined = true;
+						break;
+					}
+				}
+				for (let i = 0; i < rooms.admins.length; i++)
+				{
+					if (rooms.admins[i].id == userid)
+					{
+						b.joined = true;
+						break;
+					}
+				}
 				return b;
 			}
 		}
@@ -347,12 +388,17 @@ export class chatService {
 	}
 	async list_all_channels(userid: string)
 	{
+		let result : channels[] = [];
 		const channels = await this.prisma.room.findMany({
 		})
 		for (let i = 0; i < channels.length ; i ++)
 		{
-			console.log(await this.create_channel_obj(channels[i],userid));
+
+			const node : channels = await this.create_channel_obj(channels[i],userid);
+			if (node.id)
+				result.push(node);
+			console.log(node);
 		}
-		return channels;
+		return result;
 	}
 }
