@@ -62,4 +62,12 @@ export class ChatController{
 		}
 
 	}
+
+	@Get("list_channels")
+	async list_channels(@Session() session : Record<string,any>)
+	{
+		
+		const userid = session.passport.user.id;
+		return await this.chatService.list_all_channels(userid);
+	}
 }

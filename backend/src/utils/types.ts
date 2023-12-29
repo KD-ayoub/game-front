@@ -27,3 +27,10 @@ export type create_channel = {
 	password: string,
 	permission : RoomType
 }
+
+export type channels = {
+	name : string,
+	type : string,
+	joined: boolean,
+	id : string
+}

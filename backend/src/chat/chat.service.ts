@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
-import { RoomType } from "@prisma/client";
+import { Room, RoomType } from "@prisma/client";
 import { errorMonitor } from "events";
 import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
-import { create_channel } from "src/utils/types";
+import { channels, create_channel } from "src/utils/types";
 import * as bcrypt from  'bcrypt'
 
 @Injectable()
@@ -285,5 +285,76 @@ export class chatService {
 	async compare_password(pass:string, hash: string)
 	{
 		return await bcrypt.compare(pass,hash);
+	}
+
+	async create_channel_obj(channel: Room,userid : string): Promise<channels>
+	{
+		let b : channels = {id : "", joined: false, name : "", type: ""};
+
+		if (channel.type == RoomType.PRIVATE)
+		{
+			const private_room = await this.prisma.room.findUnique({
+				where: {
+					id : channel.id,
+					type: RoomType.PRIVATE,
+					OR: [
+						{
+							admins: {
+								some: 
+								{
+									id : userid
+								}
+							}
+						},
+						{
+							members: {
+								some: {
+									id : userid
+								}
+							}
+						},
+						{
+							ownerId: userid
+						}
+					]
+				}
+			})
+			if (private_room)
+			{
+				b.id = private_room.id;
+				b.joined = true;
+				b.name = private_room.name;
+				b.type = private_room.type;
+			}
+			return b;
+		}
+		else
+		{
+			const rooms  = await this.prisma.room.findUnique({
+				where: {
+					id: channel.id
+				}
+			});
+			if (rooms)
+			{
+				b.id = rooms.id;
+				b.name = rooms.name;
+				b.type = rooms.type;
+				
+				//console.log("blan : ", rooms);
+				return b;
+			}
+		}
+		return b;
+	}
+	async list_all_channels(userid: string)
+	{
+		const channels = await this.prisma.room.findMany({
+		})
+		for (let i = 0; i < channels.length ; i ++)
+		{
+			console.log(await this.create_channel_obj(channels[i],userid));
+		}
+		return channels;
 	}
 }
