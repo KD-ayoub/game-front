@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
 import { GameService } from './game.service';
 import { AppGateway } from '../app.gateway';
 
@@ -10,13 +10,13 @@ export class GameController {
 	@Get('play_friend/:id')
 	playWithFriend(@Param('id') opponentId: string): string {
 		//console.log('lll');
-		this.GameService.playWithFriend(opponentId);
+		//this.GameService.playWithFriend(opponentId);
 		return 'here logic to play with a friend';
 	}
 
 	@Get('play_random')
-	playRandom(): string {
-		this.GameService.playRandom();
+	playRandom(@Req() req: any): string {
+		//this.GameService.playRandom(req.user.id);
 		return 'here logic to play with a random';
 	}
 }

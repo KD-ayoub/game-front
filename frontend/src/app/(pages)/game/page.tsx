@@ -9,6 +9,14 @@ import WithBot from "@/app/assets/svg/game/withBot.svg";
 import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 import Profilepic from "@/app/assets/svg/profile.svg";
 import { LittleSearchBar } from "@/app/components";
+//import socket
+import { ioClient, SocketClient } from "@/app/api/instance";
+import { type Socket, io } from "socket.io-client";
+import { Manager } from "socket.io-client/debug";
+
+//test redirect
+//import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function Game() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -17,6 +25,7 @@ export default function Game() {
   const [botCard, setBotCard] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
 
+    const router = useRouter();
   function handlFriendClick() {
     setFriendCard(true);
     setRandomCard(false);
@@ -31,6 +40,19 @@ export default function Game() {
     setFriendCard(false);
     setRandomCard(false);
     setBotCard(true);
+  }
+
+  function playRandom() {
+    console.log('hmmmmmmmm');
+    ioClient.playRandom();
+    const SocketClient = ioClient.getSocketClient();
+    SocketClient.on("redirectToGame", (data: {room: string}) => {
+      SocketClient.room = data.room;
+      console.log('****** ', SocketClient.room);
+      router.push("/game/user");
+      //window.history.pushState("", "", "/game/user");
+      //window.location.href = "/game/user";
+    })
   }
 
   return (
@@ -82,6 +104,7 @@ export default function Game() {
                     height={80}
                     alt="Profile pic"
                   />
+                  <button onClick={playRandom}>Play random</button>
                 </div>
               )}
             </div>
