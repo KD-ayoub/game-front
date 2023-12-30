@@ -76,6 +76,7 @@ export class chatGateway implements OnGatewayConnection
 
 	@SubscribeMessage('join')
     handleJoinChannel(client: Socket,  data: any) {
+		// check if user can join this channel
         client.join(data.channel);
     }
 

@@ -85,19 +85,47 @@ export class ChatController{
 	}
 
 	// join protected channels
+	@Post('join_protected')
+	async join_protected(@Body() body: any, @Session() session :Record<string,any>)
+	{
+		console.log(body);
+	}
+
 
 
 	// add admin
+	@Get('add_admin')
+	async add_admin()
+	{
+	}
 
 	// invite friend to channel
+	@Get('add_members')
+	async add_members()
+	{
+	}
 
 
 	// mute a member in the channel
+	@Get('mute')
+	async mute()
+	{
+	}
 
 	// kick a member 
+	@Get('kick')
+	async kick()
+	{
+	}
 
 	// ban a member
-
-
+	@Get('ban')
+	async ban()
+	{
+	}
 	// remove and change password from a channel
+
+
+
+	// list all messages in a channel
 }
