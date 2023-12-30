@@ -6,6 +6,7 @@ import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
 import { channels, create_channel } from "src/utils/types";
 import * as bcrypt from  'bcrypt'
+import { use } from "passport";
 
 @Injectable()
 export class chatService {
@@ -400,5 +401,47 @@ export class chatService {
 			console.log(node);
 		}
 		return result;
+	}
+
+	async join_public(userid: string, channelid: string)
+	{
+		try {
+			const channel = await this.prisma.room.update({
+				where: {
+					id: channelid,
+					type : RoomType.PUBLIC
+					,
+					NOT : [
+						{
+							ownerId: userid,
+						},
+						{
+							members : {
+								some : {
+									id: userid
+								}
+							}
+						},
+						{
+							admins: {
+								some: {
+									id : userid
+								}
+							}
+						}
+					]
+				},
+				data: {
+					members: {
+						connect : {
+							id : userid
+						}
+					}
+				}
+			});
+		} catch (error) {
+			return false;
+		}
+		return true;
 	}
 }

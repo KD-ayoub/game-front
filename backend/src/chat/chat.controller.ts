@@ -3,6 +3,7 @@ import { chatService } from "./chat.service";
 import { Record } from "@prisma/client/runtime/library";
 import { create_channel } from "src/utils/types";
 import { RoomType } from "@prisma/client";
+import { session } from "passport";
 
 @Controller('chat')
 export class ChatController{
@@ -38,6 +39,7 @@ export class ChatController{
 
 	}
 
+	// unblock friend
 	@Get('unblock/:id')
 	async unblock(@Session() session : Record<string,any>,@Param('id') id: string)
 	{
@@ -49,6 +51,7 @@ export class ChatController{
 
 	}
 
+	// create_channel
 	@Post('create_channel')
 	async create_channel(@Body() body: create_channel,@Session() session : Record<string,any>)
 	{
@@ -63,11 +66,21 @@ export class ChatController{
 
 	}
 
+	// get all channels
 	@Get("list_channels")
 	async list_channels(@Session() session : Record<string,any>)
 	{
-		
 		const userid = session.passport.user.id;
 		return await this.chatService.list_all_channels(userid);
+	}
+
+	// join public channel
+	@Get('join_public/:id')
+	async join_public(@Session() session: Record<string,any>,@Param('id') channel_id : string)
+	{
+		const b = await this.chatService.join_public(session.passport.user.id,channel_id);
+		if (b === false)
+			return {"result" : "false channel id"};
+		return {"result": "done"}
 	}
 }
