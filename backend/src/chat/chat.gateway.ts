@@ -64,4 +64,22 @@ export class chatGateway
 
 		// if the message is the first message in the converstation emit to conversation list
 	}
+
+	@SubscribeMessage('join')
+    handleJoinChannel(client: Socket,  data: any) {
+        client.join(data.channel);
+    }
+
+	// data.channel 
+	// data.sender
+	// data.content
+	// data.photo
+	// data.time
+	@SubscribeMessage('send_room')
+	sendchannel(client: Socket, data: any)
+	{
+		// check all checks before sending a message to the room
+		console.log("send room : ", data);
+		this.appGateway.server.to(data.channel).emit("blan", "1");
+	}
 }

@@ -83,4 +83,21 @@ export class ChatController{
 			return {"result" : "false channel id"};
 		return {"result": "done"}
 	}
+
+	// join protected channels
+
+
+	// add admin
+
+	// invite friend to channel
+
+
+	// mute a member in the channel
+
+	// kick a member 
+
+	// ban a member
+
+
+	// remove and change password from a channel
 }
