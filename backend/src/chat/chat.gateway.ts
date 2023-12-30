@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
+import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 import { AppGateway } from "src/app.gateway";
 import { chatService } from "./chat.service";
@@ -9,13 +9,22 @@ import { chatService } from "./chat.service";
 // send direct message -> blocked
 
 @Injectable()
-@WebSocketGateway()
-export class chatGateway 
+@WebSocketGateway({
+  transports: ['websocket'],
+  cors: {
+    origin: '*',
+  },
+	//namespace: '/',
+})
+export class chatGateway implements OnGatewayConnection 
 {
 	constructor(private appGateway : AppGateway,private chatService: chatService){
 	}
 
 	private logger = new Logger('ChatGateway');
+	handleConnection(client: Socket, ...args: any[]) {
+		console.log('lol ', client.id);
+	}
 
 
 	// send a message in direct messages

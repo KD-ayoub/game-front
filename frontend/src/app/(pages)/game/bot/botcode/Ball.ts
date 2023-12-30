@@ -69,15 +69,10 @@ export default class Ball {
   checkLoss(data: UpdateDataType) {
     //if ((this.ypos + this.radius) > (this.tableHeight - this.gap) ||
     //    (this.ypos - this.radius) < this.gap)`j
-    if (
-      !this.checkBallTouchPaddle(data, false) &&
-      (this.ypos - this.radius < data.yUp + data.height ||
-        this.ypos + this.radius > data.yDown)
-    ) {
-      // console.log("x: ", this.xpos);
-      // console.log("y: ", this.ypos);
+    if (!this.checkBallTouchPaddle(data, false) &&
+        (((this.ypos - this.radius) < (data.yUp + data.height)) ||
+         ((this.ypos + this.radius) > data.yDown)))
       return true;
-    }
     return false;
   }
 

@@ -20,7 +20,7 @@ import { ChatModule } from './chat/chat.module';
 	  	SettingsModule,
 			CloudinaryModule,
 			GameModule,
-		ChatModule
+			//ChatModule
   ],
 })
 

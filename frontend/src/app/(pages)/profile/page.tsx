@@ -22,6 +22,10 @@ import getAchievement from "@/app/api/Profile/getAchievement";
 import getFriends from "@/app/api/Profile/getFriends";
 import getGamesHistory from "@/app/api/Profile/getGamesHistory";
 import { useUserContext } from "@/app/components/useUserContext";
+//import socket
+import { ioClient, SocketClient } from "@/app/api/instance";
+import { type Socket, io } from "socket.io-client";
+import { Manager } from "socket.io-client/debug";
 
 export default function Profile() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -56,6 +60,11 @@ export default function Profile() {
   const [dataGamesHistory, setdataGamesHistory] = useState<Array<GamesHistoryType>>([]);
   const {userData} = useUserContext();
   console.log("context in profile", userData.id);
+  //for socket client
+  //useEffect(() => {
+  //  console.log('************* profile');
+  //  ioClient;
+  //}, []);
   useEffect(() => {
     async function fetchdata() {
       if (userData.id) {

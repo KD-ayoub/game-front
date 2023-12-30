@@ -17,6 +17,7 @@ import PutSettings from "@/app/api/Settings/putSettings";
 import PutImage from "@/app/api/Settings/putImage";
 import toast, { Toaster } from "react-hot-toast";
 import DeleteImage from "@/app/api/Settings/deleteImage";
+import _ from "lodash";
 
 export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -30,13 +31,12 @@ export default function Settings() {
     fac_auth: false,
     photo_path: `${ProfileImg.src}`,
   });
-  const [respSettings, setRespSettings] = useState<SettingsType>({
+  const [firstDataSettings, setFirstDataSettings] = useState<SettingsType>({
     id: "",
     full_name: "",
     nickName: "",
     fac_auth: false,
-    photo_path: "",
-    qr_code_url: "",
+    photo_path: `${ProfileImg.src}`,
   });
   const [selectedImage, setSelectedImage] = useState<File>();
   const [createObjectURL, setCreateObjectURL] = useState(`${ProfileImg.src}`);
@@ -54,7 +54,9 @@ export default function Settings() {
         fullNamelementRef.current.value
       )
         ? old
-        : fullNamelementRef.current.className.concat(" border focus:border-red-600");
+        : fullNamelementRef.current.className.concat(
+            " border focus:border-red-600"
+          );
     }
   }
   function handlNickNameFocus() {
@@ -66,7 +68,9 @@ export default function Settings() {
         nickNamelementRef.current.value
       )
         ? old
-        : nickNamelementRef.current.className.concat(" border focus:border-red-600");
+        : nickNamelementRef.current.className.concat(
+            " border focus:border-red-600"
+          );
     }
   }
   function handlNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -88,7 +92,8 @@ export default function Settings() {
     }
     URL.revokeObjectURL(createObjectURL);
     setCreateObjectURL(`${ProfileImg.src}`);
-    dataSettings.photo_path = `default_img`;
+    setDataSettings({ ...dataSettings, photo_path: "default_img" });
+    // dataSettings.photo_path = `default_img`;
     setSelectedImage(undefined);
     // send an empty json
   }
@@ -99,7 +104,7 @@ export default function Settings() {
     formData.forEach((item) => (checkItem = item.toString()));
     console.log("checkItem", checkItem);
     if (selectedImage) {
-      console.log('shoul not enter');
+      console.log("shoul not enter");
       const toastId = toast.loading("Saving changes", {
         style: {
           backgroundColor: "#383546",
@@ -112,7 +117,7 @@ export default function Settings() {
         style: {
           backgroundColor: "#383546",
           color: "white",
-        }
+        },
       });
       console.log("putted", putted);
     }
@@ -120,16 +125,37 @@ export default function Settings() {
   async function handlSaveChanges() {
     const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
     const nickNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
+    console.log("settings before", firstDataSettings);
+    console.log("ettings sent", dataSettings);
+    console.log("imageeeeeeeee", createObjectURL);
+    console.log("photo img", dataSettings.photo_path);
+    const checkIschanged = _.isEqual(firstDataSettings, dataSettings);
+    console.log("entered hereeeeeeeeeee", checkIschanged);
+    //neeed to work on
+    // const checkIschanged = JSON.stringify(firstDataSettings) === JSON.stringify(dataSettings);
+    if (checkIschanged) {
+      toast.success("Saved", {
+        style: {
+          backgroundColor: "#383546",
+          color: "white",
+        },
+      });
+      return;
+    }
+    setFirstDataSettings(dataSettings);
     if (fullNamelementRef.current && nickNamelementRef.current) {
       if (
         fullNameRegex.test(fullNamelementRef.current.value) &&
         nickNameRegex.test(nickNamelementRef.current.value)
       ) {
         // send put method
-        console.log("ettings sent", dataSettings);
-        console.log("selected ", selectedImage);
+        // console.log("ettings sent", dataSettings);
+        console.log("selected ", dataSettings.full_name);
         const twofa = await PutSettings(dataSettings);
-        setDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
+        if (twofa.qr_code_url) {
+          setDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
+          setFirstDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url }); 
+        }
         handlImageChange();
         if (dataSettings.photo_path === "default_img") {
           console.log("deleted", dataSettings.photo_path);
@@ -140,7 +166,7 @@ export default function Settings() {
             style: {
               backgroundColor: "#383546",
               color: "white",
-            }
+            },
           });
         }
         console.log("save");
@@ -150,7 +176,7 @@ export default function Settings() {
           style: {
             backgroundColor: "#383546",
             color: "white",
-          }
+          },
         });
         console.log("dont save");
       }
@@ -158,7 +184,9 @@ export default function Settings() {
   }
   useEffect(() => {
     async function fetcher() {
-      setDataSettings(await getSettings());
+      const response = await getSettings();
+      setDataSettings(response);
+      setFirstDataSettings(response);
     }
     fetcher();
   }, []);
@@ -242,7 +270,10 @@ export default function Settings() {
                           const file = e.target.files[0];
                           if (e.target.files.length > 0) {
                             setCreateObjectURL(URL.createObjectURL(file));
-                            dataSettings.photo_path = `${ProfileImg.src}`;
+                            setDataSettings({
+                              ...dataSettings,
+                              photo_path: `${ProfileImg.src}`,
+                            });
                             console.log("imagechange:", createObjectURL);
                             setSelectedImage(file);
                           }
