@@ -154,7 +154,7 @@ export default function Settings() {
         const twofa = await PutSettings(dataSettings);
         if (twofa.qr_code_url) {
           setDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
-          setFirstDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
+          setFirstDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url }); 
         }
         handlImageChange();
         if (dataSettings.photo_path === "default_img") {
