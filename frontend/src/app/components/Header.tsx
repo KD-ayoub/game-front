@@ -92,7 +92,7 @@ export default function Header({
                 className="sm:w-[32px] sm:h-[32px] md:w-[34px] md:h-[34px] lg:w-[46px] lg:h-[46px] xl:w-[52px] xl:h-[52px] 2xl:w-[75px] 2xl:h-[75px] rounded-full"
                 width={29}
                 height={29}
-                src={dataSettings.photo_path}
+                src={dataSettings.photo_path === 'default_img' ? `${ProfileImg.src}`: dataSettings.photo_path}
                 alt="profile image"
               />
               <div className="hidden sm:block">

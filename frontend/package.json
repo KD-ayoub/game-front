@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/formidable": "^3.4.5",
+    "@types/lodash.isequal": "^4.5.8",
     "@types/mv": "^2.1.4",
     "axios": "^1.6.2",
     "cross-fetch": "^4.0.0",
@@ -17,6 +18,7 @@
     "formidable": "^3.5.1",
     "formik": "^2.4.5",
     "js-cookie": "^3.0.5",
+    "lodash.isequal": "^4.5.0",
     "moment": "^2.29.4",
     "mv": "^2.1.1",
     "next": "13.5.4",
