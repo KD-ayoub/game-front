@@ -13,19 +13,26 @@ import { LittleSearchBar } from "@/app/components";
 import { ioClient, SocketClient } from "@/app/api/instance";
 import { type Socket, io } from "socket.io-client";
 import { Manager } from "socket.io-client/debug";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
 
 //test redirect
 //import { useRouter } from 'next/router';
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import ModalMapsComponent from "@/app/components/game/ModalMapsComponent";
 
 export default function Game() {
+  const [openMapModal, setOpenMapMoadl] = useState(false);
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const [friendCard, setFriendCard] = useState(false);
   const [randomCard, setRandomCard] = useState(false);
   const [botCard, setBotCard] = useState(false);
+  const [src, setSrc] = useState(false);
+  
   const marginbody = isHumburgClicked ? "ml-6" : "";
 
-    const router = useRouter();
+  const router = useRouter();
   function handlFriendClick() {
     setFriendCard(true);
     setRandomCard(false);
@@ -41,18 +48,20 @@ export default function Game() {
     setRandomCard(false);
     setBotCard(true);
   }
-
+  function handlUserClick() {
+    setOpenMapMoadl(!openMapModal);
+  }
   function playRandom() {
-    console.log('hmmmmmmmm');
+    console.log("hmmmmmmmm");
     ioClient.playRandom();
     const SocketClient = ioClient.getSocketClient();
-    SocketClient.on("redirectToGame", (data: {room: string}) => {
+    SocketClient.on("redirectToGame", (data: { room: string }) => {
       SocketClient.room = data.room;
-      console.log('****** ', SocketClient.room);
+      console.log("****** ", SocketClient.room);
       router.push("/game/user");
       //window.history.pushState("", "", "/game/user");
       //window.location.href = "/game/user";
-    })
+    });
   }
 
   return (
@@ -71,6 +80,7 @@ export default function Game() {
         >
           Game
         </div>
+        {openMapModal && <ModalMapsComponent onClick={handlUserClick} openModal={openMapModal}/>}
         <div className="flex justify-center relative w-full h-full">
           <div className="flex justify-center items-center flex-wrap lg:gap-[45px] xl:gap-[75px] 2xl:gap-[165px] absolute top-[5%] sm:top-[10%]">
             <div className="m-2 relative" onClick={handlFriendClick}>
@@ -86,7 +96,7 @@ export default function Game() {
                       Search for a friend
                     </p>
                   </div>
-                  <LittleSearchBar />
+                  <LittleSearchBar onClick={handlUserClick} />
                 </div>
               )}
             </div>
