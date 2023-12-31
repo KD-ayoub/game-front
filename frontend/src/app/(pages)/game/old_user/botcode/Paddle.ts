@@ -11,7 +11,6 @@ export default class Paddle {
   private paddleSpeed: number;
   private xpos: number;
   private ypos: number;
-  private gap: number;
 
   constructor(context: CanvasRenderingContext2D, data: PaddleType) {
     this.context = context;
@@ -49,14 +48,13 @@ export default class Paddle {
   }
 
   movePaddle(key: string) {
-    if (key === "ArrowRight") this.xpos +=  this.paddleSpeed * 3.5 ;
-    else if (key === "ArrowLeft") this.xpos -= this.paddleSpeed * 3.5;
+    if (key === "ArrowRight") this.xpos += this.paddleSpeed;
+    else if (key === "ArrowLeft") this.xpos -= this.paddleSpeed;
   }
 
   drawPaddle() {
     const paddle = new Path2D();
-    paddle.roundRect(this.xpos, this.ypos, this.paddleWidth, this.paddleHeight, 4);
-    // paddle.rect(this.xpos, this.ypos, this.paddleWidth, this.paddleHeight);
+    paddle.rect(this.xpos, this.ypos, this.paddleWidth, this.paddleHeight);
     this.context.fillStyle = this.color;
     this.context.fill(paddle);
   }

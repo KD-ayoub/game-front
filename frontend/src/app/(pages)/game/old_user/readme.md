@@ -1,0 +1,4 @@
+width
+height
+radius
+speed
