@@ -16,7 +16,6 @@ import { Manager } from "socket.io-client/debug";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-
 //test redirect
 //import { useRouter } from 'next/router';
 import { useRouter } from "next/navigation";
@@ -29,7 +28,7 @@ export default function Game() {
   const [randomCard, setRandomCard] = useState(false);
   const [botCard, setBotCard] = useState(false);
   const [src, setSrc] = useState(false);
-  
+
   const marginbody = isHumburgClicked ? "ml-6" : "";
 
   const router = useRouter();
@@ -80,7 +79,12 @@ export default function Game() {
         >
           Game
         </div>
-        {openMapModal && <ModalMapsComponent onClick={handlUserClick} openModal={openMapModal}/>}
+        {openMapModal && (
+          <ModalMapsComponent
+            onClick={handlUserClick}
+            openModal={openMapModal}
+          />
+        )}
         <div className="flex justify-center relative w-full h-full">
           <div className="flex justify-center items-center flex-wrap lg:gap-[45px] xl:gap-[75px] 2xl:gap-[165px] absolute top-[5%] sm:top-[10%]">
             <div className="m-2 relative" onClick={handlFriendClick}>
@@ -105,7 +109,7 @@ export default function Game() {
                 <PlayMode Picture={WithRandom.src} Mode="Play with a random" />
               )}
               {randomCard && (
-                <div className="flex justify-center items-center w-[178px] h-[179px] sm:w-[220px] sm:h-[221px] lg:w-[320px] lg:h-[321px] xl:w-[420px] xl:h-[421px] 2xl:w-[620px] 2xl:h-[621px] bg-[#15131D] rounded-[10px] md:rounded-[13px] lg:rounded-[15px] xl:rounded-[20px] 2xl:rounded-[25px]">
+                <div className="flex justify-around items-center flex-col w-[178px] h-[179px] sm:w-[220px] sm:h-[221px] lg:w-[320px] lg:h-[321px] xl:w-[420px] xl:h-[421px] 2xl:w-[620px] 2xl:h-[621px] bg-[#15131D] rounded-[10px] md:rounded-[13px] lg:rounded-[15px] xl:rounded-[20px] 2xl:rounded-[25px]">
                   <Image
                     draggable={false}
                     className="sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44"
@@ -114,7 +118,16 @@ export default function Game() {
                     height={80}
                     alt="Profile pic"
                   />
-                  <button onClick={playRandom}>Play random</button>
+                  <div
+                    className="w-[8rem] h-8 md:w-[9rem] md:h-9 lg:w-[12rem] lg:h-11 xl:w-[14rem] xl:h-14 2xl:w-[16rem] 2xl:h-16 bg-[#E95A3A] rounded-[20px] xl:rounded-[24px] 2xl:rounded-[28px] flex justify-center items-center cursor-pointer"
+                    onClick={() => playRandom}
+                  >
+                    <p
+                      className={`${NeuePlakFont.className} text-white md:text-[20px] lg:text-[25px] xl:text-[30px] 2xl:text-[36px]`}
+                    >
+                      Play Random
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

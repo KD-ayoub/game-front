@@ -75,9 +75,9 @@ export default function Header({
   return (
     <>
       <header className="text-white flex justify-stretch w-full absolute z-10 items-center">
-        <nav className="flex sm:w-11 sm:h-11 md:w-14 md:h-14 lg:w-[72px] lg:h-[72px] xl:w-[88px] xl:h-[88px] 2xl:w-32 2xl:h-32 relative">
-          <img src={Logo.src} className="p-2 2xl:p-4" draggable='false' />
-          <img src={Nav.src} className="p-2 sm:hidden" onClick={handlClick} draggable='false' />
+        <nav className="flex gap-6 relative">
+          <Image src={Logo.src} className="pl-2 2xl:p-4 sm:w-11 sm:h-11 md:w-14 md:h-14 lg:w-[72px] lg:h-[72px] xl:w-[88px] xl:h-[88px] 2xl:w-32 2xl:h-32" draggable='false' alt="logo" width={25} height={25} />
+          <Image src={Nav.src} className="sm:hidden" onClick={handlClick} draggable='false' alt="nav" width={18} height={12} />
         </nav>
         <SearchBar />
         <nav className="flex items-center justify-end gap-2 sm:w-[170px] sm:h-11 md:w-48 md:h-14 lg:h-[72px] lg:w-72 xl:h-[88px] xl:w-80 2xl:h-32 2xl:w-[480px]">
