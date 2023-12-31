@@ -39,3 +39,8 @@ export type join_private_channel = {
 	id : string,
 	password: string
 }
+
+export type add_admin = {
+	member_id: string,
+	channel_id: string
+}

@@ -4,9 +4,8 @@ import { Room, RoomType } from "@prisma/client";
 import { errorMonitor } from "events";
 import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
-import { channels, create_channel, join_private_channel } from "src/utils/types";
+import { add_admin, channels, create_channel, join_private_channel } from "src/utils/types";
 import * as bcrypt from  'bcrypt'
-import { use } from "passport";
 
 @Injectable()
 export class chatService {
@@ -548,5 +547,54 @@ export class chatService {
 			return 2;
 		}
 		return 2;
+	}
+
+
+	async add_admin(userid: any, channel : add_admin)
+	{
+		if (userid === channel.member_id)
+			return 1;
+		try {
+			
+			const room = await this.prisma.room.update({
+				where: {
+					id : channel.channel_id,
+					members: {
+						some : {
+							id : channel.member_id
+						}
+					},
+					OR: [
+						{
+							ownerId: userid
+						},
+						{
+							admins: {
+								some : {
+									id : userid
+								}
+							}
+						}
+					],
+				},
+				data: {
+					admins: {
+						connect: {
+							id : channel.member_id
+						}
+					},
+					members: {
+						disconnect : {
+							id : channel.member_id
+						}
+					}
+				}
+			});
+			if (!room)
+				return 2;
+
+		} catch (error) {
+			return 2;
+		}
 	}
 }

@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Session, UseGuards } from "@nestjs/common";
 import { chatService } from "./chat.service";
 import { Record } from "@prisma/client/runtime/library";
-import { create_channel, join_private_channel } from "src/utils/types";
+import { add_admin, create_channel, join_private_channel } from "src/utils/types";
 import { RoomType } from "@prisma/client";
 import { session } from "passport";
 import { AuthenticatedGuard} from "src/auth/guards";
@@ -12,6 +12,8 @@ import { AuthenticatedGuard} from "src/auth/guards";
 export class ChatController{
 	constructor(private chatService: chatService){}
 
+	//////////////////////// direct messages endpoints ////////////////////////////////
+	
 
 	// get message history  of direct messages
 	@UseGuards(AuthenticatedGuard)
@@ -57,6 +59,17 @@ export class ChatController{
 			throw new HttpException('good',HttpStatus.OK);
 
 	}
+
+
+
+
+
+
+
+
+	////////////////////////////// channels endpoints //////////////////////////////////////
+
+
 
 	// create_channel
 	@UseGuards(AuthenticatedGuard)
@@ -114,10 +127,18 @@ export class ChatController{
 
 	// add admin
 	@UseGuards(AuthenticatedGuard)
-	@Get('add_admin')
-	async add_admin()
+	@Post('add_admin')
+	async add_admin(@Session() session: Record<string,any>,@Body() body: add_admin)
 	{
 		// check if is member then make him admin and delete the user from member
+		if (!body.member_id || !body.channel_id)
+			throw new HttpException("invalid request", HttpStatus.BAD_REQUEST);
+		const result = await this.chatService.add_admin(session.passport.user.id,body);
+		if (result === 1)
+			throw new HttpException("can't make the user an admin",HttpStatus.FORBIDDEN);
+		if (result === 2)
+			throw new HttpException("user is not admin or the channel doesn't exist",HttpStatus.NOT_FOUND);
+		throw new HttpException("done",HttpStatus.OK);
 	}
 
 	// invite friend to channel
