@@ -25,7 +25,7 @@ export type create_channel = {
 	name : string,
 	photo: string,
 	password: string,
-	permission : RoomType
+	type : RoomType
 }
 
 export type channels = {
@@ -33,4 +33,9 @@ export type channels = {
 	type : string,
 	joined: boolean,
 	id : string
+}
+
+export type join_private_channel = {
+	id : string,
+	password: string
 }

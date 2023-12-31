@@ -29,19 +29,19 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	print(): void {
-		console.log('size = ', this.socketUser.size);
+		//console.log('size = ', this.socketUser.size);
 		if (this.socketUser.size) {
 			this.socketUser.forEach((value, key) => {
-				console.log(`key = ${key} | value = ${value}`);
+				//console.log(`key = ${key} | value = ${value}`);
 			})
 		}
-		console.log('done');
+		//console.log('done');
 	}
 
 	async handleConnection(client: Socket, ...args: any[]) {
 		//console.log(`${client.id} is connect size = ${this.socketUser.size}`);
 		//error in disconnect
-		console.log('hey ', client.id);
+		//console.log('hey ', client.id);
 		const clientSocket = this.server.sockets.sockets.get(client.id);
 		//this.socketUser.set(this.i.toString(), client.id);
 		//this.i++;
@@ -49,22 +49,22 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//return ;
 		//old logic for cookie now just trying
 		const cookie = client.request.headers.cookie;
-		console.log('cookie = ', cookie);
+		//console.log('cookie = ', cookie);
 		if (!cookie) {
-			console.log("no cookie");
+			//console.log("no cookie");
 			clientSocket.disconnect();
 			return ;
 		}
 		const parse = Cookies.parse(cookie);
 		const sid = cookiesParser.signedCookie(parse['connect.sid'], process.env.SESSION_SECRET);
-		console.log(`sid = ${sid}`);
+		//console.log(`sid = ${sid}`);
 		const sessionDb = await this.prisma.session.findUnique({
 			where: {
 				sid,
 			}
 		});
 		if (!sessionDb) {
-			console.log("no session");
+			//console.log("no session");
 			clientSocket.disconnect();
 			return ;
 		}
@@ -79,13 +79,13 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//	return ;
 		//}
 		if (this.socketUser.has(db.user.id)) {
-			console.log('disconnect ', client.id);
+			//console.log('disconnect ', client.id);
 			const hldClient = this.server.sockets.sockets.get(this.socketUser.get(db.user.id));
 			hldClient.disconnect();
 			return ;
 		}
 		this.socketUser.set(db.user.id, client.id);
-		console.log('add a socket to the map');
+		//console.log('add a socket to the map');
 	}
 
 	handleDisconnect(client: Socket) {
@@ -96,12 +96,12 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//})
 		if (findValue)
 			this.socketUser.delete(findValue.key);
-		console.log('bye = ', this.socketUser);
+		//console.log('bye = ', this.socketUser);
 	}
 
 	@SubscribeMessage('newMessage')
 	onNewMessage(@MessageBody() body: any) {
-		console.log(body);
+		//console.log(body);
 		this.server.emit('onMessage', body)
 	}
 

@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Session } from "@nestjs/common";
 import { chatService } from "./chat.service";
 import { Record } from "@prisma/client/runtime/library";
-import { create_channel } from "src/utils/types";
+import { create_channel, join_private_channel } from "src/utils/types";
 import { RoomType } from "@prisma/client";
 import { session } from "passport";
 
@@ -55,9 +55,9 @@ export class ChatController{
 	@Post('create_channel')
 	async create_channel(@Body() body: create_channel,@Session() session : Record<string,any>)
 	{
-		if (!body.name || !body.permission|| !body.photo) 
+		if (!body.name || !body.type || !body.photo) 
 			throw new HttpException('bad',HttpStatus.BAD_REQUEST);
-		if  (body.permission == RoomType.PROTECTED && !body.password)
+		if  (body.type == RoomType.PROTECTED && !body.password)
 			throw new HttpException('password not found',HttpStatus.NOT_FOUND)
 		if ((await this.chatService.create_channel(body,session.passport.user.id)) == false)
 		{
@@ -80,15 +80,23 @@ export class ChatController{
 	{
 		const b = await this.chatService.join_public(session.passport.user.id,channel_id);
 		if (b === false)
-			return {"result" : "false channel id"};
-		return {"result": "done"}
+			throw new HttpException("can't join the channel", HttpStatus.CONFLICT);
+		throw new HttpException("member added",HttpStatus.OK);
 	}
 
 	// join protected channels
 	@Post('join_protected')
-	async join_protected(@Body() body: any, @Session() session :Record<string,any>)
+	async join_protected(@Body() body: join_private_channel, @Session() session :Record<string,any>)
 	{
-		console.log(body);
+		if (!body.id || !body.password)
+			throw new HttpException("request is not valid", HttpStatus.BAD_REQUEST);
+		const result = await this.chatService.join_protected(body,session.passport.user.id);
+		if (result === 3)
+			throw new HttpException("member added",HttpStatus.OK);
+		else if (result === 2)
+			throw new HttpException("can't join the channel", HttpStatus.CONFLICT);
+		else if (result === 1)
+			throw new HttpException("wrong password",HttpStatus.NOT_ACCEPTABLE);
 	}
 
 
@@ -123,6 +131,7 @@ export class ChatController{
 	async ban()
 	{
 	}
+	
 	// remove and change password from a channel
 
 

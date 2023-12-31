@@ -116,7 +116,7 @@ export class AuthController {
 			return {message: 'Good'};
 			//throw new ForbiddenException({message: loginStatus.NotLogged});
 		}
-		console.log(body);
+		//console.log(body);
 		//this one will be checked in pipe
 		if (!body || !body.full_name ||!body.nickname )
 			return {error : "Body is wrong"};
@@ -185,7 +185,7 @@ export class AuthController {
 		////
 		
 		const verify = await this.settingService.checkIfQrCodeIsRight(user.id, body.code);
-		console.log(`2fa ${verify}`);
+		//console.log(`2fa ${verify}`);
 		if (!verify)
 			throw new ConflictException({message: "CodeNotValid"});
 		session.passport.user['code'] = body.code;

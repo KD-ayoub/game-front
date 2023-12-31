@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
 import { Room, RoomType } from "@prisma/client";
 import { errorMonitor } from "events";
 import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
-import { channels, create_channel } from "src/utils/types";
+import { channels, create_channel, join_private_channel } from "src/utils/types";
 import * as bcrypt from  'bcrypt'
 import { use } from "passport";
 
@@ -74,7 +74,7 @@ export class chatService {
 				// emit a new conversation 
 			}
 		} catch (error) {
-			console.log("error adak lhmar");
+			//console.log("error adak lhmar");
 		}
 		try {
 			await this.prisma.directMessage.create({
@@ -87,7 +87,7 @@ export class chatService {
 			});
 			
 		} catch (error) {
-			console.log("hey : ",error)
+			//console.log("hey : ",error)
 			 throw new WsException('invalid credentials.');
 		}
 	}
@@ -251,14 +251,14 @@ export class chatService {
 			const room = await this.prisma.room.create({
 				data: {
 					name : obj.name,
-					type: obj.permission,
+					type: obj.type,
 					ownerId: userid,
 				},
 				select: {
 					id: true,
 				}
 			})
-			if (obj.permission == RoomType.PROTECTED)
+			if (obj.type == RoomType.PROTECTED)
 			{
 				const private_room = await this.prisma.room.update({
 					where: {
@@ -279,7 +279,7 @@ export class chatService {
 
 	async hash_password(pass: string)
 	{
-		console.log(pass)
+		//console.log(pass)
 		return await bcrypt.hash(pass,10);
 	}
 
@@ -398,7 +398,7 @@ export class chatService {
 			const node : channels = await this.create_channel_obj(channels[i],userid);
 			if (node.id)
 				result.push(node);
-			console.log(node);
+			//console.log(node);
 		}
 		return result;
 	}
@@ -428,6 +428,13 @@ export class chatService {
 									id : userid
 								}
 							}
+						},
+						{
+							banned: {
+								some: {
+									id : userid
+								}
+							}
 						}
 					]
 				},
@@ -443,5 +450,67 @@ export class chatService {
 			return false;
 		}
 		return true;
+	}
+
+	async join_protected(channel : join_private_channel, userid: string)
+	{
+		try {
+			const protected_room = await this.prisma.room.findUnique({
+				where: {
+					id : channel.id,
+					type: RoomType.PROTECTED,
+					NOT : [
+						{
+							ownerId: userid,
+						},
+						{
+							members : {
+								some : {
+									id: userid
+								}
+							}
+						},
+						{
+							admins: {
+								some: {
+									id : userid
+								}
+							}
+						},
+						{
+							banned: {
+								some : {
+									id : userid
+								}
+							}
+						}
+					]
+				},
+				select: {
+					password: true
+				}
+			});
+			if (protected_room)
+			{
+				if ( (await this.compare_password(channel.password,protected_room.password) ) === false)
+					return 1;
+				const join_room = await this.prisma.room.update({
+					where: {
+						id : channel.id
+					},
+					data: {
+						members: {
+							connect: {
+								id : userid
+							}
+						}
+					}
+				})
+				return 3;
+			}
+		} catch (error) {
+			return 2;
+		}
+		return 2;
 	}
 }

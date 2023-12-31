@@ -23,7 +23,7 @@ export class chatGateway implements OnGatewayConnection
 
 	private logger = new Logger('ChatGateway');
 	handleConnection(client: Socket, ...args: any[]) {
-		console.log('lol ', client.id);
+		//console.log('lol ', client.id);
 	}
 
 
@@ -88,7 +88,9 @@ export class chatGateway implements OnGatewayConnection
 	@SubscribeMessage('send_room')
 	sendchannel(client: Socket, data: any)
 	{
-		// check all checks before sending a message to the room
+		// check if user is in the channel
+		// then check if the user is muted
+		
 		console.log("send room : ", data);
 		this.appGateway.server.to(data.channel).emit("blan", "1");
 	}
