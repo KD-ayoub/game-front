@@ -4,6 +4,10 @@ import { Server, Socket } from 'socket.io';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AppGateway } from '../app.gateway';
 
+//game
+import { Ball } from './assets/Ball';
+import { Paddle } from './assets/Paddle';
+
 @Injectable()
 @WebSocketGateway({
   //transports: ['websocket'],
@@ -14,8 +18,8 @@ import { AppGateway } from '../app.gateway';
 	//namespace: '/',
 })
 export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
-	private pendingPlayer: Array<{socket: Socket, gameData: Game, key: string, value: string}>;
-	private playerRoom: Map<string, Array<{key: string, gameData: Game, value: string}> >;
+	private pendingPlayer: Array<{socket: Socket, ball: Ball, paddle: Paddle, key: string, value: string}>;
+	private playerRoom: Map<string, Array<{socket: Socket, ball: Ball, paddle: Paddle, key: string, value: string}> >;
 	private check: number;
 
 	constructor(private Gateway: AppGateway) {
@@ -63,9 +67,9 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('joinToPlayWithRandom')
-	joinToPlayWithRandom(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
-		this.Gateway.print()
-		console.log(client.id);
+	joinToPlayWithRandom(@ConnectedSocket() client: Socket) {
+		//this.Gateway.print()
+		//console.log(client.id);
 		const find = this.Gateway.findSocketMap(client.id);
 		if (!find)
 			return ;
@@ -77,10 +81,10 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 				return ;
 			}
 		}
-		//console.log('find = ', find);
 		this.pendingPlayer.push({
 			socket: client,
-			gameData: null,
+			ball: null,
+			paddle: null,
 			key: find.key,
 			value: find.value
 		});
@@ -93,8 +97,8 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			this.pendingPlayer[1].socket.join(roomName);
 			this.playerRoom.set(roomName, this.getRoomSocket());
 			//here join them in a room and emit in that room
-			console.log(this.pendingPlayer);
-			console.log(this.playerRoom);
+			//console.log(this.pendingPlayer);
+			//console.log(this.playerRoom);
 			//this.ws.emit('redirectToGame', {room: roomName});
 			this.ws.to(roomName).emit('redirectToGame', {room: roomName});
 		}
@@ -106,15 +110,18 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('setGameDefaultData')
 	setGameDefaultData(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
 		//here check if room exists in that map
-		//let i = 0;
 		let find = this.playerRoom.get(payload.room);
-		//if (find[i].key !== client.id)
-		//	i++;
-		let i = find[0].value == client.id ? 0 : 1;
-		console.log('i = ', i);
+		let i = find[0].value === client.id ? 0 : 1;
+		//let chk = true;
+		//console.log('i = ', i);
 		//console.log(find[i]);
-		console.log('find = ', find[i].gameData, ' ', client.id);
-		find[i].gameData = new Game(payload);
+		//console.log('find = ', find[i].gameData, ' ', client.id);
+		//find[i].gameData = new Game(payload);
+
+		find[i].ball = new Ball(payload);
+		let chk = (find[0].paddle || find[1].paddle) ? true : false;
+		find[i].paddle = new Paddle(payload, chk);
+
 		//find[i].gameData = {
   	//	radius: payload.radius,
   	//	speed: payload.speed,
@@ -124,12 +131,28 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 		//};
 		console.log('setGameDefaultData ', client.id);
 		//console.log(find[i].gameData);
-		if (find[0].gameData && find[1].gameData) {
+		//if (find[0].gameData && find[1].gameData) {
+		if (find[0].ball && find[1].ball) {
 			console.log('bjouj nadyin');
-			find[0].gameData.getdx = find[1].gameData.getdx;
-			find[0].gameData.getdy = find[1].gameData.getdy;
+			const sight = find[0].ball.calculeBallSight();
+			for (let i = 0; i != 2; i++)
+				find[i].ball.setBallSight(sight);
+			//find[0].gameData.getdx = find[1].gameData.getdx;
+			//find[0].gameData.getdy = find[1].gameData.getdy;
 			//console.log('l = ', find[0].gameData);
 			//console.log('l = ', find[1].gameData);
+			//find[i].ball.setRenderingData(this.ws, payload.room, client.id);
+			
+			this.ws.to(payload.room).emit("setGameDefaultRender",
+			[
+				find[0].ball.getData(find[0].value),
+				find[1].ball.getData(find[1].value)
+			],
+			[
+				find[0].paddle.getData(find[0].value),
+				find[1].paddle.getData(find[1].value)
+			]);
+			console.log('still');
 			this.ws.to(payload.room).emit("playNow");
 			//emit here
 		}
@@ -140,36 +163,71 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 	//	console.log('ana = ', payload, l);
 	//}
 
+	//***************
+	@SubscribeMessage('movePaddle')
+	movePaddle(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+		let find = this.playerRoom.get(payload.room);
+		let i = find[0].value === client.id ? 0 : 1;
+		//console.log('movePaddle');
+		if (payload.move === "right" && !find[i].paddle.checkRightWall()) {
+			find[i].paddle.movePaddle(payload.move);
+			console.log('done');
+		}
+		else if (payload.move === "left" && !find[i].paddle.checkLeftWall())
+			find[i].paddle.movePaddle(payload.move);
+	}
+
 	@SubscribeMessage('moveBall')
 	moveBall(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
-		console.log('moveBall = ', client.id, ' ', payload);
+		//console.log('moveBall = ', client.id, ' ', payload);
 		let find = this.playerRoom.get(payload.room);
 		let i = find[0].value == client.id ? 0 : 1;
-		if (!payload.firstTime) {
-    	if (find[i].gameData.x + find[i].gameData.r >= find[i].gameData.width)
-				find[i].gameData.getdx = -find[i].gameData.getdx;
-    	else if (find[i].gameData.x - find[i].gameData.r <= 0)
-				find[i].gameData.getdx = -find[i].gameData.getdx;
-    	else if (find[i].gameData.y + find[i].gameData.r >= find[i].gameData.height)
-				find[i].gameData.getdy = -find[i].gameData.getdy;
-    	else if (find[i].gameData.y - find[i].gameData.r <= 0)
-				find[i].gameData.getdy = -find[i].gameData.getdy;
-			find[i].gameData.x += find[i].gameData.getdx * payload.delta;
-			find[i].gameData.y += find[i].gameData.getdy * payload.delta;
-		}
+		//const data = {
+		//	xDown: find[0].paddle.x > find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
+		//	yDown: find[0].paddle.y > find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
+		//	xDown: find[0].paddle.x > find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
+		//	yDown: find[0].paddle.y > find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
+    //  xUp: find[i].paddle.x,
+    //  yUp: find[i].paddle.y,
+    //  width: paddleWidth,
+    //  height: paddleHeight
+		//};
+          //const data = {
+          //  //xDown: downPaddle.x,
+          //  //yDown: downPaddle.y,
+          //  //xUp: upPaddle.x,
+          //  //yUp: upPaddle.y,
+          //  width: paddleWidth,
+          //  height: paddleHeight,
+          //};
+		if (!payload.firstTime)
+			find[i].ball.updateBall(payload.delta);
+		//if (!payload.firstTime) {
+    //	if (find[i].gameData.x + find[i].gameData.r >= find[i].gameData.width)
+		//		find[i].gameData.getdx = -find[i].gameData.getdx;
+    //	else if (find[i].gameData.x - find[i].gameData.r <= 0)
+		//		find[i].gameData.getdx = -find[i].gameData.getdx;
+    //	else if (find[i].gameData.y + find[i].gameData.r >= find[i].gameData.height)
+		//		find[i].gameData.getdy = -find[i].gameData.getdy;
+    //	else if (find[i].gameData.y - find[i].gameData.r <= 0)
+		//		find[i].gameData.getdy = -find[i].gameData.getdy;
+		//	find[i].gameData.x += find[i].gameData.getdx * payload.delta;
+		//	find[i].gameData.y += find[i].gameData.getdy * payload.delta;
+		//}
+		//will take off this one later
 		this.check++;
 		if (this.check == 2) {
-			console.log('move ball both');
-			this.ws.to(payload.room).emit("drawBall", {
-				ball: [
-					{sockt: find[0].value, x: find[0].gameData.x, y: find[0].gameData.y, radius: find[0].gameData.r},
-					{sockt: find[1].value, x: find[1].gameData.x, y: find[1].gameData.y, radius: find[1].gameData.r}
+			//console.log('move ball both');
+			this.ws.to(payload.room).emit("drawGameAssets",
+				[
+					find[0].ball.getData(find[0].value),
+					find[1].ball.getData(find[1].value)
 				],
-				paddle: [
-					{sockt: find[0].value, x: find[0].gameData.xplayer},
-					{sockt: find[1].value, x: find[1].gameData.xopp}
+				[
+					find[0].paddle.getData(find[0].value),
+					find[1].paddle.getData(find[1].value)
 				]
-			});
+			);
 			this.check = 0;
 		}
 	}

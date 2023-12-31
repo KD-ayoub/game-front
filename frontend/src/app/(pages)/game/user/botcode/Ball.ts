@@ -13,7 +13,8 @@ export default class Ball {
   private dy: number;
   private gap: number;
 
-  constructor(context: CanvasRenderingContext2D, data: BallType) {
+  //constructor(context: CanvasRenderingContext2D, data: BallType) {
+  constructor(context: CanvasRenderingContext2D, data: any) {
     this.context = context;
     this.radius = data.radius;
     this.color = data.color;
@@ -21,12 +22,12 @@ export default class Ball {
     this.gap = data.gap;
     this.tableWidth = data.tableWidth;
     this.tableHeight = data.tableHeight;
-    this.xpos = 0;
-    this.ypos = 0;
-    this.dx = 0;
-    this.dy = 0;
+    this.xpos = data.xpos;
+    this.ypos = data.ypos;
+    this.dx = data.dx;
+    this.dy = data.dy;
     //direction to start
-    this.reset();
+    //this.reset();
   }
 
   checkAngle(angle: number) {
@@ -55,15 +56,15 @@ export default class Ball {
   reset() {
     this.xpos = this.tableWidth / 2;
     this.ypos = this.tableHeight / 2;
-    let sight = 0;
-    while (!this.checkAngle((sight * 180) / Math.PI))
-      sight = this.randomNumber(0, 2 * Math.PI);
-    const direction = {
-      x: Math.cos(sight),
-      y: Math.sin(sight),
-    };
-    this.dx = direction.x * this.speed;
-    this.dy = direction.y * this.speed;
+    //let sight = 0;
+    //while (!this.checkAngle((sight * 180) / Math.PI))
+    //  sight = this.randomNumber(0, 2 * Math.PI);
+    //const direction = {
+    //  x: Math.cos(sight),
+    //  y: Math.sin(sight),
+    //};
+    //this.dx = direction.x * this.speed;
+    //this.dy = direction.y * this.speed;
   }
 
   checkLoss(data: UpdateDataType) {
@@ -101,9 +102,11 @@ export default class Ball {
   }
 
   //updateBall(delta: number, data: UpdateDataType) {
-  updateBall(delta: number, data: any) {
+  updateBall(data: {xpos: number, ypos: number}) {
     //code for socket
     this.context.clearRect(0, 0, this.tableWidth, this.tableHeight);
+    this.xpos = data.xpos;
+    this.ypos = data.ypos;
     this.drawBall();
     return ;
 

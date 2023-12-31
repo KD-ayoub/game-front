@@ -47,8 +47,6 @@ export default function Bot() {
   const unmounted = useRef(false);
   const animationFrameRef = useRef(-1);
   useEffect(() => {
-    //here socket
-    const SocketClient = ioClient.getSocketClient();
     let table = canvasRef.current;
     console.log("client", table?.clientWidth, table?.clientHeight);
     if (!table) return;
@@ -63,12 +61,73 @@ export default function Bot() {
     const ydownPaddle = table.height - paddleHeight - wallGap;
     const xupPaddle = wallGap;
     const yupPaddle = wallGap;
+    //here socket
+      let ballObj;
+      let paddlePlayer;
+      let paddleOpponent;
+    const SocketClient = ioClient.getSocketClient();
     SocketClient.emit("setGameDefaultData", {
       room: SocketClient.room,
       tableWidth: table.width,
       tableHeight: table.height
     });
+
+    SocketClient.on("setGameDefaultRender", (
+      ballData: [
+        {socket: string, radius: number, speed: number, xpos: number, ypos: number, dx: number, dy: number},
+        {socket: string, radius: number, speed: number, xpos: number, ypos: number, dx: number, dy: number}
+      ],
+      paddleData: [
+        {socket: string, speed: number, xpos: number, ypos: number},
+        {socket: string, speed: number, xpos: number, ypos: number}
+      ]
+    ) => {
+      //console.log('ballData = ', ballData);
+      //console.log('paddleData = ', paddleData);
+      let i = (ballData[0].socket === SocketClient.id) ? 0 : 1;
+      ballObj = new Ball(context, {
+        radius: ballData[i].radius,
+        speed: ballData[i].speed,
+        color: "#fff",
+        gap: wallGap,
+        dx: ballData[i].dx,
+        dy: ballData[i].dy,
+        xpos: ballData[i].xpos,
+        ypos: ballData[i].ypos,
+        tableWidth: table.width,
+        tableHeight: table.height,
+      });
+
+      //i = (paddleData[0].socket === SocketClient.id) ? 0 : 1;
+      paddlePlayer = new Paddle(context, {
+        x: paddleData[i].xpos,
+        y: paddleData[i].ypos,
+        gap: wallGap,
+        speed: paddleData[i].speed,
+        color: "#fff",
+        width: paddleWidth,
+        height: paddleHeight,
+        tableWidth: table.width,
+        tableHeight: table.height,
+      });
+
+      i = (paddleData[0].socket !== SocketClient.id) ? 0 : 1;
+      paddleOpponent = new Paddle(context, {
+        x: paddleData[i].xpos,
+        y: paddleData[i].ypos,
+        gap: wallGap,
+        speed: paddleData[i].speed,
+        color: "#fff",
+        width: paddleWidth,
+        height: paddleHeight,
+        tableWidth: table.width,
+        tableHeight: table.height,
+      });
+    });
+
     SocketClient.on("playNow", (data: any) => {
+      //console.log('f play now');
+      //return ;
       let lastTime: number;
       let firstTime: boolean = true;
           //SocketClient.emit("moveBall", {
@@ -118,28 +177,27 @@ export default function Bot() {
             firstTime
           });
           firstTime = false;
-          SocketClient.on("drawBall", (data: {
+          SocketClient.on("drawGameAssets", (
             ball: [
-              {sockt: string, x: number, y: number, radius: number},
-              {sockt: string, x: number, y: number, radius: number}
+              {sockt: string, xpos: number, ypos: number, radius: number},
+              {sockt: string, xpos: number, ypos: number, radius: number}
             ],
             paddle: [
-              {sockt: string, x: number},
-              {sockt: string, x: number}
+              {sockt: string, xpos: number, ypos: number},
+              {sockt: string, xpos: number, ypos: number}
             ]
-          }) => {
-		        let i = data.ball[0].sockt == SocketClient.id ? 0 : 1;
-            //data[i].x = data.x;
-            //data[i].y = data.y;
-            //ball.updateBall(delta, data);
-            //console.log('drawBall = ', payload);
-            //console.log('dddd');
-            context.clearRect(0, 0, table.width, table.height);
+          ) => {
+		        let i = (ball[0].sockt === SocketClient.id) ? 0 : 1;
+            //context.clearRect(0, 0, table.width, table.height);
+            ballObj.updateBall(ball[i]);
+            paddlePlayer.updatePaddle(paddle[i]);
+		        i = (ball[0].sockt !== SocketClient.id) ? 0 : 1;
+            paddleOpponent.updatePaddle(paddle[i]);
             //draw ball
-            const circle = new Path2D();
-            circle.arc(data.ball[i].x, data.ball[i].y, data.ball[i].radius, 0, 2 * Math.PI, false);
-            context.fillStyle = '#fff';
-            context.fill(circle);
+            //const circle = new Path2D();
+            //circle.arc(ball[i].xpos, ball[i].ypos, ball[i].radius, 0, 2 * Math.PI, false);
+            //context.fillStyle = '#fff';
+            //context.fill(circle);
 
             //draw paddle
             //i = data.paddle[0].sockt == SocketClient.id ? 0 : 1;
@@ -156,14 +214,15 @@ export default function Bot() {
             //context.fillStyle = "#fff";
             //context.fill(paddle2);
 
-            for (let i = 0; i != 2; i++) {
-              const paddle = new Path2D();
-              let y = data.paddle[i].sockt == SocketClient.id ?
-                (table.height - paddleHeight - wallGap) : wallGap;
-              paddle.roundRect(data.paddle[i].x, y, paddleWidth, paddleHeight, 4);
-              context.fillStyle = "#fff";
-              context.fill(paddle);
-            }
+            //*******
+            //for (let i = 0; i != 2; i++) {
+            //  const pad = new Path2D();
+            //  //let y = data.paddle[i].sockt == SocketClient.id ?
+            //  //  (table.height - paddleHeight - wallGap) : wallGap;
+            //  pad.roundRect(paddle[i].xpos, paddle[i].ypos, paddleWidth, paddleHeight, 4);
+            //  context.fillStyle = "#fff";
+            //  context.fill(pad);
+            //}
           })
         }
         lastTime = time;
@@ -176,6 +235,25 @@ export default function Bot() {
 
       //animationFrameRef.current = window.requestAnimationFrame(update);
     })
+    function handlKeyDown(e: KeyboardEvent) {
+      switch (e.code) {
+        case "ArrowRight":
+          SocketClient.emit("movePaddle", {room: SocketClient.room, move: "right"});
+          //if (!paddlePlayer.checkRightWall())
+          //  paddlePlayer.movePaddle(e.code);
+          //if (!paddlePlayer.checkRightWall())
+          //  paddlePlayer.movePaddle(e.code);
+          break;
+        case "ArrowLeft":
+          //if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
+          SocketClient.emit("movePaddle", {room: SocketClient.room, move: "left"});
+          break;
+      }
+    }
+    document.addEventListener("keydown", handlKeyDown);
+
+
+
     //SocketClient.emit("moveBall", "");
 
     //const ball = new Ball(context, {

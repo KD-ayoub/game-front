@@ -91,7 +91,11 @@ export default class Paddle {
     this.drawPaddle();
   }
 
-  updatePaddle() {
+  updatePaddle(data: {xpos: number, ypos: number}) {
+    //console.log('before = ', data.xpos, ' ', data.ypos);
+    //console.log('after = ', this.xpos, ' ', this.ypos);
+    this.xpos = data.xpos;
+    this.ypos = data.ypos;
     this.drawPaddle();
   }
 }

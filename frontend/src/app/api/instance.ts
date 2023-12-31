@@ -15,7 +15,7 @@ import { useRouter } from 'next/router';
 
 export class SocketClient {
   private ioClient: Socket<ClientToServerEvents, InterServerEvents>;
-  private socketRoom: string;
+  private gameRoom: string;
   //private i: number;
   constructor() {
     console.log('front socket');
@@ -63,7 +63,7 @@ export class SocketClient {
 
   playRandom() {
     console.log('zlit = ', this.ioClient.id);
-    this.ioClient.emit("joinToPlayWithRandom", "wayli")
+    this.ioClient.emit("joinToPlayWithRandom")
     //this.ioClient.on("redirectToGame", (data) => {
     //  //men be3d
     //  //const router = useRouter();
@@ -79,11 +79,11 @@ export class SocketClient {
   }
 
   get room() {
-    return this.socketRoom;
+    return this.gameRoom;
   }
 
   set room(value: string) {
-    this.socketRoom = value;
+    this.gameRoom = value;
   }
 }
 
