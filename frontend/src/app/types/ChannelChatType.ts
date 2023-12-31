@@ -1,5 +1,6 @@
 export type ChannelChatType = {
-    name: string;
-    owner: string;
-    
+    nameOfChannel: string;
+    photo: string;
+    id: string;
+    isBlocked: boolean;
     };

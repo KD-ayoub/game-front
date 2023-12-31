@@ -8,47 +8,47 @@ import "../../(pages)/chat/chat.css";
 import { friendSelected } from "@/app/utils/library/friendsSelected";
 import { FriendsType } from "@/app/types/friendstype";
 import Image from "next/image";
-import { FriendsChatType } from "@/app/types/friendsChat";
+import { ChannelChatType } from "@/app/types/ChannelChatType";
 import { GetChatConverssationType } from "@/app/types/getChatConverssation";
 // type friendT = { nickname: string; picture: string; unread: number };
 
-export default function ChannelMessaged({onSelect}: {onSelect: (id:FriendsChatType) => void}) {
+export default function ChannelMessaged({onSelect}: {onSelect: (id:ChannelChatType) => void}) {
   
-  const [friends, setFriends] = useState<FriendsChatType[]>([]);
+  const [channel, setChannel] = useState<ChannelChatType[]>([]);
   const [searching, setSearching] = useState("");
   
 
   // here we filterSearch the friends list:
   const filterSearch = () => {
     if (!searching) {
-      return friends;
+      return channel;
     }
-    return friends.filter((item) =>
+    return channel.filter((item) =>
       item.nickname.toLowerCase().includes(searching.toLowerCase())
     );
   };
 
   const filter_Search = filterSearch();
-  // Here we fetch friends from server and set them to state:
+  // Here we fetch channels from server and set them to state:
   useEffect(() => {
     async function fetcher() {
-      const getFriends = await fetch("http://localhost:3001/chat/conv", {
+      const getChannel = await fetch("http://localhost:3001/chat/conv", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
       });
-      if (!getFriends.ok) {
+      if (!getChannel.ok) {
         console.log("error fetcher");
         throw new Error("Network response was not ok");
       }
-      setFriends(await getFriends.json());
+      setChannel(await getChannel.json());
     }
     fetcher();
   }, []);
 
-  console.log("friends", friends);
+  console.log("Channel", channel);
 
   return (
     <>
@@ -62,32 +62,32 @@ export default function ChannelMessaged({onSelect}: {onSelect: (id:FriendsChatTy
           />
         </div>
         <ul className="friendsscroll">
-          {filterSearch().map((friend) => (
-            <li className="friend" key={friend.nickname}>
+          {filterSearch().map((channel) => (
+            <li className="friend" key={channel.nickname}>
               <button
                 className="selectFriend w-[100%]"
                 onClick={() => {
-                  console.log("friend.id", friend.id);
-                  onSelect(friend);
+                  console.log("channel.id", channel.id);
+                  onSelect(channel);
                   // props.onChange(false);
                 }}
               >
                 <div className="listFriends">
                   <Image
                     src={
-                      friend.photo === "defautl_img"
-                        ? mo_avatar.src
-                        : friend.photo
+                      channel.photo === "defautl_img"
+                        ? fakeAvatar.src
+                        : channel.photo
                     }
                     width={45}
                     height={45}
-                    alt={friend.nickname}
+                    alt={channel.nickname}
                     className="rounded-full"
                   />
-                  <h4 className="text-[14px] pl-2 pt-1">{friend.nickname}</h4>
-                  {/* {friend.unread > 0 ? (
+                  <h4 className="text-[14px] pl-2 pt-1">{channel.nickname}</h4>
+                  {/* {channel.unread > 0 ? (
                     <span className="unread">
-                      {friend.unread > 9 ? "+9" : friend.unread}
+                      {channel.unread > 9 ? "+9" : channel.unread}
                     </span>
                   ) : null}{" "} */}
                 </div>

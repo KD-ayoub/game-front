@@ -8,11 +8,13 @@ import {
   ChannelMessaged,
   FriendsMessaged,
   FriendConversation,
+  ChannelConversation,
+
 } from "@/app/components";
 import "./chat.css";
 import { NeuePlakFont } from "@/app/utils/NeuePlakFont";
 import io from "socket.io-client";
-import { FriendsChatType } from "@/app/types/friendsChat";
+import { FriendsChatType } from "@/app/types/friendsChatType";
 import { get } from "http";
 import { error } from "console";
 // const socket = io("http://localhost:3001/chat/conv");
@@ -30,7 +32,7 @@ export default function Chat() {
   const hundleIdOfuserSelected = (infoUser: FriendsChatType) => {
     setIdOfuserSelected(infoUser);
   };
-  
+
   // useEffect(() => {
   //   socket.on("message", (message: string) => {
   //     setMessages([...messages, message]);
@@ -78,16 +80,18 @@ export default function Chat() {
               <FriendsMessaged
                 onSelect={hundleIdOfuserSelected}
                 // onChange={(value: boolean) => setShowConv(value)}
+                />
+                )}
+            {option === "Channels"  && (
+              <ChannelMessaged 
+              onSelect={hundleIdOfuserSelected}
+              // onChange={(value: boolean) => setShowConv(value)}
               />
-            )}
-            {option === "Channels" && !showConv && (
-              <ChannelMessaged
-                onChange={(value: boolean) => setShowConv(value)}
-              />
-            )}
+              )}
           </div>
           {/* {showConv && <FriendConversation />} only render if showConv */}
-          <FriendConversation friendSelected={idOfuserSelected} />
+            {option === "Friends" && <FriendConversation friendSelected={idOfuserSelected} />}
+            {option === "Channels" && <ChannelConversation channelSelected={idOfuserSelected} />}
         </div>
       </div>
     </main>
