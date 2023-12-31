@@ -74,10 +74,12 @@ export class chatGateway implements OnGatewayConnection
 		// if the message is the first message in the converstation emit to conversation list
 	}
 
+	// join to the socket room
 	@SubscribeMessage('join')
-    handleJoinChannel(client: Socket,  data: any) {
-		// check if user can join this channel
-        client.join(data.channel);
+    async handleJoinChannel(client: Socket,  data: any) {
+
+		if (await this.chatService.check_if_user_in_channel(this.appGateway.get_id_by_socketId(client.id),data.channel))
+			client.join(data.channel);
     }
 
 	// data.channel 

@@ -5,12 +5,15 @@ import { create_channel, join_private_channel } from "src/utils/types";
 import { RoomType } from "@prisma/client";
 import { session } from "passport";
 
+
+
 @Controller('chat')
 export class ChatController{
 	constructor(private chatService: chatService){}
 
 
 	// get message history  of direct messages
+	//@UseGuards(first_timeGuard)
 	@Get('history/:id')
 	async history(@Session() session: Record<string,any>,@Param('id') id : string)
 	{
@@ -105,12 +108,14 @@ export class ChatController{
 	@Get('add_admin')
 	async add_admin()
 	{
+		// check if is member then make him admin and delete the user from member
 	}
 
 	// invite friend to channel
 	@Get('add_members')
 	async add_members()
 	{
+		// add a friend to be a member
 	}
 
 
@@ -118,23 +123,29 @@ export class ChatController{
 	@Get('mute')
 	async mute()
 	{
+		// check the previlege then check the other user user previlege if everything is okey then mute
 	}
 
 	// kick a member 
 	@Get('kick')
 	async kick()
 	{
+		// check the previlege then check the other user user previlege if everything is okey then kick
 	}
 
 	// ban a member
 	@Get('ban')
 	async ban()
 	{
+		// check the previlege then check the other user user previlege if everything is okey then ban
 	}
-	
+
 	// remove and change password from a channel
 
 
 
 	// list all messages in a channel
+
+
+	//  list all channel members and admins and owner
 }

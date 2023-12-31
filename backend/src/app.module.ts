@@ -18,9 +18,9 @@ import { ChatModule } from './chat/chat.module';
 	  	PassportModule.register({session: true}),
 	  	ProfileModule,
 	  	SettingsModule,
-			CloudinaryModule,
-			GameModule,
-			ChatModule
+		CloudinaryModule,
+		GameModule,
+		ChatModule
   ],
 })
 

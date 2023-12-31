@@ -387,6 +387,42 @@ export class chatService {
 		}
 		return b;
 	}
+
+	async check_if_user_in_channel(userid: string, channel_id : string)
+	{
+		try {
+			const channel = await this.prisma.room.findUnique({
+				where: {
+					id  : channel_id,
+					OR : [
+						{
+							members: {
+								some: {
+									id : userid,
+								}
+							}
+						},
+						{
+							admins: {
+								some: {
+									id : userid,
+								}
+							}
+						},
+						{
+							ownerId : userid
+						},
+					]
+				}
+			})
+			if (!channel)
+				return false;
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
+
 	async list_all_channels(userid: string)
 	{
 		let result : channels[] = [];
