@@ -1,9 +1,10 @@
-import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Session } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Session, UseGuards } from "@nestjs/common";
 import { chatService } from "./chat.service";
 import { Record } from "@prisma/client/runtime/library";
 import { create_channel, join_private_channel } from "src/utils/types";
 import { RoomType } from "@prisma/client";
 import { session } from "passport";
+import { AuthenticatedGuard} from "src/auth/guards";
 
 
 
@@ -13,7 +14,7 @@ export class ChatController{
 
 
 	// get message history  of direct messages
-	//@UseGuards(first_timeGuard)
+	@UseGuards(AuthenticatedGuard)
 	@Get('history/:id')
 	async history(@Session() session: Record<string,any>,@Param('id') id : string)
 	{
@@ -24,6 +25,7 @@ export class ChatController{
 	}
 
 	// get all conv with friends 
+	@UseGuards(AuthenticatedGuard)
 	@Get('conv')
 	async conv(@Session() session: Record<string,any>)
 	{
@@ -31,6 +33,7 @@ export class ChatController{
 	}
 
 	// block a friend
+	@UseGuards(AuthenticatedGuard)
 	@Get('block/:id')
 	async block(@Session() session : Record<string,any>,@Param('id') id: string)
 	{
@@ -43,6 +46,7 @@ export class ChatController{
 	}
 
 	// unblock friend
+	@UseGuards(AuthenticatedGuard)
 	@Get('unblock/:id')
 	async unblock(@Session() session : Record<string,any>,@Param('id') id: string)
 	{
@@ -55,6 +59,7 @@ export class ChatController{
 	}
 
 	// create_channel
+	@UseGuards(AuthenticatedGuard)
 	@Post('create_channel')
 	async create_channel(@Body() body: create_channel,@Session() session : Record<string,any>)
 	{
@@ -70,6 +75,7 @@ export class ChatController{
 	}
 
 	// get all channels
+	@UseGuards(AuthenticatedGuard)
 	@Get("list_channels")
 	async list_channels(@Session() session : Record<string,any>)
 	{
@@ -78,6 +84,7 @@ export class ChatController{
 	}
 
 	// join public channel
+	@UseGuards(AuthenticatedGuard)
 	@Get('join_public/:id')
 	async join_public(@Session() session: Record<string,any>,@Param('id') channel_id : string)
 	{
@@ -88,6 +95,7 @@ export class ChatController{
 	}
 
 	// join protected channels
+	@UseGuards(AuthenticatedGuard)
 	@Post('join_protected')
 	async join_protected(@Body() body: join_private_channel, @Session() session :Record<string,any>)
 	{
@@ -105,6 +113,7 @@ export class ChatController{
 
 
 	// add admin
+	@UseGuards(AuthenticatedGuard)
 	@Get('add_admin')
 	async add_admin()
 	{
@@ -112,6 +121,7 @@ export class ChatController{
 	}
 
 	// invite friend to channel
+	@UseGuards(AuthenticatedGuard)
 	@Get('add_members')
 	async add_members()
 	{
@@ -121,6 +131,7 @@ export class ChatController{
 
 	// mute a member in the channel
 	@Get('mute')
+	@UseGuards(AuthenticatedGuard)
 	async mute()
 	{
 		// check the previlege then check the other user user previlege if everything is okey then mute
@@ -128,6 +139,7 @@ export class ChatController{
 
 	// kick a member 
 	@Get('kick')
+	@UseGuards(AuthenticatedGuard)
 	async kick()
 	{
 		// check the previlege then check the other user user previlege if everything is okey then kick
@@ -135,6 +147,7 @@ export class ChatController{
 
 	// ban a member
 	@Get('ban')
+	@UseGuards(AuthenticatedGuard)
 	async ban()
 	{
 		// check the previlege then check the other user user previlege if everything is okey then ban
