@@ -80,10 +80,9 @@ export class chatGateway implements OnGatewayConnection
 
 	// join to the socket room
 	@SubscribeMessage('join')
-    async handleJoinChannel(client: Socket,  data: any) {
-
-		if (await this.chatService.check_if_user_in_channel(this.appGateway.get_id_by_socketId(client.id),data.channel))
-			client.join(data.channel);
+    async handleJoinChannel(client: Socket,  data: join_channel) {
+		if (await this.chatService.check_if_user_in_channel(this.appGateway.get_id_by_socketId(client.id),data.channel_id))
+			client.join(data.channel_id);
     }
 
 	// data.channel 
@@ -91,13 +90,19 @@ export class chatGateway implements OnGatewayConnection
 	// data.content
 	// data.photo
 	// data.time
-	@SubscribeMessage('send_room')
-	sendchannel(client: Socket, data: any)
+	@SubscribeMessage('room')
+	async sendchannel(client: Socket, data: channel_msg)
 	{
+		if (await this.chatService.check_if_user_in_channel(this.appGateway.get_id_by_socketId(client.id),data.channel_id))
+		{
+			if ((await this.chatService.is_muted(this.appGateway.get_id_by_socketId(client.id), data.channel_id)))
+			{
+				this.appGateway.server.to(data.channel_id).emit("blan", "1");
+			}
+
+		}
+		// check if channel exist
 		// check if user is in the channel
 		// then check if the user is muted
-		
-		console.log("send room : ", data);
-		this.appGateway.server.to(data.channel).emit("blan", "1");
 	}
 }

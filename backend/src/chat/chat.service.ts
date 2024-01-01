@@ -366,11 +366,33 @@ export class chatService {
 		}
 		return b;
 	}
+	async is_muted(userid: string, channel_id : string)
+	{
+		try {
+			const channel = await this.prisma.room.findUnique({
+				where : {
+					id : channel_id,
+					NOT: {
+						muted: {
+							some : {
+								id : userid,
+							}
+						}
+					}
+				}
+			})
+			if (!channel)
+				return false;
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
 
 	async check_if_user_in_channel(userid: string, channel_id : string)
 	{
 		try {
-			const channel = await this.prisma.room.findUnique({
+			const channel: Room = await this.prisma.room.findUnique({
 				where: {
 					id  : channel_id,
 					OR : [

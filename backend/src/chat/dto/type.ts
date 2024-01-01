@@ -22,3 +22,14 @@ type message_history = {
 type get_history = {
 	friend_id: string,
 }
+
+
+
+type channel_msg = {
+	channel_id : string,
+	content: string
+}
+
+type join_channel = {
+	channel_id : string
+}
