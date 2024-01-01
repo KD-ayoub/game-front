@@ -143,35 +143,47 @@ export class ChatController{
 
 	// invite friend to channel
 	@UseGuards(AuthenticatedGuard)
-	@Get('add_members')
-	async add_members()
+	@Post('add_member')
+	async add_members(@Session() session: Record<string,any>,@Body() body: add_admin)
 	{
+		if ( !(await this.chatService.add_member(session.passport.user.id,body)))
+			throw new HttpException("can't add a member", HttpStatus.CONFLICT);
+		throw new HttpException("ok",HttpStatus.OK);
 		// add a friend to be a member
 	}
 
 
 	// mute a member in the channel
-	@Get('mute')
 	@UseGuards(AuthenticatedGuard)
-	async mute()
+	@Post('mute')
+	async mute(@Session() session: Record<string,any>,@Body() body: add_admin)
 	{
 		// check the previlege then check the other user user previlege if everything is okey then mute
+		if (await this.chatService.mute_member(session.passport.user.id,body))
+			throw new HttpException("ok",HttpStatus.OK);
+		throw new HttpException("can't mute the member", HttpStatus.FORBIDDEN);
 	}
 
 	// kick a member 
-	@Get('kick')
 	@UseGuards(AuthenticatedGuard)
-	async kick()
+	@Post('kick')
+	async kick(@Session() session: Record<string,any>,@Body() body: add_admin)
 	{
 		// check the previlege then check the other user user previlege if everything is okey then kick
+		if (await this.chatService.kick_member(session.passport.user.id,body))
+			throw new HttpException("ok",HttpStatus.OK);
+		throw new HttpException("can't kick the member", HttpStatus.FORBIDDEN);
 	}
 
 	// ban a member
-	@Get('ban')
 	@UseGuards(AuthenticatedGuard)
-	async ban()
+	@Post('ban')
+	async ban(@Session() session: Record<string,any>,@Body() body: add_admin)
 	{
 		// check the previlege then check the other user user previlege if everything is okey then ban
+		if (await this.chatService.ban_member(session.passport.user.id,body))
+			throw new HttpException("ok",HttpStatus.OK);
+		throw new HttpException("can't ban the member", HttpStatus.FORBIDDEN);
 	}
 
 	// remove and change password from a channel

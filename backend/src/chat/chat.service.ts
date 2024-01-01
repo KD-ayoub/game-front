@@ -597,4 +597,359 @@ export class chatService {
 			return 2;
 		}
 	}
+
+	async check_privileges(userid: string, member_id : string, channelid: string)
+	{
+		try {
+			const room = await this.prisma.room.findUnique({
+				where: {
+					id : channelid,
+					OR: [
+						{
+							ownerId : userid
+						},
+						{
+							admins: {
+								some : {
+									id : userid
+								}
+							}
+						}
+					],
+					NOT: [
+						{
+							ownerId : member_id
+						},
+						{
+							admins: {
+								some: {
+									id : member_id
+								}
+							}
+						},
+						{
+							members: {
+								some: {
+									id : member_id
+								}
+							}
+						}
+					]
+				}
+			})
+			if (!room)
+				return false;
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
+
+	async add_member(userid: string ,channel : add_admin)
+	{
+		if (await this.check_privileges(userid,channel.member_id,channel.channel_id))
+		{
+			try {
+				const room = await this.prisma.room.update({
+					where : {
+						id : channel.channel_id
+					},
+					data: {
+						members: {
+							connect : {
+								id : channel.member_id
+							}
+						}
+					}
+				})
+				if (!room)
+					return false;
+			} catch (error) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	async is_admin(userid: string, channelid : string)
+	{
+		try {
+			const room = await this.prisma.room.findUnique({
+				where: {
+					id : channelid,
+					admins: {
+						some: {
+							id : userid
+						}
+					}
+				}
+			})
+			if (!room)
+				return false;
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
+	
+	async is_owner(userid :string, channelid: string)
+	{
+		try {
+			const room = await this.prisma.room.findUnique({
+				where: {
+					id : channelid,
+					ownerId : userid
+				}
+			})
+			if (!room)
+				return false;
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
+
+	async is_member(userid :string, channelid: string)
+	{
+		try {
+			const room = await this.prisma.room.findUnique({
+				where: {
+					id : channelid,
+					members: {
+						some : {
+							id : userid
+						}
+					}
+				}
+			})
+			if (!room)
+				return false;
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
+
+	async mute_member(userid: string, channel : add_admin)
+	{
+		try {
+			const room = await this.prisma.room.findUnique({
+				where: {
+					id : channel.channel_id,
+					AND: [
+						{
+							OR: [
+								{
+									ownerId : userid
+								},
+								{
+									admins: {
+										some : {
+											id : userid
+										}
+									}
+								}
+							],
+							AND: [
+								{
+									OR: [
+										{
+											members: {
+												some : {
+													id: channel.member_id
+												}
+											},
+										},
+										{
+											admins: {
+												some: {
+													id : channel.member_id
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			})
+			if (!room || ( await this.is_admin(userid,channel.channel_id) && await this.is_owner(channel.member_id,channel.channel_id) )) 
+				return false;
+			if (await this.is_admin(userid,channel.channel_id) && await this.is_admin(channel.member_id,channel.channel_id))
+				return false;
+			const mute_member = await this.prisma.room.update({
+				where: {
+					id : channel.channel_id
+				},
+				data: {
+					muted: {
+						connect: {
+							id : channel.member_id
+						}
+					}
+				}
+			})
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
+
+	async kick_member(userid: string, channel : add_admin)
+	{
+		try {
+			const room = await this.prisma.room.findUnique({
+				where: {
+					id : channel.channel_id,
+					AND: [
+						{
+							OR: [
+								{
+									ownerId : userid
+								},
+								{
+									admins: {
+										some : {
+											id : userid
+										}
+									}
+								}
+							],
+							AND: [
+								{
+									OR: [
+										{
+											members: {
+												some : {
+													id: channel.member_id
+												}
+											},
+										},
+										{
+											admins: {
+												some: {
+													id : channel.member_id
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			})
+			if (!room || ( await this.is_admin(userid,channel.channel_id) && await this.is_owner(channel.member_id,channel.channel_id) )) 
+				return false;
+			if (await this.is_admin(userid,channel.channel_id) && await this.is_admin(channel.member_id,channel.channel_id))
+				return false;
+			const kick_member = await this.prisma.room.update({
+				where: {
+					id : channel.channel_id
+				},
+				data: {
+					members : {
+						disconnect: {
+							id : channel.member_id
+						}
+					},
+					admins: {
+						disconnect: {
+							id : channel.member_id
+						}
+					},
+					muted: {
+						disconnect: {
+							id : channel.member_id
+						}
+					}
+				}
+			})
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
+
+	async ban_member(userid: string, channel : add_admin)
+	{
+		try {
+			const room = await this.prisma.room.findUnique({
+				where: {
+					id : channel.channel_id,
+					AND: [
+						{
+							OR: [
+								{
+									ownerId : userid
+								},
+								{
+									admins: {
+										some : {
+											id : userid
+										}
+									}
+								}
+							],
+							AND: [
+								{
+									OR: [
+										{
+											members: {
+												some : {
+													id: channel.member_id
+												}
+											},
+										},
+										{
+											admins: {
+												some: {
+													id : channel.member_id
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			})
+			if (!room || ( await this.is_admin(userid,channel.channel_id) && await this.is_owner(channel.member_id,channel.channel_id) )) 
+				return false;
+			if (await this.is_admin(userid,channel.channel_id) && await this.is_admin(channel.member_id,channel.channel_id))
+				return false;
+			const ban_member = await this.prisma.room.update({
+				where: {
+					id : channel.channel_id
+				},
+				data: {
+					members : {
+						disconnect: {
+							id : channel.member_id
+						}
+					},
+					admins: {
+						disconnect: {
+							id : channel.member_id
+						}
+					},
+					muted: {
+						disconnect: {
+							id  : channel.member_id
+						}
+					},
+					banned: {
+						connect: {
+							id : channel.member_id
+						}
+					}
+				}
+			})
+		} catch (error) {
+			return false;
+		}
+		return true;
+	}
 }
