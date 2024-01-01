@@ -4,6 +4,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket } from "socket.io";
 import { AppGateway } from "src/app.gateway";
 import { chatService } from "./chat.service";
+
 // create a room  -> private or public or protected
 // join room -> private or public or protected or banned
 // send direct message -> blocked
@@ -32,6 +33,7 @@ export class chatGateway implements OnGatewayConnection
 	async send_message(@MessageBody() body: Direct_message, @ConnectedSocket() client : Socket)
 	{
 		//console.log(receiver_pic_name);
+
 		let sender_obj : message_history = {
 			mine: true,
 			sended_at: body.content.sended_at,
@@ -50,6 +52,7 @@ export class chatGateway implements OnGatewayConnection
 
 		if (!body || !body.content || !body.recieverId || !body.content.message_content || !body.content.sended_at)
 			return ;
+
 		this.logger.log(body.content.message_content);
 
 		// get id of user by socket id
@@ -64,7 +67,8 @@ export class chatGateway implements OnGatewayConnection
 
 
 
-		await this.chatService.create_a_direct_message(user,body,recieversocket_id,client.id);
+		if ( !( await this.chatService.create_a_direct_message(user,body,recieversocket_id,client.id) ) )
+			return false;
 		// get socket id of the reciever
 
 		// if no socket found don't emit

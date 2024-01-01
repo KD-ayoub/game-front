@@ -46,37 +46,16 @@ export class chatService {
 	async create_a_direct_message(senderId: string,content : Direct_message,rec_sock_id : string,send_sock_id : string)
 	{
 		try {
-			const directMessage  = await this.prisma.directMessage.findFirst({
+			const friendship = await this.prisma.friendship.findFirst({
 				where: {
-					OR: [
-						{
-							senderId,
-						},
-						{
-							receiverId: senderId,
-						}
-					]
+					userId : senderId,
+					friendId : content.recieverId,
+					is_blocked : false
 				}
-			})
-			if (!directMessage)
-			{
-				const sender_obj = await this.get_picture_name(senderId);
-				this.appGateway.server.to(rec_sock_id).emit('conv',sender_obj);
-				//console.log("sender : " , sender_obj);
-				const receiver_obj = await this.get_picture_name(content.recieverId);
-				this.appGateway.server.to(send_sock_id).emit('conv',receiver_obj);
-
-				//console.log("receiver : " , receiver_obj);
-
-
-				//console.log("-------------------->   ",content);
-				// emit a new conversation 
-			}
-		} catch (error) {
-			//console.log("error adak lhmar");
-		}
-		try {
-			await this.prisma.directMessage.create({
+			});
+			if (!friendship)
+				return false;
+			const dm = await this.prisma.directMessage.create({
 				data: {
 					content : content.content.message_content,
 					senderId,
@@ -84,11 +63,12 @@ export class chatService {
 					createdAt: content.content.sended_at,
 				}
 			});
-			
+			if (!dm)
+				return false;
 		} catch (error) {
-			//console.log("hey : ",error)
-			 throw new WsException('invalid credentials.');
+			return false;
 		}
+		return true;
 	}
 
 	async get_all_dm_history(senderID: string, recieverID :string)

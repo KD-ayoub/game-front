@@ -1,5 +1,7 @@
 import { RoomType } from "@prisma/client";
 
+
+// auth
 export type server_response = {
 	full_name: string,
 	nickname: string,
@@ -21,6 +23,7 @@ export type _2fa = {
 	code : string,
 }
 
+// channels
 export type create_channel = {
 	name : string,
 	photo: string,
