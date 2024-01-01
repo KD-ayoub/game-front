@@ -33,3 +33,11 @@ type channel_msg = {
 type join_channel = {
 	channel_id : string
 }
+
+
+type room_msg = {
+	senderid: string,
+	content: string,
+	time : Date,
+	photo: string
+}

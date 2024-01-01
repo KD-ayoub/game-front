@@ -8,7 +8,6 @@ import { chatService } from "./chat.service";
 // create a room  -> private or public or protected
 // join room -> private or public or protected or banned
 // send direct message -> blocked
-
 @Injectable()
 @WebSocketGateway({
   transports: ['websocket'],
@@ -83,21 +82,23 @@ export class chatGateway implements OnGatewayConnection
     async handleJoinChannel(client: Socket,  data: join_channel) {
 		if (await this.chatService.check_if_user_in_channel(this.appGateway.get_id_by_socketId(client.id),data.channel_id))
 			client.join(data.channel_id);
+		
     }
 
-	// data.channel 
-	// data.sender
-	// data.content
-	// data.photo
-	// data.time
+
 	@SubscribeMessage('room')
 	async sendchannel(client: Socket, data: channel_msg)
 	{
-		if (await this.chatService.check_if_user_in_channel(this.appGateway.get_id_by_socketId(client.id),data.channel_id))
+		if (!data.channel_id || !data.content)
+			return ;
+		if (client.rooms.has(data.channel_id))
 		{
 			if ((await this.chatService.is_muted(this.appGateway.get_id_by_socketId(client.id), data.channel_id)))
 			{
-				this.appGateway.server.to(data.channel_id).emit("blan", "1");
+				const mssg : room_msg  = await this.chatService.create_room_msg(this.appGateway.get_id_by_socketId(client.id),data);
+				console.log(mssg);
+				if (mssg.content)
+					this.appGateway.server.to(data.channel_id).emit(data.channel_id, mssg);
 			}
 
 		}

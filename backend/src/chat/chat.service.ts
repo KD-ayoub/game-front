@@ -1,6 +1,6 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
-import { Room, RoomType } from "@prisma/client";
+import { Room, RoomMessage, RoomType } from "@prisma/client";
 import { errorMonitor } from "events";
 import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
@@ -258,7 +258,6 @@ export class chatService {
 
 	async hash_password(pass: string)
 	{
-		//console.log(pass)
 		return await bcrypt.hash(pass,10);
 	}
 
@@ -366,6 +365,7 @@ export class chatService {
 		}
 		return b;
 	}
+
 	async is_muted(userid: string, channel_id : string)
 	{
 		try {
@@ -968,5 +968,49 @@ export class chatService {
 			return false;
 		}
 		return true;
+	}
+
+	async create_room_msg(senderid: string,data: channel_msg) : Promise<room_msg>
+	{
+		let obj : room_msg = {
+			senderid: "",
+			content: "",
+			time: new Date(),
+			photo: ""
+		}
+
+		try {
+			const new_msg = await this.prisma.roomMessage.create({
+				data: {
+					sender: {
+						connect  : {
+							id : senderid
+						}
+					},
+					room: {
+						connect : {
+							id : data.channel_id
+						}
+					},
+					content: data.content,
+				},
+				select: {
+					createdAt: true
+				}
+			})
+			if (new_msg)
+			{
+				const picture = await this.get_picture_name(senderid);
+
+				obj.content = data.content;
+				obj.photo = picture.profile.photo_path;
+				obj.senderid = senderid;
+				obj.time = new_msg.createdAt;
+			}
+			return obj;
+		} catch (error) {
+			return obj;	
+		}
+		return obj;
 	}
 }
