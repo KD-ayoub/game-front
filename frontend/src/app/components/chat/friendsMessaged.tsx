@@ -8,7 +8,7 @@ import "../../(pages)/chat/chat.css";
 import { friendSelected } from "@/app/utils/library/friendsSelected";
 import { FriendsType } from "@/app/types/friendstype";
 import Image from "next/image";
-import { FriendsChatType } from "@/app/types/friendsChat";
+import { FriendsChatType } from "@/app/types/friendsChatType";
 import { GetChatConverssationType } from "@/app/types/getChatConverssation";
 // type friendT = { nickname: string; picture: string; unread: number };
 
@@ -76,7 +76,7 @@ export default function FriendsMessaged({onSelect}: {onSelect: (id:FriendsChatTy
                   <Image
                     src={
                       friend.photo === "defautl_img"
-                        ? mo_avatar.src
+                        ? fakeAvatar.src
                         : friend.photo
                     }
                     width={45}

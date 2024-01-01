@@ -4,6 +4,7 @@ import fakeAvatar from "@/app/assets/svg/chat/fakeAvatar.svg";
 import hic_avatar from "@/app/assets/svg/chat/hic_avatar.svg";
 import mo_avatar from "@/app/assets/svg/chat/mo_avatar.svg";
 import "../../(pages)/chat/chat.css";
+import Image from "next/image";
 
 export default function OnlineNow() {
   const [friends, setFriends] = useState([
@@ -30,9 +31,11 @@ export default function OnlineNow() {
               className="onlineUser text-[10px] text-center p-1 "
               key={friend.id}
             >
-              <img
+              <Image
                 src={friend.picture}
                 alt={friend.name}
+                width={50}
+                height={50}
                 className="w-[50px] rounded-full"
               />
               <span>{friend.name}</span>

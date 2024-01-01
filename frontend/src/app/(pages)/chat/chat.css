@@ -152,7 +152,7 @@
 
 .friend :active {
   background-color: #1f1f1f79;
-  
+
 }
 
 /* end friend list */
@@ -176,13 +176,39 @@
   background-color: #15131D;
 }
 
-.optionUser {
+.optionsUserSelect {
+  background: #15131D;
+  font-size: 12px;
+}
+
+.optionsUserSelect:hover {
+  background-color: #252134;
+}
+
+.optionUserDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   font-size: 9px;
   border-radius: 999px;
   text-align: center;
   margin: 0 15px 0 auto;
 
+}
+
+.optionUserDiv:hover .optionsUserSelect {
+  display: flex;
+}
+
+
+.optionsUserSelect {
+  display: none;
+  background-color: #15131D;
+  min-width: 60px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  /* z-index: 1; */
 }
 
 .btn-back {
@@ -230,7 +256,8 @@
   display: flex;
   flex-direction: column;
   height: 85%;
-  background-color: #15131D;
+  border-radius: 25px;
+  background: linear-gradient(116deg, #110D1F 44.59%, rgba(17, 13, 31, 0.00) 103.76%);
   overflow-y: auto;
   padding: 0 2% 5px 0;
 
@@ -316,7 +343,7 @@
 }
 
 .message-content {
-  
+  word-wrap: break-word;
 }
 
 
@@ -327,10 +354,12 @@
   min-height: 5%;
   max-height: 5%;
   display: flex;
-  align-items:center;
+  align-items: center;
+  float: left;
+  /* overflow: hidden; */
 }
 
-.sendYourMsg textArea {
+.sendYourMsg .textAreaDiv {
   border-radius: 7px;
   border: 1px solid #383546;
   background: #252134;
@@ -338,14 +367,32 @@
   outline: none;
   display: flex;
   resize: none;
-  width: 695px;
+  /* width: 695px; */
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   flex-grow: 1;
+  width: 80%;
+
   /* align-items: center; */
   /* justify-content: center; */
+}
+
+.sendYourMsg textarea {
+  border: none;
+  background: #252134;
+  color: #FFF;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  resize: none;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  /* overflow: hidden; */
+  /* padding: 0 5px 0 5px; */
 }
 
 .sendYourMsg textArea::placeholder {
@@ -354,7 +401,7 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  
+
 }
 
 .sendYourMsg textarea::-webkit-scrollbar {
@@ -363,9 +410,160 @@
 
 .sendYourMsg .submitBtn {
   padding-left: 10px;
-  width: 60px;
+  /* width: 60px; */
   height: 60%;
   flex-shrink: 0;
 }
 
+.noConversation {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  height: 100%;
+  background-color: #15131D;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.noConversation p {
+  margin-top: 15%;
+  padding: 5%;
+  background-color: #E95A3A;
+  font-size: 20px;
+  color: #fffbfa;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: underline;
+  text-align: center;
+}
+
+/* start channel styles */
+.channelConv {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  height: 100%;
+  border-radius: 25px;
+  background: linear-gradient(116deg, #110D1F 44.59%, rgba(17, 13, 31, 0.00) 103.76%);
+
+}
+
+.infoChannel {
+
+  /* justify-content: center; */
+  width: 20%;
+  border-radius: 25px;
+  /* background: linear-gradient(116deg, #110D1F 44.59%, rgba(17, 13, 31, 0.00) 103.76%); */
+  background: #717273;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topSideOfChannel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+.infoChannel h2 {
+  margin-top: 10%;
+  color: #FFF;
+  /* font-family: Neue Plak; */
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding-bottom: 15px;
+}
+
+
+.infoChannel .channelName {
+  color: #FFF;
+  /* font-family: Neue Plak; */
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding-top: 5px;
+}
+
+.infoChannel .channelType {
+  color: #717273;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.infoMembersOfChannel {
+  display: flex;
+  flex-direction: column;
+  background: #E95A3A;;
+  width: 90%;
+  max-height: 30%;
+}
+
+.infoMembersOfChannel .channelOwner {
+  color: #FFF;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 3px ;
+}
+
+.infoMembersOfChannel .membersOfChannel {
+  display: flex;
+  align-items: center;
+  color: #FFF;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border-radius: 10px;
+  background: #252134;
+  padding: 5px 15px;
+}
+
+.infoMembersOfChannel .listMembersOfChannel {
+  display: flex;
+  flex-direction: column;
+  color: #FFF;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border-radius: 10px;
+  background: #252134;
+  padding: 5px 15px;
+  overflow-y: auto;
+}
+
+.infoMembersOfChannel .listMembersOfChannel::-webkit-scrollbar {
+  width: 0px;
+}
+
+.infoMembersOfChannel .membersOfChannel img {
+  border-radius: 9999px;
+}
+
+.memberName {
+  padding-left: 4px;
+}
+
+.infoMembersOfChannel .boxMember {
+  display: flex;
+  align-items: center;
+  color: #FFF;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border-radius: 10px; 
+}
+
+/* end channel styles  */
 /* end conv */
