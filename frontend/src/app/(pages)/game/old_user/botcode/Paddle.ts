@@ -9,6 +9,7 @@ export default class Paddle {
   private paddleWidth: number;
   private paddleHeight: number;
   private paddleSpeed: number;
+  private gap: number;
   private xpos: number;
   private ypos: number;
 

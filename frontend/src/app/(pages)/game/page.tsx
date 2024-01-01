@@ -55,8 +55,8 @@ export default function Game() {
     ioClient.playRandom();
     const SocketClient = ioClient.getSocketClient();
     SocketClient.on("redirectToGame", (data: { room: string }) => {
-      SocketClient.room = data.room;
-      console.log("****** ", SocketClient.room);
+      ioClient.room = data.room;
+      console.log("****** ", ioClient.room);
       router.push("/game/user");
       //window.history.pushState("", "", "/game/user");
       //window.location.href = "/game/user";

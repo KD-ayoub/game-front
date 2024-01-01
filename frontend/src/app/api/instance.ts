@@ -14,8 +14,8 @@ interface InterServerEvents {
 import { useRouter } from 'next/router';
 
 export class SocketClient {
-  private ioClient: Socket<ClientToServerEvents, InterServerEvents>;
-  private gameRoom: string;
+  private ioClient: Socket; // <ClientToServerEvents, InterServerEvents>;
+  private gameRoom!: string;
   //private i: number;
   constructor() {
     console.log('front socket');

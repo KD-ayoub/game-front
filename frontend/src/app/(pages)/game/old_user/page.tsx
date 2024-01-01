@@ -39,7 +39,7 @@ export default function Chat() {
       const xupPaddle = wallGap;
       const yupPaddle = wallGap;
       SocketClient.emit("setGameDefaultData", {
-        room: SocketClient.room,
+        room: ioClient.room,
         radius: table.width / 30,
         speed: (table.width < 400) ? 0.2 : 0.3,
         gap: wallGap,

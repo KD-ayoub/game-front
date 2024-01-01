@@ -52,6 +52,8 @@ export default function Bot() {
     //table?.className.add('rotate-180');
     console.log("client", table?.clientWidth, table?.clientHeight);
     if (!table) return;
+    table.classList.add('rotate-180');
+    table.classList.add('-scale-y-100');
     table.width = table.clientWidth;
     table.height = table.clientHeight;
     const context = table.getContext("2d");
@@ -70,12 +72,12 @@ export default function Bot() {
     const xupPaddle = wallGap;
     const yupPaddle = wallGap;
     //here socket
-      let ballObj;
-      let paddlePlayer;
-      let paddleOpponent;
+      let ballObj: Ball;
+      let paddlePlayer: Paddle;
+      let paddleOpponent: Paddle;
     const SocketClient = ioClient.getSocketClient();
     SocketClient.emit("setGameDefaultData", {
-      room: SocketClient.room,
+      room: ioClient.room,
       tableWidth: table.width,
       tableHeight: table.height
     });
@@ -102,8 +104,8 @@ export default function Bot() {
         dy: ballData[i].dy,
         xpos: ballData[i].xpos,
         ypos: ballData[i].ypos,
-        tableWidth: table.width,
-        tableHeight: table.height,
+        tableWidth: table?.width,
+        tableHeight: table?.height,
       });
 
       if (paddleData[i].ypos === wallGap) {
@@ -123,8 +125,8 @@ export default function Bot() {
         color: "#fff",
         width: paddleWidth,
         height: paddleHeight,
-        tableWidth: table.width,
-        tableHeight: table.height,
+        tableWidth: table?.width ?? 0,
+        tableHeight: table?.height ?? 0,
       });
 
       i = (paddleData[0].socket !== SocketClient.id) ? 0 : 1;
@@ -136,8 +138,8 @@ export default function Bot() {
         color: "#fff",
         width: paddleWidth,
         height: paddleHeight,
-        tableWidth: table.width,
-        tableHeight: table.height,
+        tableWidth: table?.width ?? 0,
+        tableHeight: table?.height ?? 0,
       });
     });
 
@@ -190,7 +192,7 @@ export default function Bot() {
           //SocketClient.emit("ana", "lol", "dude");
           SocketClient.emit("moveBall", {
             delta,
-            room: SocketClient.room,
+            room: ioClient.room,
             firstTime
           });
           firstTime = false;
@@ -259,7 +261,7 @@ export default function Bot() {
     function handlKeyDown(e: KeyboardEvent) {
       switch (e.code) {
         case "ArrowRight":
-          SocketClient.emit("movePaddle", {room: SocketClient.room, move: "right"});
+          SocketClient.emit("movePaddle", {room: ioClient.room, move: "right"});
           //if (!paddlePlayer.checkRightWall())
           //  paddlePlayer.movePaddle(e.code);
           //if (!paddlePlayer.checkRightWall())
@@ -267,7 +269,7 @@ export default function Bot() {
           break;
         case "ArrowLeft":
           //if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
-          SocketClient.emit("movePaddle", {room: SocketClient.room, move: "left"});
+          SocketClient.emit("movePaddle", {room: ioClient.room, move: "left"});
           break;
       }
     }

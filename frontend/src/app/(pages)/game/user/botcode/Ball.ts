@@ -111,30 +111,30 @@ export default class Ball {
     return ;
 
 
+    // TODO: UNCOMMENT THIS
+    // this.context.clearRect(0, 0, this.tableWidth, this.tableHeight);
+    // if (this.xpos + this.radius >= this.tableWidth) this.dx = -this.dx;
+    // else if (this.xpos - this.radius <= 0) this.dx = -this.dx;
+    // else if (this.ypos + this.radius >= this.tableHeight) this.dy = -this.dy;
+    // else if (this.ypos - this.radius <= 0) this.dy = -this.dy;
+    // //touch the paddle
+    // //this.checkBallTouchPaddle(data, true);
 
-    this.context.clearRect(0, 0, this.tableWidth, this.tableHeight);
-    if (this.xpos + this.radius >= this.tableWidth) this.dx = -this.dx;
-    else if (this.xpos - this.radius <= 0) this.dx = -this.dx;
-    else if (this.ypos + this.radius >= this.tableHeight) this.dy = -this.dy;
-    else if (this.ypos - this.radius <= 0) this.dy = -this.dy;
-    //touch the paddle
-    //this.checkBallTouchPaddle(data, true);
+    // //touch the paddle side
+    // //if ((data.yDown <= (this.ypos + this.radius)) &&
+    // //    ((this.xpos - this.radius) <= (data.xDown + data.width) ||
+    // //    (this.xpos + this.radius) >= data.xDown)) {
 
-    //touch the paddle side
-    //if ((data.yDown <= (this.ypos + this.radius)) &&
-    //    ((this.xpos - this.radius) <= (data.xDown + data.width) ||
-    //    (this.xpos + this.radius) >= data.xDown)) {
+    // //if ((data.yDown <= (this.ypos + this.radius)) &&
+    // //    (this.xpos - this.radius) <= (data.xDown + data.width)) {
+    // //    this.dx = -this.dx;
+    // //    console.log('cool 3');
+    // //}
 
-    //if ((data.yDown <= (this.ypos + this.radius)) &&
-    //    (this.xpos - this.radius) <= (data.xDown + data.width)) {
-    //    this.dx = -this.dx;
-    //    console.log('cool 3');
-    //}
-
-    //console.log(`here ${this.dx} && ${this.dy}`);
-    this.xpos += this.dx * delta;
-    this.ypos += this.dy * delta;
-    this.drawBall();
+    // //console.log(`here ${this.dx} && ${this.dy}`);
+    // this.xpos += this.dx * delta;
+    // this.ypos += this.dy * delta;
+    // this.drawBall();
   }
 
   get x() {

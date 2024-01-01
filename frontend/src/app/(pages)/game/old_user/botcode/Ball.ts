@@ -9,6 +9,7 @@ export default class Ball {
     private tableHeight: number;
     private xpos: number;
     private ypos: number;
+    private gap: number;
     private dx: number;
     private dy: number;
 
