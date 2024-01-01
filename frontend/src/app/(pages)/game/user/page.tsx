@@ -14,6 +14,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { SettingsType } from "@/app/types/settingsType";
 import getSettings from "@/app/api/Settings/getSettings";
 import Swal from "sweetalert2";
+import './styles.css';
 
 //import socket
 import { ioClient, SocketClient } from "@/app/api/instance";
@@ -46,225 +47,244 @@ export default function Bot() {
   const playerRef = useRef<HTMLParagraphElement>(null);
   const unmounted = useRef(false);
   const animationFrameRef = useRef(-1);
+  // useEffect(() => {
+  //   let table = canvasRef.current;
+  //   console.log("client", table?.clientWidth, table?.clientHeight);
+  //   if (!table) return;
+  //   table.width = table.clientWidth;
+  //   table.height = table.clientHeight;
+  //   const context = table.getContext("2d");
+  //   if (!context) return;
+  //   const wallGap = table.width < 400 ? 3 : 5;
+  //   const paddleWidth = table.width / 3;
+  //   const paddleHeight = table.width < 400 ? 6 : 12;
+  //   const xdownPaddle = table.width - paddleWidth - wallGap;
+  //   const ydownPaddle = table.height - paddleHeight - wallGap;
+  //   const xupPaddle = wallGap;
+  //   const yupPaddle = wallGap;
+  //   //here socket
+  //     let ballObj: Ball;
+  //     let paddlePlayer: Paddle;
+  //     let paddleOpponent: Paddle;
+  //     //give this one a type to work with
+  //   const SocketClient = ioClient.getSocketClient();
+  //   SocketClient.emit("setGameDefaultData", {
+  //     room: ioClient.room, //here and other use SocketClient
+  //     tableWidth: table.width,
+  //     tableHeight: table.height
+  //   });
+
+  //   SocketClient.on("setGameDefaultRender", (
+  //     ballData: [
+  //       {socket: string, radius: number, speed: number, xpos: number, ypos: number, dx: number, dy: number},
+  //       {socket: string, radius: number, speed: number, xpos: number, ypos: number, dx: number, dy: number}
+  //     ],
+  //     paddleData: [
+  //       {socket: string, speed: number, xpos: number, ypos: number},
+  //       {socket: string, speed: number, xpos: number, ypos: number}
+  //     ]
+  //   ) => {
+  //     //console.log('ballData = ', ballData);
+  //     //console.log('paddleData = ', paddleData);
+  //     let i = (ballData[0].socket === SocketClient.id) ? 0 : 1;
+  //     ballObj = new Ball(context, {
+  //       radius: ballData[i].radius,
+  //       speed: ballData[i].speed,
+  //       color: "#fff",
+  //       gap: wallGap,
+  //       dx: ballData[i].dx,
+  //       dy: ballData[i].dy,
+  //       xpos: ballData[i].xpos,
+  //       ypos: ballData[i].ypos,
+  //       tableWidth: table?.width,
+  //       tableHeight: table?.height,
+  //     });
+
+  //     if (paddleData[i].ypos === wallGap) {
+  //       //console.log('************ GGGGGGGG');
+  //       table?.classList.add('rotate-180');
+  //       table?.classList.add('-scale-x-100');
+  //       //console.log();
+  //     //  table?.className.concat('rotate-180');
+  //     }
+  //       //table?.className.concat('rotate-180');
+  //     //i = (paddleData[0].socket === SocketClient.id) ? 0 : 1;
+  //     paddlePlayer = new Paddle(context, {
+  //       x: paddleData[i].xpos,
+  //       y: paddleData[i].ypos,
+  //       gap: wallGap,
+  //       speed: paddleData[i].speed,
+  //       color: "#fff",
+  //       width: paddleWidth,
+  //       height: paddleHeight,
+  //       tableWidth: table?.width ?? 0,
+  //       tableHeight: table?.height ?? 0,
+  //     });
+
+  //     i = (paddleData[0].socket !== SocketClient.id) ? 0 : 1;
+  //     paddleOpponent = new Paddle(context, {
+  //       x: paddleData[i].xpos,
+  //       y: paddleData[i].ypos,
+  //       gap: wallGap,
+  //       speed: paddleData[i].speed,
+  //       color: "#fff",
+  //       width: paddleWidth,
+  //       height: paddleHeight,
+  //       tableWidth: table?.width ?? 0,
+  //       tableHeight: table?.height ?? 0,
+  //     });
+  //   });
+
+  //   //const resetAll = function () {
+  //   //  //ball.reset();
+  //   //  //downPaddle.reset(xdownPaddle, ydownPaddle);
+  //   //  //upPaddle.reset(xupPaddle, yupPaddle);
+  //   //};
+
+  //   SocketClient.on("playNow", (data: any) => {
+  //     //console.log('f play now');
+  //     let lastTime: number;
+  //     let firstTime: boolean = true;
+  //     function update(time: number) {
+  //       if (lastTime) {
+  //         const delta = time - lastTime;
+  //         //hona l3amal
+  //         SocketClient.emit("moveBall", {
+  //           delta,
+  //           room: ioClient.room,
+  //           firstTime
+  //         });
+  //         firstTime = false;
+  //         SocketClient.on("drawGameAssets", (
+  //           ball: [
+  //             {sockt: string, xpos: number, ypos: number, radius: number},
+  //             {sockt: string, xpos: number, ypos: number, radius: number}
+  //           ],
+  //           paddle: [
+  //             {sockt: string, xpos: number, ypos: number},
+  //             {sockt: string, xpos: number, ypos: number}
+  //           ]
+  //         ) => {
+	// 	        let i = (ball[0].sockt === SocketClient.id) ? 0 : 1;
+  //           ballObj.updateBall(ball[i]);
+  //           paddlePlayer.updatePaddle(paddle[i]);
+	// 	        i = (ball[0].sockt !== SocketClient.id) ? 0 : 1;
+  //           paddleOpponent.updatePaddle(paddle[i]);
+  //         })
+  //       }
+  //       lastTime = time;
+  //       if (!unmounted.current) {
+  //        animationFrameRef.current = window.requestAnimationFrame(update);
+  //       }
+  //       // window.requestAnimationFrame(update);
+  //     }
+  //     // window.requestAnimationFrame(update);
+  //     animationFrameRef.current = window.requestAnimationFrame(update);
+  //   })
+  //   function handlKeyDown(e: KeyboardEvent) {
+  //     switch (e.code) {
+  //       case "ArrowRight":
+  //         SocketClient.emit("movePaddle", {room: ioClient.room, move: "right"});
+  //         break;
+  //       case "ArrowLeft":
+  //         SocketClient.emit("movePaddle", {room: ioClient.room, move: "left"});
+  //         break;
+  //     }
+  //   }
+  //   document.addEventListener("keydown", handlKeyDown);
+  //   // function handlresize() {
+  //   //  ballObj.reset();
+  //   // }
+  //   // window.addEventListener("resize", handlresize);
+  //   // return () => {
+  //   //  window.removeEventListener("resize", handlresize);
+  //   //  document.removeEventListener("keydown", handlKeyDown);
+  //   //  window.cancelAnimationFrame(animationFrameRef.current);
+  //   //  resetAll();
+  //   // };
+  //   //let lastTime: number;
+  //   //function update(time: number) {
+  //   //  if (lastTime) {
+  //   //    const delta = time - lastTime;
+  //   //    const data = {
+  //   //      //xDown: downPaddle.x,
+  //   //      //yDown: downPaddle.y,
+  //   //      //xUp: upPaddle.x,
+  //   //      //yUp: upPaddle.y,
+  //   //      width: paddleWidth,
+  //   //      height: paddleHeight,
+  //   //    };
+  //   //    //if (ball.checkLoss(data)) {
+  //   //    //  resetAll();
+  //   //    //  playerRef.current!.innerHTML = (
+  //   //    //    parseInt(playerRef.current!.innerHTML) + 1
+  //   //    //  ).toString();
+  //   //    //  if (playerRef.current!.innerHTML === "7") {
+  //   //    //    //show modal
+  //   //    //    // redirect to profile
+  //   //    //    Swal.fire({
+  //   //    //      title: "You have lost",
+  //   //    //      text: "",
+  //   //    //      imageUrl: `${ProfileImg.src}`,
+  //   //    //      imageWidth: 400,
+  //   //    //      imageHeight: 200,
+  //   //    //      imageAlt: "Custom image",
+  //   //    //      allowOutsideClick: false,
+  //   //    //    }).then(res => {
+  //   //    //      router.push('/game')
+  //   //    //    });
+  //   //    //    return () => {
+  //   //    //      window.removeEventListener("resize", handlresize);
+  //   //    //      document.removeEventListener("keydown", handlKeyDown);
+  //   //    //      window.cancelAnimationFrame(animationFrameRef.current);
+  //   //    //      resetAll();
+  //   //    //    }
+  //   //    //  }
+  //   //    //}
+  //   //    //ball.updateBall(delta, data);
+  //   //    //downPaddle.updatePaddle();
+  //   //    //upPaddle.updateBotPaddle(ball.x);
+  //   //  }
+  //   //  lastTime = time;
+  //   //  if (!unmounted.current) {
+  //   //    animationFrameRef.current = window.requestAnimationFrame(update);
+  //   //  }
+  //   //}
+  //   //animationFrameRef.current = window.requestAnimationFrame(update);
+  //   //function handlKeyDown(e: KeyboardEvent) {
+  //   //  switch (e.code) {
+  //   //    case "ArrowRight":
+  //   //      if (!downPaddle.checkRightWall()) downPaddle.movePaddle(e.code);
+  //   //      break;
+  //   //    case "ArrowLeft":
+  //   //      if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
+  //   //      break;
+  //   //  }
+  //   //}
+  //   //document.addEventListener("keydown", handlKeyDown);
+    
+  // }, [!openModal]);
   useEffect(() => {
-    let table = canvasRef.current;
-    console.log("client", table?.clientWidth, table?.clientHeight);
-    if (!table) return;
-    table.width = table.clientWidth;
-    table.height = table.clientHeight;
-    const context = table.getContext("2d");
-    if (!context) return;
-    const wallGap = table.width < 400 ? 3 : 5;
-    const paddleWidth = table.width / 3;
-    const paddleHeight = table.width < 400 ? 6 : 12;
-    const xdownPaddle = table.width - paddleWidth - wallGap;
-    const ydownPaddle = table.height - paddleHeight - wallGap;
-    const xupPaddle = wallGap;
-    const yupPaddle = wallGap;
-    //here socket
-      let ballObj: Ball;
-      let paddlePlayer: Paddle;
-      let paddleOpponent: Paddle;
-      //give this one a type to work with
-    const SocketClient = ioClient.getSocketClient();
-    SocketClient.emit("setGameDefaultData", {
-      room: ioClient.room, //here and other use SocketClient
-      tableWidth: table.width,
-      tableHeight: table.height
-    });
-
-    SocketClient.on("setGameDefaultRender", (
-      ballData: [
-        {socket: string, radius: number, speed: number, xpos: number, ypos: number, dx: number, dy: number},
-        {socket: string, radius: number, speed: number, xpos: number, ypos: number, dx: number, dy: number}
-      ],
-      paddleData: [
-        {socket: string, speed: number, xpos: number, ypos: number},
-        {socket: string, speed: number, xpos: number, ypos: number}
-      ]
-    ) => {
-      //console.log('ballData = ', ballData);
-      //console.log('paddleData = ', paddleData);
-      let i = (ballData[0].socket === SocketClient.id) ? 0 : 1;
-      ballObj = new Ball(context, {
-        radius: ballData[i].radius,
-        speed: ballData[i].speed,
-        color: "#fff",
-        gap: wallGap,
-        dx: ballData[i].dx,
-        dy: ballData[i].dy,
-        xpos: ballData[i].xpos,
-        ypos: ballData[i].ypos,
-        tableWidth: table?.width,
-        tableHeight: table?.height,
-      });
-
-      if (paddleData[i].ypos === wallGap) {
-        //console.log('************ GGGGGGGG');
-        table?.classList.add('rotate-180');
-        table?.classList.add('-scale-x-100');
-        //console.log();
-      //  table?.className.concat('rotate-180');
+    const ballElem = document.getElementById('ball');
+    const paddleElem = document.getElementById('paddle-top');
+    const tableElem = document.getElementById('table');
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'ArrowLeft') {
+        // 16 -> 700 left right 83
+        // x -> 200
+        paddleElem?.style.setProperty("--position", "16");
+        ballElem?.style.setProperty("--y", "16");
+        ballElem?.style.setProperty("--x", "20");
+        console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
       }
-        //table?.className.concat('rotate-180');
-      //i = (paddleData[0].socket === SocketClient.id) ? 0 : 1;
-      paddlePlayer = new Paddle(context, {
-        x: paddleData[i].xpos,
-        y: paddleData[i].ypos,
-        gap: wallGap,
-        speed: paddleData[i].speed,
-        color: "#fff",
-        width: paddleWidth,
-        height: paddleHeight,
-        tableWidth: table?.width ?? 0,
-        tableHeight: table?.height ?? 0,
-      });
-
-      i = (paddleData[0].socket !== SocketClient.id) ? 0 : 1;
-      paddleOpponent = new Paddle(context, {
-        x: paddleData[i].xpos,
-        y: paddleData[i].ypos,
-        gap: wallGap,
-        speed: paddleData[i].speed,
-        color: "#fff",
-        width: paddleWidth,
-        height: paddleHeight,
-        tableWidth: table?.width ?? 0,
-        tableHeight: table?.height ?? 0,
-      });
-    });
-
-    //const resetAll = function () {
-    //  //ball.reset();
-    //  //downPaddle.reset(xdownPaddle, ydownPaddle);
-    //  //upPaddle.reset(xupPaddle, yupPaddle);
-    //};
-
-    SocketClient.on("playNow", (data: any) => {
-      //console.log('f play now');
-      let lastTime: number;
-      let firstTime: boolean = true;
-      function update(time: number) {
-        if (lastTime) {
-          const delta = time - lastTime;
-          //hona l3amal
-          SocketClient.emit("moveBall", {
-            delta,
-            room: ioClient.room,
-            firstTime
-          });
-          firstTime = false;
-          SocketClient.on("drawGameAssets", (
-            ball: [
-              {sockt: string, xpos: number, ypos: number, radius: number},
-              {sockt: string, xpos: number, ypos: number, radius: number}
-            ],
-            paddle: [
-              {sockt: string, xpos: number, ypos: number},
-              {sockt: string, xpos: number, ypos: number}
-            ]
-          ) => {
-		        let i = (ball[0].sockt === SocketClient.id) ? 0 : 1;
-            ballObj.updateBall(ball[i]);
-            paddlePlayer.updatePaddle(paddle[i]);
-		        i = (ball[0].sockt !== SocketClient.id) ? 0 : 1;
-            paddleOpponent.updatePaddle(paddle[i]);
-          })
-        }
-        lastTime = time;
-        //if (!unmounted.current) {
-        //  animationFrameRef.current = window.requestAnimationFrame(update);
-        //}
-        window.requestAnimationFrame(update);
+      if (e.code === 'ArrowRight') {
+        paddleElem?.style.setProperty("--position", "83");
+        console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
       }
-      window.requestAnimationFrame(update);
-
-      //animationFrameRef.current = window.requestAnimationFrame(update);
+      console.log(e.code)
     })
-    function handlKeyDown(e: KeyboardEvent) {
-      switch (e.code) {
-        case "ArrowRight":
-          SocketClient.emit("movePaddle", {room: ioClient.room, move: "right"});
-          break;
-        case "ArrowLeft":
-          SocketClient.emit("movePaddle", {room: ioClient.room, move: "left"});
-          break;
-      }
-    }
-    document.addEventListener("keydown", handlKeyDown);
-
-    //let lastTime: number;
-    //function update(time: number) {
-    //  if (lastTime) {
-    //    const delta = time - lastTime;
-    //    const data = {
-    //      //xDown: downPaddle.x,
-    //      //yDown: downPaddle.y,
-    //      //xUp: upPaddle.x,
-    //      //yUp: upPaddle.y,
-    //      width: paddleWidth,
-    //      height: paddleHeight,
-    //    };
-    //    //if (ball.checkLoss(data)) {
-    //    //  resetAll();
-    //    //  playerRef.current!.innerHTML = (
-    //    //    parseInt(playerRef.current!.innerHTML) + 1
-    //    //  ).toString();
-    //    //  if (playerRef.current!.innerHTML === "7") {
-    //    //    //show modal
-    //    //    // redirect to profile
-    //    //    Swal.fire({
-    //    //      title: "You have lost",
-    //    //      text: "",
-    //    //      imageUrl: `${ProfileImg.src}`,
-    //    //      imageWidth: 400,
-    //    //      imageHeight: 200,
-    //    //      imageAlt: "Custom image",
-    //    //      allowOutsideClick: false,
-    //    //    }).then(res => {
-    //    //      router.push('/game')
-    //    //    });
-    //    //    return () => {
-    //    //      window.removeEventListener("resize", handlresize);
-    //    //      document.removeEventListener("keydown", handlKeyDown);
-    //    //      window.cancelAnimationFrame(animationFrameRef.current);
-    //    //      resetAll();
-    //    //    }
-    //    //  }
-    //    //}
-    //    //ball.updateBall(delta, data);
-    //    //downPaddle.updatePaddle();
-    //    //upPaddle.updateBotPaddle(ball.x);
-    //  }
-    //  lastTime = time;
-    //  if (!unmounted.current) {
-    //    animationFrameRef.current = window.requestAnimationFrame(update);
-    //  }
-    //}
-    //animationFrameRef.current = window.requestAnimationFrame(update);
-    //function handlKeyDown(e: KeyboardEvent) {
-    //  switch (e.code) {
-    //    case "ArrowRight":
-    //      if (!downPaddle.checkRightWall()) downPaddle.movePaddle(e.code);
-    //      break;
-    //    case "ArrowLeft":
-    //      if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
-    //      break;
-    //  }
-    //}
-    //document.addEventListener("keydown", handlKeyDown);
-    //function handlresize() {
-    //  ball.reset();
-    //}
-    //window.addEventListener("resize", handlresize);
-    //return () => {
-    //  window.removeEventListener("resize", handlresize);
-    //  document.removeEventListener("keydown", handlKeyDown);
-    //  window.cancelAnimationFrame(animationFrameRef.current);
-    //  resetAll();
-    //};
-  }, [!openModal]);
-  useEffect(() => {
+    console.log('window inner', tableElem?.offsetHeight);
+    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
     const timer = setTimeout(() => {
       setOpenMoadl(false);
     }, 5000);
@@ -358,23 +378,18 @@ export default function Bot() {
               background:
                 "linear-gradient( to bottom, #E95A3A 0%,#E95A3A 50%, #F07559 50%, #F07559 100%)",
             }}
+            id="table"
           >
-            {/* <div
-            className="relative top-[47%] left-0"
-              style={{
-                margin: "3px 0",
-                height: "10px",
-                background:
-                  "repeating-linear-gradient(to right,transparent,transparent 10px,white 10px,white 20px);",
-              }}
-            ></div> dashed line  */}
-            {!openModal && (
+            <div className="ball w-[6%] h-[4%]" id="ball"></div>
+            <div className="paddle top" id="paddle-top"></div>
+            <div className="paddle bottom" id="paddle-bottom"></div>
+            {/* {!openModal && (
               <canvas
-                className="w-full h-full absolute top-0 z-10"
+                className="w-full h-full absolute top-0 z-10 aspect-video"
                 ref={canvasRef}
                 id="table"
               ></canvas>
-            )}
+            )} */}
           </div>
         </div>
       </div>

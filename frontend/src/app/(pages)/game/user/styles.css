@@ -1,0 +1,29 @@
+.paddle {
+    --position: 50;
+    position: absolute;
+    left: calc(var(--position) * 1%);
+    transform: translateX(-50%);
+    width: 30%;
+    height: 2%;
+    background-color: white;
+    border-radius: 999999px;
+}
+.paddle.bottom {
+    bottom: 5px;
+}
+.paddle.top {
+    top: 5px;
+}
+
+.ball {
+    --y: 50;
+    --x: 50;
+  
+    transform: translate(-50%, -50%);
+    top: calc(var(--y) * 1%);
+    left: calc(var(--x) * 1%);
+    position: absolute;
+    border-radius: 100%;
+    background-color: white;
+    
+  }
