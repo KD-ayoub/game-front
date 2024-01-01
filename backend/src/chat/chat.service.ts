@@ -578,6 +578,13 @@ export class chatService {
 							}
 						}
 					],
+					NOT: {
+						banned : {
+							some: {
+								id  : channel.member_id
+							}  
+						}
+					}
 				},
 				data: {
 					admins: {
@@ -635,6 +642,13 @@ export class chatService {
 									id : member_id
 								}
 							}
+						},
+						{
+							banned : {
+								some: {
+									id  : member_id
+								}  
+							}
 						}
 					]
 				}
@@ -669,8 +683,9 @@ export class chatService {
 			} catch (error) {
 				return false;
 			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	async is_admin(userid: string, channelid : string)
