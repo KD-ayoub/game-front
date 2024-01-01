@@ -48,22 +48,12 @@ export default function Bot() {
   const animationFrameRef = useRef(-1);
   useEffect(() => {
     let table = canvasRef.current;
-    //table?.className.concat('rotate-180');
-    //table?.className.add('rotate-180');
     console.log("client", table?.clientWidth, table?.clientHeight);
     if (!table) return;
-    table.classList.add('rotate-180');
-    table.classList.add('-scale-y-100');
     table.width = table.clientWidth;
     table.height = table.clientHeight;
     const context = table.getContext("2d");
     if (!context) return;
-    //context.rotate(20 * Math.PI / 180);
-    //context.translate(canvasRef.clientWidth / 2, canvasRef.clientHeight / 2);
-    //context.rotate(Math.PI);
-    //context.translate(-canvasRef.clientWidth / 2, -canvasRef.clientHeight / 2);
-
-
     const wallGap = table.width < 400 ? 3 : 5;
     const paddleWidth = table.width / 3;
     const paddleHeight = table.width < 400 ? 6 : 12;
@@ -75,9 +65,10 @@ export default function Bot() {
       let ballObj: Ball;
       let paddlePlayer: Paddle;
       let paddleOpponent: Paddle;
+      //give this one a type to work with
     const SocketClient = ioClient.getSocketClient();
     SocketClient.emit("setGameDefaultData", {
-      room: ioClient.room,
+      room: ioClient.room, //here and other use SocketClient
       tableWidth: table.width,
       tableHeight: table.height
     });
@@ -143,53 +134,20 @@ export default function Bot() {
       });
     });
 
+    //const resetAll = function () {
+    //  //ball.reset();
+    //  //downPaddle.reset(xdownPaddle, ydownPaddle);
+    //  //upPaddle.reset(xupPaddle, yupPaddle);
+    //};
+
     SocketClient.on("playNow", (data: any) => {
       //console.log('f play now');
-      //return ;
       let lastTime: number;
       let firstTime: boolean = true;
-          //SocketClient.emit("moveBall", {
-          //  delta: 0,
-          //  room: SocketClient.room,
-          //  firstTime
-          //});
-          //firstTime = false;
-          //SocketClient.on("drawBall", (payload: {
-          //  data: [
-          //    {sockt: string, x: number, y: number, radius: number},
-          //    {sockt: string, x: number, y: number, radius: number}
-          //  ],
-          //}) => {
-		      //  let i = payload.data[0].sockt == SocketClient.id ? 0 : 1;
-          //  //data[i].x = data.x;
-          //  //data[i].y = data.y;
-          //  //ball.updateBall(delta, data);
-          //  //console.log('drawBall = ', payload);
-          //  //console.log('x = ', payload.data[i].x, ' y = ', payload.data[i].y);
-          //  //context.clearRect(0, 0, table.width, table.height);
-          //  console.log('i = ', i, ' ', payload);
-          //  const circle = new Path2D();
-          //  circle.arc(payload.data[i].x, payload.data[i].y, payload.data[i].radius, 0, 2 * Math.PI, false);
-          //  context.fillStyle = '#fff';
-          //  context.fill(circle);
-          //})
-
-          //let l = true;
       function update(time: number) {
         if (lastTime) {
-          //console.log('update');
           const delta = time - lastTime;
-          //const data = {
-          //  //xDown: downPaddle.x,
-          //  //yDown: downPaddle.y,
-          //  //xUp: upPaddle.x,
-          //  //yUp: upPaddle.y,
-          //  width: paddleWidth,
-          //  height: paddleHeight,
-          //};
-
           //hona l3amal
-          //SocketClient.emit("ana", "lol", "dude");
           SocketClient.emit("moveBall", {
             delta,
             room: ioClient.room,
@@ -207,45 +165,10 @@ export default function Bot() {
             ]
           ) => {
 		        let i = (ball[0].sockt === SocketClient.id) ? 0 : 1;
-            //context.clearRect(0, 0, table.width, table.height);
             ballObj.updateBall(ball[i]);
             paddlePlayer.updatePaddle(paddle[i]);
 		        i = (ball[0].sockt !== SocketClient.id) ? 0 : 1;
             paddleOpponent.updatePaddle(paddle[i]);
-            //if (l) {
-            //  console.log();
-            //  l = false;
-            //}
-            //draw ball
-            //const circle = new Path2D();
-            //circle.arc(ball[i].xpos, ball[i].ypos, ball[i].radius, 0, 2 * Math.PI, false);
-            //context.fillStyle = '#fff';
-            //context.fill(circle);
-
-            //draw paddle
-            //i = data.paddle[0].sockt == SocketClient.id ? 0 : 1;
-            ////let y = data.paddle.sockt == SocketClient.id ? (table.height - paddleHeight - wallGap) : wallGap;
-            //const paddle1 = new Path2D();
-            //paddle1.roundRect(data.paddle[i].x,
-            //                  (table.height - paddleHeight - wallGap), paddleWidth, paddleHeight, 4);
-            //context.fillStyle = "#fff";
-            //context.fill(paddle1);
-
-            //i = data.paddle[0].sockt != SocketClient.id ? 0 : 1;
-            //const paddle2 = new Path2D();
-            //paddle1.roundRect(data.paddle[i].x, wallGap, paddleWidth, paddleHeight, 4);
-            //context.fillStyle = "#fff";
-            //context.fill(paddle2);
-
-            //*******
-            //for (let i = 0; i != 2; i++) {
-            //  const pad = new Path2D();
-            //  //let y = data.paddle[i].sockt == SocketClient.id ?
-            //  //  (table.height - paddleHeight - wallGap) : wallGap;
-            //  pad.roundRect(paddle[i].xpos, paddle[i].ypos, paddleWidth, paddleHeight, 4);
-            //  context.fillStyle = "#fff";
-            //  context.fill(pad);
-            //}
           })
         }
         lastTime = time;
@@ -262,62 +185,13 @@ export default function Bot() {
       switch (e.code) {
         case "ArrowRight":
           SocketClient.emit("movePaddle", {room: ioClient.room, move: "right"});
-          //if (!paddlePlayer.checkRightWall())
-          //  paddlePlayer.movePaddle(e.code);
-          //if (!paddlePlayer.checkRightWall())
-          //  paddlePlayer.movePaddle(e.code);
           break;
         case "ArrowLeft":
-          //if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
           SocketClient.emit("movePaddle", {room: ioClient.room, move: "left"});
           break;
       }
     }
     document.addEventListener("keydown", handlKeyDown);
-
-
-
-    //SocketClient.emit("moveBall", "");
-
-    //const ball = new Ball(context, {
-    //  radius: table.width / 30,
-    //  // 0.3 easy - 10 paddle / 0.6 medium 15 paddle / 1.2 hard 17 paddle
-    //  speed: table.width < 400 ? 0.2 : parseFloat(ballSpeed!),
-    //  color: "#fff",
-    //  gap: wallGap,
-    //  tableWidth: table.width,
-    //  tableHeight: table.height,
-    //});
-
-    //const downPaddle = new Paddle(context, {
-    //  x: xdownPaddle,
-    //  y: ydownPaddle,
-    //  gap: wallGap,
-    //  speed: parseFloat(paddleSpeed!),
-    //  color: "#fff",
-    //  width: paddleWidth,
-    //  height: paddleHeight,
-    //  tableWidth: table.width,
-    //  tableHeight: table.height,
-    //});
-
-    //const upPaddle = new Paddle(context, {
-    //  x: xupPaddle,
-    //  y: yupPaddle,
-    //  gap: wallGap,
-    //  speed: 5,
-    //  color: "#fff",
-    //  width: paddleWidth,
-    //  height: paddleHeight,
-    //  tableWidth: table.width,
-    //  tableHeight: table.height,
-    //});
-
-    //const resetAll = function () {
-    //  //ball.reset();
-    //  //downPaddle.reset(xdownPaddle, ydownPaddle);
-    //  //upPaddle.reset(xupPaddle, yupPaddle);
-    //};
 
     //let lastTime: number;
     //function update(time: number) {
@@ -358,15 +232,6 @@ export default function Bot() {
     //    //    }
     //    //  }
     //    //}
-
-    //    //hona l3amal
-    //    //SocketClient.emit("moveBall", delta);
-    //    //SocketClient.on("drawBall", (data: {x: number, y: number}) => {
-    //    //  ball.x = data.x;
-    //    //  ball.y = data.y;
-    //    //  ball.updateBall(delta, data);
-    //    //})
-
     //    //ball.updateBall(delta, data);
     //    //downPaddle.updatePaddle();
     //    //upPaddle.updateBotPaddle(ball.x);
