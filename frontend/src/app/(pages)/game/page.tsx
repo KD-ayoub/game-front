@@ -120,7 +120,7 @@ export default function Game() {
                   />
                   <div
                     className="w-[8rem] h-8 md:w-[9rem] md:h-9 lg:w-[12rem] lg:h-11 xl:w-[14rem] xl:h-14 2xl:w-[16rem] 2xl:h-16 bg-[#E95A3A] rounded-[20px] xl:rounded-[24px] 2xl:rounded-[28px] flex justify-center items-center cursor-pointer"
-                    onClick={() => playRandom}
+                    onClick={() => playRandom()}
                   >
                     <p
                       className={`${NeuePlakFont.className} text-white md:text-[20px] lg:text-[25px] xl:text-[30px] 2xl:text-[36px]`}

@@ -48,12 +48,20 @@ export default function Bot() {
   const animationFrameRef = useRef(-1);
   useEffect(() => {
     let table = canvasRef.current;
+    //table?.className.concat('rotate-180');
+    //table?.className.add('rotate-180');
     console.log("client", table?.clientWidth, table?.clientHeight);
     if (!table) return;
     table.width = table.clientWidth;
     table.height = table.clientHeight;
     const context = table.getContext("2d");
     if (!context) return;
+    //context.rotate(20 * Math.PI / 180);
+    //context.translate(canvasRef.clientWidth / 2, canvasRef.clientHeight / 2);
+    //context.rotate(Math.PI);
+    //context.translate(-canvasRef.clientWidth / 2, -canvasRef.clientHeight / 2);
+
+
     const wallGap = table.width < 400 ? 3 : 5;
     const paddleWidth = table.width / 3;
     const paddleHeight = table.width < 400 ? 6 : 12;
@@ -98,6 +106,14 @@ export default function Bot() {
         tableHeight: table.height,
       });
 
+      if (paddleData[i].ypos === wallGap) {
+        //console.log('************ GGGGGGGG');
+        table?.classList.add('rotate-180');
+        table?.classList.add('-scale-x-100');
+        //console.log();
+      //  table?.className.concat('rotate-180');
+      }
+        //table?.className.concat('rotate-180');
       //i = (paddleData[0].socket === SocketClient.id) ? 0 : 1;
       paddlePlayer = new Paddle(context, {
         x: paddleData[i].xpos,
@@ -156,6 +172,7 @@ export default function Bot() {
           //  context.fill(circle);
           //})
 
+          //let l = true;
       function update(time: number) {
         if (lastTime) {
           //console.log('update');
@@ -193,6 +210,10 @@ export default function Bot() {
             paddlePlayer.updatePaddle(paddle[i]);
 		        i = (ball[0].sockt !== SocketClient.id) ? 0 : 1;
             paddleOpponent.updatePaddle(paddle[i]);
+            //if (l) {
+            //  console.log();
+            //  l = false;
+            //}
             //draw ball
             //const circle = new Path2D();
             //circle.arc(ball[i].xpos, ball[i].ypos, ball[i].radius, 0, 2 * Math.PI, false);

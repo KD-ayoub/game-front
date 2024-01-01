@@ -49,7 +49,7 @@ export default class Paddle {
   }
 
   movePaddle(key: string) {
-    if (key === "ArrowRight") this.xpos +=  this.paddleSpeed * 3.5 ;
+    if (key === "ArrowRight") this.xpos +=  this.paddleSpeed * 3.5;
     else if (key === "ArrowLeft") this.xpos -= this.paddleSpeed * 3.5;
   }
 

@@ -54,14 +54,14 @@ export class Ball {
     return false;
   }
 
-  //updateBall(delta: number, data: any) {
-  updateBall(delta: number) {
+  //updateBall(delta: number) {
+  updateBall(delta: number, data: any) {
     if (this.xpos + this.radius >= this.tableWidth) this.dx = -this.dx;
     else if (this.xpos - this.radius <= 0) this.dx = -this.dx;
     else if (this.ypos + this.radius >= this.tableHeight) this.dy = -this.dy;
     else if (this.ypos - this.radius <= 0) this.dy = -this.dy;
     //touch the paddle
-    //this.checkBallTouchPaddle(data, true);
+    this.checkBallTouchPaddle(data, true);
 
     this.xpos += this.dx * delta;
     this.ypos += this.dy * delta;

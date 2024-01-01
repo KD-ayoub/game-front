@@ -181,27 +181,29 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 	moveBall(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
 		//console.log('moveBall = ', client.id, ' ', payload);
 		let find = this.playerRoom.get(payload.room);
-		let i = find[0].value == client.id ? 0 : 1;
+		let i = find[0].value === client.id ? 0 : 1;
+		let j = find[0].value !== client.id ? 0 : 1;
 		//const data = {
-		//	xDown: find[0].paddle.x > find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
-		//	yDown: find[0].paddle.y > find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
-		//	xDown: find[0].paddle.x > find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
-		//	yDown: find[0].paddle.y > find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
-    //  xUp: find[i].paddle.x,
-    //  yUp: find[i].paddle.y,
-    //  width: paddleWidth,
-    //  height: paddleHeight
+		//	xDown: find[i].paddle.x,
+		//	yDown: find[i].paddle.y,
+    //  xUp: find[j].paddle.x,
+    //  yUp: find[j].paddle.y,
+    //  width: find[i].paddle.paddleWidth,
+    //  height: find[i].paddle.paddleHeight
 		//};
-          //const data = {
-          //  //xDown: downPaddle.x,
-          //  //yDown: downPaddle.y,
-          //  //xUp: upPaddle.x,
-          //  //yUp: upPaddle.y,
-          //  width: paddleWidth,
-          //  height: paddleHeight,
-          //};
+		const data = {
+			xDown: find[0].paddle.x > find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
+			yDown: find[0].paddle.y > find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
+			xUp: find[0].paddle.x < find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
+			yUp: find[0].paddle.y < find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
+      //xUp: find[i].paddle.gap,
+      //yUp: find[i].paddle.gap,
+      width: find[i].paddle.paddleWidth,
+      height: find[i].paddle.paddleHeight
+		};
+		//console.log('data = ', client.id, ' ', data);
 		if (!payload.firstTime)
-			find[i].ball.updateBall(payload.delta);
+			find[i].ball.updateBall(payload.delta, data);
 		//if (!payload.firstTime) {
     //	if (find[i].gameData.x + find[i].gameData.r >= find[i].gameData.width)
 		//		find[i].gameData.getdx = -find[i].gameData.getdx;

@@ -1,12 +1,12 @@
 export class Paddle {
   private tableWidth: number;
   private tableHeight: number;
-  private paddleWidth: number;
-  private paddleHeight: number;
+  public paddleWidth: number;
+  public paddleHeight: number;
   private paddleSpeed: number;
   private xpos: number;
   private ypos: number;
-  private gap: number;
+  public gap: number;
 
   constructor(data: any, chk: boolean) {
     this.gap = data.tableWidth < 400 ? 3 : 5;
