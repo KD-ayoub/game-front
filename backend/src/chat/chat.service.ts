@@ -13,6 +13,7 @@ export class chatService {
 
 	async get_picture_name(id: string)
 	{
+		//while(1);
 		const data = await this.prisma.user.findUnique({
 			where: {
 				id
@@ -57,10 +58,9 @@ export class chatService {
 				return false;
 			const dm = await this.prisma.directMessage.create({
 				data: {
-					content : content.content.message_content,
+					content : content.message,
 					senderId,
 					receiverId : content.recieverId,
-					createdAt: content.content.sended_at,
 				}
 			});
 			if (!dm)
@@ -200,6 +200,7 @@ export class chatService {
 			return false;
 		}
 	}
+	
 	async unblock_a_friend(userid: string, friendid: string)
 	{
 		try {

@@ -23,7 +23,7 @@ export class chatGateway implements OnGatewayConnection
 
 	private logger = new Logger('ChatGateway');
 	handleConnection(client: Socket, ...args: any[]) {
-		//console.log('lol ', client.id);
+		console.log("salina");
 	}
 
 
@@ -35,29 +35,35 @@ export class chatGateway implements OnGatewayConnection
 
 		let sender_obj : message_history = {
 			mine: true,
-			sended_at: body.content.sended_at,
-			content: body.content.message_content,
+			sended_at: new Date(),
+			content: body.message,
 			name: "you",
 			picture: "default"
 		};
 
 		let receiver_obj : message_history = {
 			mine: false,
-			sended_at: body.content.sended_at,
-			content: body.content.message_content,
+			sended_at: new Date(),
+			content: body.message,
 			name: "you",
 			picture: "default"
 		};
-
-		if (!body || !body.content || !body.recieverId || !body.content.message_content || !body.content.sended_at)
+		//console.log(!body,!body.content,!body.recieverId,!body.content.message_content,!body.content.sended_at);
+		if (!body  || !body.recieverId || !body.message)
 			return ;
 
-		this.logger.log(body.content.message_content);
+		//this.logger.log(body.message);
 
 		// get id of user by socket id
 		const user : string = this.appGateway.get_id_by_socketId(client.id)
 
 		// get pic and name of the sender
+		/*if (!user)
+		{
+			console.log(client.rooms);
+			//while(1);
+			return ;
+		}*/
 		const sender_pic_name = await this.chatService.get_picture_name(user);
 		sender_obj.picture = sender_pic_name.profile.photo_path;
 		receiver_obj.picture = sender_pic_name.profile.photo_path;
@@ -96,7 +102,7 @@ export class chatGateway implements OnGatewayConnection
 			if ((await this.chatService.is_muted(this.appGateway.get_id_by_socketId(client.id), data.channel_id)))
 			{
 				const mssg : room_msg  = await this.chatService.create_room_msg(this.appGateway.get_id_by_socketId(client.id),data);
-				console.log(mssg);
+				//console.log(mssg);
 				if (mssg.content)
 					this.appGateway.server.to(data.channel_id).emit(data.channel_id, mssg);
 			}

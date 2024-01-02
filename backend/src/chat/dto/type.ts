@@ -1,6 +1,7 @@
 type Direct_message = {
 	recieverId: string,
-	content: message
+	message: string,
+	//content: message
 }
 
 
