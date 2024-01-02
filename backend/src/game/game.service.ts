@@ -110,6 +110,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('setGameDefaultData')
 	setGameDefaultData(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
 		//here check if room exists in that map
+		//console.log('setGameDefaultData');
 		let find = this.playerRoom.get(payload.room);
 		let i = find[0].value === client.id ? 0 : 1;
 		//let chk = true;
@@ -143,15 +144,15 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			//console.log('l = ', find[1].gameData);
 			//find[i].ball.setRenderingData(this.ws, payload.room, client.id);
 			
-			this.ws.to(payload.room).emit("setGameDefaultRender",
-			[
-				find[0].ball.getData(find[0].value),
-				find[1].ball.getData(find[1].value)
-			],
-			[
-				find[0].paddle.getData(find[0].value),
-				find[1].paddle.getData(find[1].value)
-			]);
+			//this.ws.to(payload.room).emit("setGameDefaultRender",
+			//[
+			//	find[0].ball.getData(find[0].value),
+			//	find[1].ball.getData(find[1].value)
+			//],
+			//[
+			//	find[0].paddle.getData(find[0].value),
+			//	find[1].paddle.getData(find[1].value)
+			//]);
 			console.log('still');
 			this.ws.to(payload.room).emit("playNow");
 			//emit here
@@ -179,6 +180,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('moveBall')
 	moveBall(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+		//console.log('moveBall');
 		//console.log('moveBall = ', client.id, ' ', payload);
 		let find = this.playerRoom.get(payload.room);
 		let i = find[0].value === client.id ? 0 : 1;
@@ -202,7 +204,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
       height: find[i].paddle.paddleHeight
 		};
 		//console.log('data = ', client.id, ' ', data);
-		if (!payload.firstTime)
+		//if (!payload.firstTime)
 			find[i].ball.updateBall(payload.delta, data);
 		//if (!payload.firstTime) {
     //	if (find[i].gameData.x + find[i].gameData.r >= find[i].gameData.width)

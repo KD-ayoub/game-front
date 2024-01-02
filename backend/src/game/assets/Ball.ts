@@ -10,15 +10,23 @@ export class Ball {
   private dx: number;
   private dy: number;
   private gap: number;
+  private ballWidth: number;
+  private ballHeight: number;
 
 	constructor(data: any) {
-    this.radius = data.tableWidth / 30;
-    this.speed = (data.tableWidth < 400) ? 0.2 : 0.3;
-    this.gap = data.tableWidth < 400 ? 3 : 5;
-    this.tableWidth = data.tableWidth;
-    this.tableHeight = data.tableHeight;
-    this.xpos = data.tableWidth / 2;
-    this.ypos = data.tableHeight / 2;
+    //this.radius = data.tableWidth / 30;
+    this.ballWidth = data.ballWidth;
+    this.ballHeight = data.ballHeight;
+    console.log('ballWidth ', this.ballWidth);
+    console.log('ballHeight ', this.ballHeight);
+    this.speed = 0.001;
+    this.radius = this.ballWidth / 2;
+    //this.gap = data.tableWidth < 400 ? 3 : 5;
+    this.tableWidth = 100;
+    this.tableHeight = 100;
+    this.xpos = this.tableWidth / 2;
+    this.ypos = this.tableHeight / 2;
+
     //let sight = 0;
     //while (!this.checkAngle((sight * 180) / Math.PI))
     //  sight = this.randomNumber(0, 2 * Math.PI);
@@ -61,10 +69,14 @@ export class Ball {
     else if (this.ypos + this.radius >= this.tableHeight) this.dy = -this.dy;
     else if (this.ypos - this.radius <= 0) this.dy = -this.dy;
     //touch the paddle
-    this.checkBallTouchPaddle(data, true);
+    //this.checkBallTouchPaddle(data, true);
 
-    this.xpos += this.dx * delta;
-    this.ypos += this.dy * delta;
+    this.xpos += this.dx;
+    this.ypos += this.dy;
+    //this.xpos += this.dx * delta;
+    //this.ypos += this.dy * delta;
+    //console.log(this.xpos);
+    //console.log(this.ypos);
   }
 
   getData(client: string) {

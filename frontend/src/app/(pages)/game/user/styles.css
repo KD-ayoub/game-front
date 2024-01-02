@@ -16,14 +16,15 @@
 }
 
 .ball {
-    --y: 50;
-    --x: 50;
-  
-    transform: translate(-50%, -50%);
-    top: calc(var(--y) * 1%);
-    left: calc(var(--x) * 1%);
-    position: absolute;
-    border-radius: 100%;
-    background-color: white;
-    
-  }
+	--x: 50;
+	--y: 50;
+
+  transform: translate(-50%, -50%);
+  top: calc(var(--y) * 1%);
+  left: calc(var(--x) * 1%);
+  position: absolute;
+  border-radius: 100%;
+  background-color: white;
+  width: 6%;
+  height: calc(6% - 12px);
+}
