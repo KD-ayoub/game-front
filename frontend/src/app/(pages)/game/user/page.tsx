@@ -70,10 +70,12 @@ export default function Bot() {
      const SocketClient = ioClient.getSocketClient();
      console.log('allllll');
      const ballData = document.getElementById('ball');
+     const ballElem = document.getElementById('ball');
+     console.log(ballData?.offsetWidth)
      SocketClient.emit("setGameDefaultData", {
        room: ioClient.room, //here and other use SocketClient
-       ballWidth: parseFloat(ballData?.offsetWidth),
-       ballHeight: parseFloat(ballData?.offsetHeight)
+       ballWidth: ballData?.offsetWidth,
+       ballHeight: ballData?.offsetHeight
        //tableWidth: table.width,
        //tableHeight: table.height
      });
@@ -149,6 +151,49 @@ export default function Bot() {
        //console.log('f play now');
        let lastTime: number;
        let firstTime: boolean = true;
+       SocketClient.on("drawGameAssets", (
+        ball: [
+          {socket: string, xpos: number, ypos: number, radius: number},
+          {socket: string, xpos: number, ypos: number, radius: number}
+        ],
+        paddle: [
+          {socket: string, xpos: number, ypos: number},
+          {socket: string, xpos: number, ypos: number}
+        ]
+      ) => {
+        let i = (ball[0].socket === SocketClient.id) ? 0 : 1;
+         // const ballElem = document.getElementById('ball');
+         // ballElem?.style.setProperty("--y", "50");
+         // ballElem?.style.setProperty("--x", "50");
+         if (i === 0) {
+           ballElem?.style.setProperty("--y", ball[i].ypos.toString());
+           ballElem?.style.setProperty("--x", ball[i].xpos.toString());
+         } else {
+           ballElem?.style.setProperty("--y", (ball[i].ypos).toString());
+           ballElem?.style.setProperty("--x", ball[i].xpos.toString());
+         }
+         //const paddleElem = document.getElementById('paddle-top');
+         //const tableElem = document.getElementById('table');
+         //document.addEventListener('keydown', (e) => {
+         //  if (e.code === 'ArrowLeft') {
+         //    // 16 -> 700 left right 83
+         //    // x -> 200
+         //    paddleElem?.style.setProperty("--position", "16");
+         //    ballElem?.style.setProperty("--y", "16");
+         //    ballElem?.style.setProperty("--x", "20");
+         //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
+         //  }
+         //  if (e.code === 'ArrowRight') {
+         //    paddleElem?.style.setProperty("--position", "83");
+         //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
+         //  }
+         //  console.log(e.code)
+         //})
+         //ballObj.updateBall(ball[i]);
+         //paddlePlayer.updatePaddle(paddle[i]);
+          //i = (ball[0].sockt !== SocketClient.id) ? 0 : 1;
+         //paddleOpponent.updatePaddle(paddle[i]);
+      })
        function update(time: number) {
          if (lastTime) {
            const delta = time - lastTime;
@@ -159,44 +204,7 @@ export default function Bot() {
              firstTime
            });
            firstTime = false;
-           SocketClient.on("drawGameAssets", (
-             ball: [
-               {socket: string, xpos: number, ypos: number, radius: number},
-               {socket: string, xpos: number, ypos: number, radius: number}
-             ],
-             paddle: [
-               {socket: string, xpos: number, ypos: number},
-               {socket: string, xpos: number, ypos: number}
-             ]
-           ) => {
-             let i = (ball[0].socket === SocketClient.id) ? 0 : 1;
-              const ballElem = document.getElementById('ball');
-              //ballElem?.style.setProperty("--y", "100");
-              //ballElem?.style.setProperty("--x", "100");
-              ballElem?.style.setProperty("--y", ball[i].ypos.toString());
-              ballElem?.style.setProperty("--x", ball[i].xpos.toString());
-              //const paddleElem = document.getElementById('paddle-top');
-              //const tableElem = document.getElementById('table');
-              //document.addEventListener('keydown', (e) => {
-              //  if (e.code === 'ArrowLeft') {
-              //    // 16 -> 700 left right 83
-              //    // x -> 200
-              //    paddleElem?.style.setProperty("--position", "16");
-              //    ballElem?.style.setProperty("--y", "16");
-              //    ballElem?.style.setProperty("--x", "20");
-              //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-              //  }
-              //  if (e.code === 'ArrowRight') {
-              //    paddleElem?.style.setProperty("--position", "83");
-              //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-              //  }
-              //  console.log(e.code)
-              //})
-              //ballObj.updateBall(ball[i]);
-              //paddlePlayer.updatePaddle(paddle[i]);
-	 	          //i = (ball[0].sockt !== SocketClient.id) ? 0 : 1;
-              //paddleOpponent.updatePaddle(paddle[i]);
-           })
+           
          }
          lastTime = time;
          if (!unmounted.current) {
@@ -204,7 +212,7 @@ export default function Bot() {
          }
          // window.requestAnimationFrame(update);
        }
-       // window.requestAnimationFrame(update);
+      //  window.requestAnimationFrame(update);
        animationFrameRef.current = window.requestAnimationFrame(update);
      })
      function handlKeyDown(e: KeyboardEvent) {
@@ -289,35 +297,35 @@ export default function Bot() {
      //}
      //document.addEventListener("keydown", handlKeyDown);
   
-   }, [!openModal]);
-  useEffect(() => {
-    //const ballElem = document.getElementById('ball');
-    //const paddleElem = document.getElementById('paddle-top');
-    //const tableElem = document.getElementById('table');
-    //document.addEventListener('keydown', (e) => {
-    //  if (e.code === 'ArrowLeft') {
-    //    // 16 -> 700 left right 83
-    //    // x -> 200
-    //    paddleElem?.style.setProperty("--position", "16");
-    //    ballElem?.style.setProperty("--y", "16");
-    //    ballElem?.style.setProperty("--x", "20");
-    //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-    //  }
-    //  if (e.code === 'ArrowRight') {
-    //    paddleElem?.style.setProperty("--position", "83");
-    //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-    //  }
-    //  console.log(e.code)
-    //})
-    //console.log('window inner', tableElem?.offsetHeight);
-    //console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-    const timer = setTimeout(() => {
-      setOpenMoadl(false);
-    }, 5000);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [openModal]);
+   }, []);
+  // useEffect(() => {
+  //   //const ballElem = document.getElementById('ball');
+  //   //const paddleElem = document.getElementById('paddle-top');
+  //   //const tableElem = document.getElementById('table');
+  //   //document.addEventListener('keydown', (e) => {
+  //   //  if (e.code === 'ArrowLeft') {
+  //   //    // 16 -> 700 left right 83
+  //   //    // x -> 200
+  //   //    paddleElem?.style.setProperty("--position", "16");
+  //   //    ballElem?.style.setProperty("--y", "16");
+  //   //    ballElem?.style.setProperty("--x", "20");
+  //   //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
+  //   //  }
+  //   //  if (e.code === 'ArrowRight') {
+  //   //    paddleElem?.style.setProperty("--position", "83");
+  //   //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
+  //   //  }
+  //   //  console.log(e.code)
+  //   //})
+  //   //console.log('window inner', tableElem?.offsetHeight);
+  //   //console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
+  //   const timer = setTimeout(() => {
+  //     setOpenMoadl(false);
+  //   }, 5000);
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [openModal]);
   useEffect(() => {
     async function fetcher() {
       setDataSettings(await getSettings());
@@ -342,9 +350,9 @@ export default function Bot() {
         </div>
         <div className="flex flex-col items-center w-full h-full gap-2 mt-20">
           <div className="w-[200px] h-12 sm:w-[300px] sm:h-14 md:w-[400px] md:h-16 lg:w-[500px] lg:h-[70px] xl:w-[600px] xl:h-[75px] 2xl:w-[700px] 2xl:h-[100px] p-2 flex justify-between">
-            {openModal && (
+            {/* {openModal && (
               <ModalGameComponent onClick={() => setOpenMoadl(false)} />
-            )}
+            )} */}
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
