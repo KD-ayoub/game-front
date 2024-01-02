@@ -50,6 +50,7 @@ export default function ModalMapsComponent({
                 setSrcBlue(false);
                 setSrcGreen(false);
               }}
+              draggable={false}
             />
             <Image
               className={`${
@@ -64,6 +65,7 @@ export default function ModalMapsComponent({
                 setSrcBlue(false);
                 setSrcGreen(true);
               }}
+              draggable={false}
             />
             <Image
               className={`${
@@ -78,6 +80,7 @@ export default function ModalMapsComponent({
                 setSrcBlue(true);
                 setSrcGreen(false);
               }}
+              draggable={false}
             />
           </div>
           <button disabled={(srcBlue || srcGreen || srcOrange) ? false : true}>

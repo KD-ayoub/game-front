@@ -1,5 +1,8 @@
 import { Server, Socket } from 'socket.io';
 
+const INITIAL_VELOCITY: number = 0.04,
+  VELOCITY_INCREASE: number = 0.3;
+
 export class Ball {
   private radius: number;
   private speed: number;
@@ -12,6 +15,7 @@ export class Ball {
   private gap: number;
   private ballWidth: number;
   private ballHeight: number;
+  private delta: number = 0;
 
 	constructor(data: any) {
     //this.radius = data.tableWidth / 30;
@@ -19,15 +23,16 @@ export class Ball {
     this.ballHeight = data.ballHeight;
     console.log('ballWidth ', this.ballWidth);
     console.log('ballHeight ', this.ballHeight);
-    this.speed = 0.001;
+    this.speed = INITIAL_VELOCITY;
     this.radius = this.ballWidth / 2;
     //this.gap = data.tableWidth < 400 ? 3 : 5;
     this.tableWidth = 100;
     this.tableHeight = 100;
     this.xpos = this.tableWidth / 2;
     this.ypos = this.tableHeight / 2;
-
-    //let sight = 0;
+    
+    
+      //let sight = 0;
     //while (!this.checkAngle((sight * 180) / Math.PI))
     //  sight = this.randomNumber(0, 2 * Math.PI);
     //const direction = {
@@ -64,10 +69,11 @@ export class Ball {
 
   //updateBall(delta: number) {
   updateBall(delta: number, data: any) {
-    if (this.xpos + this.radius >= this.tableWidth) this.dx = -this.dx;
-    else if (this.xpos - this.radius <= 0) this.dx = -this.dx;
-    else if (this.ypos + this.radius >= this.tableHeight) this.dy = -this.dy;
-    else if (this.ypos - this.radius <= 0) this.dy = -this.dy;
+    // if ((this.xpos - this.ballWidth/2 <= 0) || this.xpos + this.ballWidth/2 >= this.tableWidth) this.dx = -this.dx;
+    if (this.xpos + 3 >= this.tableWidth) this.dx = -this.dx;
+    else if (this.xpos - 3 <= 0) this.dx = -this.dx;
+    else if (this.ypos + 3 >= this.tableHeight) this.dy = -this.dy;
+    else if (this.ypos - 3 <= 0) this.dy = -this.dy;
     //touch the paddle
     //this.checkBallTouchPaddle(data, true);
 
@@ -101,7 +107,7 @@ export class Ball {
     };
   }
 
-  setBallSight({xDirection, yDirection}) {
+  setBallSight({xDirection, yDirection} : {xDirection: number, yDirection: number}) {
     this.dx = xDirection * this.speed;
     this.dy = yDirection * this.speed;
   }

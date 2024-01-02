@@ -417,6 +417,7 @@ export default function Bot() {
             <div className="ball" id="ball"></div>
             <div className="paddle top" id="paddle-top"></div>
             <div className="paddle bottom" id="paddle-bottom"></div>
+            <div className="middle-line"></div>
             {/* {!openModal && (
               <canvas
                 className="w-full h-full absolute top-0 z-10 aspect-video"
