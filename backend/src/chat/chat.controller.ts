@@ -198,15 +198,17 @@ export class ChatController{
 
 
 	// user role
+	@UseGuards(AuthenticatedGuard)
 	@Get('role/:id')
 	async user_role(@Session() session: Record<string,any>,@Param('id') channel_id : string)
 	{
+		console.log(session.passport.user);
 		if (await this.chatService.is_admin(session.passport.user.id,channel_id))
-			return {"role": "admin"};
+			return {"role": "admin" , "nickname" : session.passport.user.nickName, "id" : session.passport.user.id};
 		else if (await this.chatService.is_member(session.passport.user.id,channel_id))
-			return {"role" : "member"}
+			return {"role" : "member", "nickname" : session.passport.user.nickName, "id" : session.passport.user.id}
 		else if (await this.chatService.is_owner(session.passport.user.id,channel_id))
-			return {"role" : "owner"};
+			return {"role" : "owner", "nickname" : session.passport.user.nickName, "id" : session.passport.user.id};
 		throw new HttpException("NOT in the channel",HttpStatus.FORBIDDEN);
 	}
 
