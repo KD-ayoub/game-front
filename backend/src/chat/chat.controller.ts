@@ -186,6 +186,26 @@ export class ChatController{
 		throw new HttpException("can't ban the member", HttpStatus.FORBIDDEN);
 	}
 
+	// leave channel
+	@UseGuards(AuthenticatedGuard)
+	@Post('leave')
+	async leave(@Session() session: Record<string,any>,@Body() body:  leave_channel)
+	{
+		if (await this.chatService.leave(session.passport.user.id,body))
+			throw new HttpException("ok",HttpStatus.OK);
+		throw new HttpException("can't leave the channel",HttpStatus.FORBIDDEN);
+	}
+
+
+	// user role
+	@Get('role')
+	async user_role(@Session() session: Record<string,any>)
+	{
+		
+
+	}
+
+
 	// remove and change password from a channel
 
 

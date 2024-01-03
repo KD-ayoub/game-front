@@ -87,7 +87,11 @@ export class chatGateway implements OnGatewayConnection
 	@SubscribeMessage('join')
     async handleJoinChannel(client: Socket,  data: join_channel) {
 		if (await this.chatService.check_if_user_in_channel(this.appGateway.get_id_by_socketId(client.id),data.channel_id))
+		{
 			client.join(data.channel_id);
+			console.log(client.rooms);
+		}
+
 		
     }
 

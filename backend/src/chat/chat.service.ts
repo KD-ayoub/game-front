@@ -344,13 +344,16 @@ export class chatService {
 				b.name = rooms.name;
 				b.type = rooms.type;
 				if (rooms.owner.id == userid)
+				{
 					b.joined = true;
+					return b;
+				}
 				for (let i = 0; i < rooms.members.length; i++)
 				{
 					if (rooms.members[i].id == userid)
 					{
 						b.joined = true;
-						break;
+						return b;
 					}
 				}
 				for (let i = 0; i < rooms.admins.length; i++)
@@ -358,7 +361,7 @@ export class chatService {
 					if (rooms.admins[i].id == userid)
 					{
 						b.joined = true;
-						break;
+						return b;
 					}
 				}
 				return b;
@@ -567,18 +570,7 @@ export class chatService {
 							id : channel.member_id
 						}
 					},
-					OR: [
-						{
-							ownerId: userid
-						},
-						{
-							admins: {
-								some : {
-									id : userid
-								}
-							}
-						}
-					],
+					ownerId: userid,
 					NOT: {
 						banned : {
 							some: {
@@ -702,6 +694,7 @@ export class chatService {
 					}
 				}
 			})
+			console.log("room : ", room);
 			if (!room)
 				return false;
 		} catch (error) {
@@ -740,6 +733,7 @@ export class chatService {
 					}
 				}
 			})
+			console.log("room : ", room);
 			if (!room)
 				return false;
 		} catch (error) {
@@ -1013,5 +1007,69 @@ export class chatService {
 			return obj;	
 		}
 		return obj;
+	}
+
+	async leave(userid: string, channel : leave_channel)
+	{
+		try {
+			if (await this.is_admin(userid,channel.channel) || await this.is_member(userid,channel.channel))
+			{
+				console.log("admin");
+				try {
+					const room = this.prisma.room.update({
+						where: {
+							id : channel.channel
+						},
+						data: {
+							members: {
+								disconnect: {
+									id : userid
+								}
+							},
+							admins: {
+								disconnect: {
+									id : userid
+								}
+							}
+						}
+					})
+					if (!room)
+						return false;
+					this.appGateway.server.socketsLeave(channel.channel);
+					return true;
+				} catch (error) {
+					return false;
+				}
+			}
+			else if (await this.is_owner(userid,channel.channel))
+			{
+				console.log("owner");
+				try {
+					const roomMessages = await this.prisma.roomMessage.deleteMany({
+						where: {
+							roomId: channel.channel
+						}
+					})
+					const room = await this.prisma.room.delete({
+						where: {
+							id : channel.channel
+						}
+					})
+					console.log("wtf : ",room);
+					if (!room)
+						return false;
+					this.appGateway.server.socketsLeave(channel.channel);
+					// emit a message that the room is deleted and delete the room 
+					return true;
+				} catch (error) {
+					console.log(error);
+					return false;
+				}
+			}
+
+		} catch (error) {
+			return false;
+		}
+		return false;
 	}
 }
