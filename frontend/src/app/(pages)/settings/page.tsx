@@ -337,7 +337,7 @@ export default function Settings() {
                   className={`${NeuePlakFont.className} text-[12px] md:text-[15px] lg:text-[18px] xl:text-[22px] 2xl:text-[30px] text-[#A8A0C4]`}
                 >
                   Protect your account with extra layer of security. Once
-                  configured, you'll be required to enter both your password and
+                  configured, you&apos;ll be required to enter both your password and
                   an authentication code from your mobile phone in order to sign
                   in.
                   {/* <strong className="text-red-500">Please scan the Qr</strong> */}

@@ -7,7 +7,6 @@ export default function ModalGameComponent(props: any) {
     <Modal
     className="bg-gray-600"
       show={openModal}
-      onClick={props.onClick}
     >
       <Modal.Header>Rules of the game</Modal.Header>
       <Modal.Body>

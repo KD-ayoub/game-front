@@ -25,7 +25,7 @@ export default function Login() {
         Welcome Back again!
       </p>
       <p className="text-[#8E86A5] text-center mb-3 md:text-[20px] xl:text-[22px] 2xl:text-[25px] lg:p-3">
-        We'are so excited to see you again!
+        We&apos;are so excited to see you again!
       </p>
       <Link href="http://localhost:3001/auth/login">
         <div className="lg:w-56 lg:h-16 xl:w-60 xl:h-20 2xl:w-64 2xl:h-24 border m-2 p-2 flex flex-col rounded-xl hover:bg-[#ff5555bb]">
@@ -35,7 +35,7 @@ export default function Login() {
             Log with Your
           </p>
           <div className="flex justify-center gap-3">
-            <Image draggable={false} src={intra_logo.src} width={20} height={20} alt="42 logo" />
+            <Image className="min-h-[20px] min-w-[20px]" draggable={false} src={intra_logo.src} width={20} height={20} alt="42 logo" />
             <p className={`${NeuePlakFont.className} text-white text-[18px] xl:text-[22px] 2xl:text-[24px] text-center`}>Intra</p>
           </div>
         </div>

@@ -10,7 +10,9 @@ import { AllUsersType } from "@/app/types/alluserstype";
 import getAllUsers from "@/app/api/Profile/getAllUsers";
 import { useRouter } from "next/navigation";
 
-export default function LittleSearchBar() {
+
+export default function LittleSearchBar({ onClick }: { onClick: () => void }) {
+  const [openMapModal, setOpenMapMoadl] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [dataAllUsers, setdataAllUsers] = useState<Array<AllUsersType>>([]);
   const { userData } = useUserContext();
@@ -59,7 +61,7 @@ export default function LittleSearchBar() {
             <div
               key={index}
               className="flex p-3 lg:p-4 xl:p-6 2xl:p-8 gap-1 md:gap-2 hover:bg-slate-500 cursor-pointer"
-              onClick={() => console.log('send a chanllenge to the user')}
+              onClick={() => onClick()}
             >
               <Image
                 draggable={false}
