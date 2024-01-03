@@ -82,6 +82,8 @@ model Friendship {
 	friendId			String
 	friend				User @relation("friends", fields: [friendId], references: [id])
 	is_blocked 			Boolean @default(false)
+
+	@@unique([userId,friendId])
 }
 
 
@@ -167,7 +169,7 @@ model DirectMessage {
 // Define the Room entity
 model Room {
   id       String      @id @default(uuid())
-  name     String
+  name     String		@unique
   type     RoomType
   password String?
   // ... other room fields

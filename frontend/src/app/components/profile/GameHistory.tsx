@@ -68,6 +68,7 @@ export default function GameHistory({
                         className={`flex ${NeuePlakFont.className} text-white text-[14px] sm:text-[18px] lg:text-[22px] xl:text-[24px] 2xl:text-[35px] p-2 xl:p-3 2xl:p-5 gap-1 md:gap-5 items-center`}
                       >
                         <Image
+                          draggable={false}
                           className="sm:w-[20px] sm:h-[20px] md:w-[30px] md:h-[30px] lg:w-[36px] lg:h-[36px] xl:w-10 xl:h-10 2xl:w-14 2xl:h-14"
                           src={Isimage}
                           width={15}

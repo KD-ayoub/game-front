@@ -12,6 +12,7 @@ export default function Login() {
   return (
     <div className="w-52 h-[400px] md:w-56 md:h-[450px] lg:w-[352px] lg:h-[550px] xl:w-[450px] xl:h-[600px] 2xl:w-[550px] 2xl:h-[700px] bg-[#15131D] flex flex-col lg:gap-4 justify-center items-center border border-solid border-white rounded-[20px]">
       <Image
+        draggable={false}
         src={logo.src}
         width={30}
         height={30}
@@ -34,7 +35,7 @@ export default function Login() {
             Log with Your
           </p>
           <div className="flex justify-center gap-3">
-            <Image src={intra_logo.src} width={20} height={20} alt="42 logo" />
+            <Image draggable={false} src={intra_logo.src} width={20} height={20} alt="42 logo" />
             <p className={`${NeuePlakFont.className} text-white text-[18px] xl:text-[22px] 2xl:text-[24px] text-center`}>Intra</p>
           </div>
         </div>

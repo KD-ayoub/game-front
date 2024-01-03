@@ -76,8 +76,8 @@ export default function Header({
     <>
       <header className="text-white flex justify-stretch w-full absolute z-10 items-center">
         <nav className="flex sm:w-11 sm:h-11 md:w-14 md:h-14 lg:w-[72px] lg:h-[72px] xl:w-[88px] xl:h-[88px] 2xl:w-32 2xl:h-32 relative">
-          <img src={Logo.src} className="p-2 2xl:p-4" />
-          <img src={Nav.src} className="p-2 sm:hidden" onClick={handlClick} />
+          <img src={Logo.src} className="p-2 2xl:p-4" draggable='false' />
+          <img src={Nav.src} className="p-2 sm:hidden" onClick={handlClick} draggable='false' />
         </nav>
         <SearchBar />
         <nav className="flex items-center justify-end gap-2 sm:w-[170px] sm:h-11 md:w-48 md:h-14 lg:h-[72px] lg:w-72 xl:h-[88px] xl:w-80 2xl:h-32 2xl:w-[480px]">
@@ -88,10 +88,11 @@ export default function Header({
           >
             <div className="flex absolute top-[1px] md:top-[3px] lg:top-[5px] xl:top-[6px] 2xl:top-[9px] left-[1px] md:left-1 lg:left-[5px] 2xl:left-[9px] gap-1 lg:gap-4 items-center">
               <Image
+                draggable={false}
                 className="sm:w-[32px] sm:h-[32px] md:w-[34px] md:h-[34px] lg:w-[46px] lg:h-[46px] xl:w-[52px] xl:h-[52px] 2xl:w-[75px] 2xl:h-[75px] rounded-full"
                 width={29}
                 height={29}
-                src={dataSettings.photo_path}
+                src={dataSettings.photo_path === 'default_img' ? `${ProfileImg.src}`: dataSettings.photo_path}
                 alt="profile image"
               />
               <div className="hidden sm:block">
@@ -100,6 +101,7 @@ export default function Header({
                 >
                   {dataSettings.nickName}
                   <Image
+                    draggable={false}
                     className="lg:w-3 lg:h-3 xl:w-4 xl:h-4 2xl:w-6 2xl:h-6"
                     src={Polygon.src}
                     width={10}

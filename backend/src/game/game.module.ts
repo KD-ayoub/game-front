@@ -6,7 +6,7 @@ import { AppGateway } from '../app.gateway';
 @Module({
 	imports: [],
 	controllers: [GameController],
-	providers: [GameService, AppGateway],
+	providers: [AppGateway, GameService],
 	exports: []
 })
 export class GameModule {}

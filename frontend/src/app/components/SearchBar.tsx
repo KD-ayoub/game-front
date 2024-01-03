@@ -25,7 +25,7 @@ export default function SearchBar() {
   const [dataAllUsers, setdataAllUsers] = useState<Array<AllUsersType>>([]);
   const { userData } = useUserContext();
   async function handlChange(event: ChangeEvent<HTMLInputElement>) {
-    setInputValue(event.target.value);
+    setInputValue(event.target.value.toLowerCase());
     if (userData.id) {
       const result = await getAllUsers(userData.id);
       setdataAllUsers(
@@ -34,7 +34,7 @@ export default function SearchBar() {
             event.target.value &&
             value &&
             value.nickName &&
-            value.nickName.toLocaleLowerCase().includes(event.target.value)
+            value.nickName.toLocaleLowerCase().includes(event.target.value.toLowerCase())
           );
         })
       );
@@ -52,6 +52,7 @@ export default function SearchBar() {
     <div className="h-[29.6px] sm:h-[33.6px] md:h-10 lg:h-14 xl:h-16 2xl:h-24 w-1/3 bg-[#252134] rounded-full  flex-grow mx-[5px] xl:mx-5 flex items-center relative">
       <div className="flex  gap-1 sm:gap-2 justify-start items-center w-full h-full">
         <Image
+          draggable={false}
           className="ml-3 sm:w-[17px] sm:h-[15px] md:w-5 md:h-4 lg:w-9 lg:h-6 xl:w-[3.25rem] xl:h-8 2xl:w-[5.25rem] 2xl:h-[2.5rem]"
           src={SearchIcon.src}
           width={14}
@@ -59,7 +60,7 @@ export default function SearchBar() {
           alt="Search icon"
         />
         <input
-          className={`h-full w-[90%] bg-transparent border-0 text-white mr-1 ${NeuePlakFont.className} md:text-[18px] lg:text-[25px] xl:text-[30px] 2xl:text-[38px]`}
+          className={`h-full w-[90%] bg-transparent border-0 focus:outline-none focus:ring-0 focus:ring-transparent text-white mr-1 ${NeuePlakFont.className} md:text-[18px] lg:text-[25px] xl:text-[30px] 2xl:text-[38px]`}
           style={inputValue ? inputStyle : plceholderStyle}
           type="search"
           placeholder="Search"
@@ -70,7 +71,7 @@ export default function SearchBar() {
       </div>
       {/* need to work on tomorrow  */}
       {dataAllUsers.length > 0 && (
-        <div className="w-full h-28 md:h-32 max-w-[700px] bg-[#252134] absolute top-[2.5rem] md:top-[3rem] lg:top-16 lg:left-3 xl:top-[4.75rem] 2xl:top-[6.75rem] rounded-[10px] overflow-y-auto">
+        <div className="w-full h-28 md:h-72 max-w-[700px] bg-[#252134] absolute top-[2.5rem] md:top-[3rem] lg:top-16 lg:left-3 xl:top-[4.75rem] 2xl:top-[6.75rem] rounded-[10px] overflow-y-auto">
           {dataAllUsers.map((user, index) => {
             return (
               <div
@@ -79,6 +80,7 @@ export default function SearchBar() {
                 onClick={() => handlClick(user)}
               >
                 <Image
+                  draggable={false}
                   className="sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
                   src={user.photo_path}
                   width={22}

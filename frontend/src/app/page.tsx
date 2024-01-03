@@ -1,9 +1,7 @@
 'use client'
 import Image from 'next/image'
-import ioClient from "./api/instance";
 
 export default function Home() {
-  ioClient.sendMessage('anas ;awwjqkdbefkebfjbedvkjbdjkvbdj wa shoukran', '', '')
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
@@ -20,6 +18,7 @@ export default function Home() {
           >
             By{' '}
             <Image
+              draggable={false}
               src="/vercel.svg"
               alt="Vercel Logo"
               className="dark:invert"
@@ -39,6 +38,7 @@ export default function Home() {
           width={180}
           height={37}
           priority
+          draggable={false}
         />
       </div>
 

@@ -90,7 +90,7 @@ export class AuthService {
 
 	async validateUser(details : any)
 	{
-		console.log('validateUser func');
+		//console.log('validateUser func');
 		const user = await this.prisma.user.findUnique({
 			where: {
 				intra_42_id: details.intra_42_id,
@@ -111,7 +111,7 @@ export class AuthService {
 
 	async createUser(details: any)
 	{
-		console.log('create user func');
+		//console.log('create user func');
 		try {
 			const user = await this.prisma.user.create({
 				data : {
@@ -166,7 +166,7 @@ export class AuthService {
 	async signup(details: any, profile_data: signup)
 	{
 		//this one should be taking down
-		console.log('f service db');
+		//console.log('f service db');
 		const user: user_request = {
 			full_name: details.full_name,
 			nickname: details.nickname,
@@ -206,7 +206,7 @@ export class AuthService {
 				first_time: found_user.first_time, intra_42_id: found_user.intra_42_id
 			}
 			
-			console.log('f service before returning');
+			//console.log('f service before returning');
 			return response;
 		} catch (error) {
 			throw new ConflictException("nickname is already taken");

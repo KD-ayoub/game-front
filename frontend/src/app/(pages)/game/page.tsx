@@ -9,6 +9,14 @@ import WithBot from "@/app/assets/svg/game/withBot.svg";
 import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 import Profilepic from "@/app/assets/svg/profile.svg";
 import { LittleSearchBar } from "@/app/components";
+//import socket
+import { ioClient, SocketClient } from "@/app/api/instance";
+import { type Socket, io } from "socket.io-client";
+import { Manager } from "socket.io-client/debug";
+
+//test redirect
+//import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function Game() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -17,6 +25,7 @@ export default function Game() {
   const [botCard, setBotCard] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
 
+    const router = useRouter();
   function handlFriendClick() {
     setFriendCard(true);
     setRandomCard(false);
@@ -31,6 +40,19 @@ export default function Game() {
     setFriendCard(false);
     setRandomCard(false);
     setBotCard(true);
+  }
+
+  function playRandom() {
+    console.log('hmmmmmmmm');
+    ioClient.playRandom();
+    const SocketClient = ioClient.getSocketClient();
+    SocketClient.on("redirectToGame", (data: {room: string}) => {
+      SocketClient.room = data.room;
+      console.log('****** ', SocketClient.room);
+      router.push("/game/user");
+      //window.history.pushState("", "", "/game/user");
+      //window.location.href = "/game/user";
+    })
   }
 
   return (
@@ -75,12 +97,14 @@ export default function Game() {
               {randomCard && (
                 <div className="flex justify-center items-center w-[178px] h-[179px] sm:w-[220px] sm:h-[221px] lg:w-[320px] lg:h-[321px] xl:w-[420px] xl:h-[421px] 2xl:w-[620px] 2xl:h-[621px] bg-[#15131D] rounded-[10px] md:rounded-[13px] lg:rounded-[15px] xl:rounded-[20px] 2xl:rounded-[25px]">
                   <Image
+                    draggable={false}
                     className="sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44"
                     src={Profilepic.src}
                     width={80}
                     height={80}
                     alt="Profile pic"
                   />
+                  <button onClick={playRandom}>Play random</button>
                 </div>
               )}
             </div>

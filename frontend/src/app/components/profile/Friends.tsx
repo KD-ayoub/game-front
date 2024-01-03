@@ -52,6 +52,7 @@ export default function Friends({
               <div key={data.id} className="p-2 lg:p-3 2xl:p-5 flex justify-between ">
                 <div className="flex gap-1 md:gap-5 items-center">
                   <Image
+                    draggable={false}
                     className="sm:w-[30px] sm:h-[30px] md:w-[35px] md:h-[35px] lg:w-[42px] lg:h-[42px] xl:w-12 xl:h-12 2xl:w-20 2xl:h-20"
                     src={Isimage}
                     width={25}

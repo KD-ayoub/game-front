@@ -2,6 +2,11 @@
 
 import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
 
+//import socket
+import { ioClient, SocketClient } from "@/app/api/instance";
+import { type Socket, io } from "socket.io-client";
+import { Manager } from "socket.io-client/debug";
+
 type userType = {
   id: string;
   full_name: string;
@@ -44,6 +49,8 @@ export default function UserContextProvider({
   }
 
   useEffect(() => {
+    console.log('************* profile');
+    ioClient;
     // async function fetcher() {
     //   const response = await fetch('http://localhost:3001/auth/getUserStatus', {
     //     method: 'GET',

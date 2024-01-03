@@ -55,6 +55,7 @@ export default function ProfileInfo({
     <div className="m-3 mt-2 md:ml-5 lg:ml-10 2xl:ml-16 lg:mr-[100px] md:flex-grow md:basis-1/2">
       <div className="w-auto h-[222px] md:h-[185px] lg:h-[222px] xl:h-[265px] 2xl:h-[320px] rounded-[20px] relative bg-[#110D1F]">
         <Image
+          draggable={false}
           className="object-cover rounded-[20px]"
           src={BgProfileinfo.src}
           alt="bg profile info"
@@ -63,6 +64,7 @@ export default function ProfileInfo({
         <div className="md:w-full md:h-full md:relative">
           <div className="absolute top-[20%] md:top-[35%] -translate-y-1/2 -translate-x-1/2 left-1/2 md:left-[50px] lg:left-[70px] xl:left-[80px] 2xl:left-[122px] ">
             <Image
+              draggable={false}
               className="md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 2xl:w-36 2xl:h-36 rounded-full"
               src={Isimage}
               width={60}
@@ -128,6 +130,7 @@ export default function ProfileInfo({
                 onClick={handlFollowClick}
               >
                 <Image
+                  draggable={false}
                   className="absolute top-[2px] left-[5px]"
                   src={FollowImg.src}
                   width={29}
@@ -142,6 +145,7 @@ export default function ProfileInfo({
                 onClick={handlUnfollowClick}
               >
                 <Image
+                  draggable={false}
                   className="absolute top-[2px] left-[6px]"
                   src={UnfollowImg.src}
                   width={25}
@@ -153,6 +157,7 @@ export default function ProfileInfo({
             {!pathname && (
               <div className="w-9 h-9 rounded-full bg-[#E95A3A] relative">
                 <Image
+                  draggable={false}
                   className="absolute top-[5px] left-[6px]"
                   src={ChallengeImg.src}
                   width={25}
@@ -164,6 +169,7 @@ export default function ProfileInfo({
             {!pathname && (
               <div className="w-9 h-9 rounded-full bg-[#E95A3A] relative">
                 <Image
+                  draggable={false}
                   className="absolute top-[5px] left-[2px]"
                   src={MessageImg.src}
                   width={31}
@@ -175,6 +181,7 @@ export default function ProfileInfo({
             {!pathname && (
               <div className="w-9 h-9 rounded-full bg-[#4A4853] relative">
                 <Image
+                  draggable={false}
                   className="absolute top-[7px] left-[7px]"
                   src={BlockImg.src}
                   width={22}
@@ -274,6 +281,7 @@ export default function ProfileInfo({
                     onClick={handlFollowClick}
                   >
                     <Image
+                      draggable={false}
                       className="absolute top-[2px] left-[5px]"
                       src={FollowImg.src}
                       width={29}
@@ -288,6 +296,7 @@ export default function ProfileInfo({
                     onClick={handlUnfollowClick}
                   >
                     <Image
+                      draggable={false}
                       className="absolute top-[2px] left-[6px]"
                       src={UnfollowImg.src}
                       width={25}
@@ -299,6 +308,7 @@ export default function ProfileInfo({
                 {!pathname && (
                   <div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#E95A3A] relative">
                     <Image
+                      draggable={false}
                       className="absolute top-[5px] left-[6px] xl:left-1 xl:top-2 xl:w-8 xl:h-6"
                       src={ChallengeImg.src}
                       width={25}
@@ -310,6 +320,7 @@ export default function ProfileInfo({
                 {!pathname && (
                   <div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#E95A3A] relative">
                     <Image
+                      draggable={false}
                       className="absolute top-[5px] left-[2px] xl:w-9 xl:h-8"
                       src={MessageImg.src}
                       width={31}
@@ -321,6 +332,7 @@ export default function ProfileInfo({
                 {!pathname && (
                   <div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#4A4853] relative">
                     <Image
+                      draggable={false}
                       className="absolute top-[7px] left-[7px] xl:left-[6px] xl:top-[6px] xl:w-7 xl:h-7"
                       src={BlockImg.src}
                       width={22}

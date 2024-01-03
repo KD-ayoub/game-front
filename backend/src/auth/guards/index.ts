@@ -17,13 +17,13 @@ export class FT_GUARD extends AuthGuard('42') {
 			//throw "hey";
 			//return true;
       const activate = (await super.canActivate(context)) as boolean;
-			await console.log(`1 ft_guard ${activate}`);
+			//await console.log(`1 ft_guard ${activate}`);
 	  	const request = context.switchToHttp().getRequest();
 	  	await super.logIn(request);
-			await console.log(`2 ft_guard ${activate}`);
+			//await console.log(`2 ft_guard ${activate}`);
 	  	return activate;
 	  } catch (error) {
-			console.log('err = ', error);
+			//console.log('err = ', error);
 			const res = context.switchToHttp().getResponse();
 			res.redirect("http://localhost:3000/auth");
 	  }
@@ -40,12 +40,12 @@ export class AuthenticatedGuard implements CanActivate {
     	//res.header('Access-Control-Allow-Credentials', 'true');
 			//res.redirect(302, "http://localhost:3000");
 			//return false;
-			console.log('authenticatedGuard');
+			//console.log('authenticatedGuard');
     	const req = context.switchToHttp().getRequest();
 			//if (req.isAuthenticated()) {
 			//	// redirect to profile
 			//}
-			console.log(req.isAuthenticated());
+			//console.log(req.isAuthenticated());
 			//const res = context.switchToHttp().getResponse();
 			//res.redirect("http://localhost:3000/auth");
 			//console.log('db f guard ', req.isAuthenticated);
@@ -71,7 +71,7 @@ export class first_timeGuard implements CanActivate{
 
 	async canActivate(context: ExecutionContext): Promise<boolean>
 	{
-		console.log("1d");
+		//console.log("1d");
 		const req = context.switchToHttp().getRequest();
 		const res = context.switchToHttp().getResponse();
 		if (!req.isAuthenticated()) {
@@ -109,10 +109,10 @@ export class first_timeGuard implements CanActivate{
 		{
 			//const res = context.switchToHttp().getResponse();
 			//console.log("test : ",req.session.passport.user);
-			console.log('2fa guard');
+			//console.log('2fa guard');
 			const user = req.session.passport.user;
 			//user['ok'] = 'll';
-			console.log(user);
+			//console.log(user);
 			if (!user.code)
 			{
 				// redirect to 2fa page

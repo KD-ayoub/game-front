@@ -1,15 +1,20 @@
 import React, { ChangeEvent } from "react";
 import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function GameLevel() {
   const [level, setLevel] = useState("");
+  const router = useRouter();
   function handlChange(e: ChangeEvent<HTMLInputElement>) {
     setLevel(e.target.value);
     console.log("check box", e.target.value);
   }
   function handlNextClick() {
     if (level) {
+      if (level === 'Easy') router.push('/game/bot?paddle=10&ball=0.3');
+      if (level === 'Medium') router.push('/game/bot?paddle=15&ball=0.6');
+      if (level === 'Hard') router.push('/game/bot?paddle=17&ball=1.2');
         console.log("go next");
     }
   }
@@ -67,7 +72,7 @@ export default function GameLevel() {
         </label>
       </div>
       <div
-        className="w-20 h-8 md:w-24 md:h-9 lg:w-28 lg:h-10 xl:w-36 xl:h-12 2xl:w-44 2xl:h-16 bg-[#E95A3A] rounded-[20px] xl:rounded-[24px] 2xl:rounded-[28px] flex justify-center items-center"
+        className="w-20 h-8 md:w-24 md:h-9 lg:w-28 lg:h-10 xl:w-36 xl:h-12 2xl:w-44 2xl:h-16 bg-[#E95A3A] rounded-[20px] xl:rounded-[24px] 2xl:rounded-[28px] flex justify-center items-center cursor-pointer"
         onClick={handlNextClick}
       >
         <p

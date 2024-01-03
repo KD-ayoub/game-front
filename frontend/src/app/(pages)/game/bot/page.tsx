@@ -3,19 +3,44 @@
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Header, SideBar } from "@/app/components";
+import { Header, SideBar, ModalGameComponent } from "@/app/components";
 import { useRef } from "react";
 import Ball from "./botcode/Ball";
 import Paddle from "./botcode/Paddle";
 import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
-import ProfileImg from "@/app/assets/svg/profileimg.svg";
+import ProfileImg from "@/app/assets/svg/game/withBot.svg";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { SettingsType } from "@/app/types/settingsType";
+import getSettings from "@/app/api/Settings/getSettings";
+import Swal from "sweetalert2";
 
-export default function Chat() {
+export default function Bot() {
+  const [dataSettings, setDataSettings] = useState<SettingsType>({
+    id: "",
+    full_name: "",
+    nickName: "",
+    fac_auth: false,
+    photo_path: `${ProfileImg.src}`,
+  });
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
   const marginbody = isHumburgClicked ? "ml-6" : "";
-
+  const [openModal, setOpenMoadl] = useState(true);
+  const searchParams = useSearchParams();
+  const paddleSpeed = searchParams.get("paddle")
+    ? searchParams.get("paddle")
+    : "10";
+  const ballSpeed = searchParams.get("ball") ? searchParams.get("ball") : "0.3";
+  console.log(
+    "paddle\nspeed",
+    parseFloat(paddleSpeed!),
+    parseFloat(ballSpeed!)
+  );
+  const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const playerRef = useRef<HTMLParagraphElement>(null);
+  const unmounted = useRef(false);
+  const animationFrameRef = useRef(-1);
   useEffect(() => {
     let table = canvasRef.current;
     console.log("client", table?.clientWidth, table?.clientHeight);
@@ -34,7 +59,8 @@ export default function Chat() {
 
     const ball = new Ball(context, {
       radius: table.width / 30,
-      speed: table.width < 400 ? 0.2 : 0.3,
+      // 0.3 easy - 10 paddle / 0.6 medium 15 paddle / 1.2 hard 17 paddle
+      speed: table.width < 400 ? 0.2 : parseFloat(ballSpeed!),
       color: "#fff",
       gap: wallGap,
       tableWidth: table.width,
@@ -45,7 +71,7 @@ export default function Chat() {
       x: xdownPaddle,
       y: ydownPaddle,
       gap: wallGap,
-      speed: 10,
+      speed: parseFloat(paddleSpeed!),
       color: "#fff",
       width: paddleWidth,
       height: paddleHeight,
@@ -83,16 +109,44 @@ export default function Chat() {
           width: paddleWidth,
           height: paddleHeight,
         };
-        if (ball.checkLoss(data)) resetAll();
+        if (ball.checkLoss(data)) {
+          resetAll();
+          playerRef.current!.innerHTML = (
+            parseInt(playerRef.current!.innerHTML) + 1
+          ).toString();
+          if (playerRef.current!.innerHTML === "7") {
+            //show modal
+            // redirect to profile
+            Swal.fire({
+              title: "You have lost",
+              text: "",
+              imageUrl: `${ProfileImg.src}`,
+              imageWidth: 400,
+              imageHeight: 200,
+              imageAlt: "Custom image",
+              allowOutsideClick: false,
+            }).then(res => {
+              router.push('/game')
+            });
+            return () => {
+              window.removeEventListener("resize", handlresize);
+              document.removeEventListener("keydown", handlKeyDown);
+              window.cancelAnimationFrame(animationFrameRef.current);
+              resetAll();
+            }
+          }
+        }
         ball.updateBall(delta, data);
         downPaddle.updatePaddle();
         upPaddle.updateBotPaddle(ball.x);
       }
       lastTime = time;
-      window.requestAnimationFrame(update);
+      if (!unmounted.current) {
+        animationFrameRef.current = window.requestAnimationFrame(update);
+      }
     }
-    window.requestAnimationFrame(update);
-    document.addEventListener("keydown", (e) => {
+    animationFrameRef.current = window.requestAnimationFrame(update);
+    function handlKeyDown(e: KeyboardEvent) {
       switch (e.code) {
         case "ArrowRight":
           if (!downPaddle.checkRightWall()) downPaddle.movePaddle(e.code);
@@ -101,23 +155,32 @@ export default function Chat() {
           if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
           break;
       }
-    });
-    //document.addEventListener('visibilitychange', function() {
-    //  if (document.hidden) {
-    //    chk = false;
-    //    window.requestAnimationFrame(update);
-    //    console.log('bey');
-    //  } else {
-    //    chk = true;
-    //    resetAll();
-    //    window.requestAnimationFrame(update);
-    //    console.log('hey');
-    //  }
-    //});
+    }
+    document.addEventListener("keydown", handlKeyDown);
     function handlresize() {
       ball.reset();
     }
     window.addEventListener("resize", handlresize);
+    return () => {
+      window.removeEventListener("resize", handlresize);
+      document.removeEventListener("keydown", handlKeyDown);
+      window.cancelAnimationFrame(animationFrameRef.current);
+      resetAll();
+    };
+  }, [!openModal]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpenMoadl(false);
+    }, 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [openModal]);
+  useEffect(() => {
+    async function fetcher() {
+      setDataSettings(await getSettings());
+    }
+    fetcher();
   }, []);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -136,39 +199,59 @@ export default function Chat() {
           Game
         </div>
         <div className="flex flex-col items-center w-full h-full gap-2 mt-20">
-          <div className="w-[200px] h-12 p-2 flex justify-between">
+          <div className="w-[200px] h-12 sm:w-[300px] sm:h-14 md:w-[400px] md:h-16 lg:w-[500px] lg:h-[70px] xl:w-[600px] xl:h-[75px] 2xl:w-[700px] 2xl:h-[100px] p-2 flex justify-between">
+            {openModal && (
+              <ModalGameComponent onClick={() => setOpenMoadl(false)} />
+            )}
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
-                  src={ProfileImg.src}
+                  draggable={false}
+                  className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
+                  src={dataSettings.photo_path}
                   width={20}
                   height={20}
                   alt="profile pic"
                 />
                 <p
-                  className={`${NeuePlakFont.className} text-white text-[12px]`}
+                  className={`${NeuePlakFont.className} text-white text-[12px] sm:text-[14px] md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px]`}
                 >
-                  Nickname
+                  {dataSettings.nickName}
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
-              <p className={`${NeuePlakFont.className} text-white`}>0</p>
-              <p className={`${NeuePlakFont.className} text-white`}>:</p>
-              <p className={`${NeuePlakFont.className} text-white`}>0</p>
+            <div className="flex gap-2 items-center">
+              <p
+                ref={playerRef}
+                className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}
+              >
+                0
+              </p>
+              <p
+                className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}
+              >
+                :
+              </p>
+              <p
+                className={`${NeuePlakFont.className} text-white sm:text-[18px] md:text-[22px] lg:text-[30px] xl:text-[38px] 2xl:text-[45px]`}
+              >
+                0
+              </p>
             </div>
             <div className="flex justify-center">
               <div className="flex flex-col justify-center items-center">
                 <Image
+                  draggable={false}
+                  className="sm:w-[25px] sm:h-[25px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
                   src={ProfileImg.src}
                   width={20}
                   height={20}
                   alt="profile pic"
                 />
                 <p
-                  className={`${NeuePlakFont.className} text-white text-[12px]`}
+                  className={`${NeuePlakFont.className} text-white text-[12px] sm:text-[14px] md:text-[18px] lg:text-[22px] xl:text-[28px] 2xl:text-[35px]`}
                 >
-                  Bot
+                  PongBot
                 </p>
               </div>
             </div>
@@ -189,11 +272,13 @@ export default function Chat() {
                   "repeating-linear-gradient(to right,transparent,transparent 10px,white 10px,white 20px);",
               }}
             ></div> dashed line  */}
-            <canvas
-              className="w-full h-full absolute top-0 z-10"
-              ref={canvasRef}
-              id="table"
-            ></canvas>
+            {!openModal && (
+              <canvas
+                className="w-full h-full absolute top-0 z-10"
+                ref={canvasRef}
+                id="table"
+              ></canvas>
+            )}
           </div>
         </div>
       </div>

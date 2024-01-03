@@ -17,6 +17,7 @@ import PutSettings from "@/app/api/Settings/putSettings";
 import PutImage from "@/app/api/Settings/putImage";
 import toast, { Toaster } from "react-hot-toast";
 import DeleteImage from "@/app/api/Settings/deleteImage";
+import _ from "lodash";
 
 export default function Settings() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
@@ -30,13 +31,12 @@ export default function Settings() {
     fac_auth: false,
     photo_path: `${ProfileImg.src}`,
   });
-  const [respSettings, setRespSettings] = useState<SettingsType>({
+  const [firstDataSettings, setFirstDataSettings] = useState<SettingsType>({
     id: "",
     full_name: "",
     nickName: "",
     fac_auth: false,
-    photo_path: "",
-    qr_code_url: "",
+    photo_path: `${ProfileImg.src}`,
   });
   const [selectedImage, setSelectedImage] = useState<File>();
   const [createObjectURL, setCreateObjectURL] = useState(`${ProfileImg.src}`);
@@ -49,24 +49,28 @@ export default function Settings() {
   function handlFullNameFocus() {
     if (fullNamelementRef.current) {
       const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
-      const old = `${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
+      const old = `${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] focus:outline-none focus:ring-0 focus:ring-transparent h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
       fullNamelementRef.current.className = fullNameRegex.test(
         fullNamelementRef.current.value
       )
         ? old
-        : fullNamelementRef.current.className.concat(" border border-red-600");
+        : fullNamelementRef.current.className.concat(
+            " border focus:border-red-600"
+          );
     }
   }
   function handlNickNameFocus() {
     if (nickNamelementRef.current) {
       const fullNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
       console.log(fullNameRegex.test(nickNamelementRef.current.value));
-      const old = `${NeuePlakFont.className} bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
+      const old = `${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] focus:outline-none focus:ring-0 focus:ring-transparent h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`;
       nickNamelementRef.current.className = fullNameRegex.test(
         nickNamelementRef.current.value
       )
         ? old
-        : nickNamelementRef.current.className.concat(" border border-red-600");
+        : nickNamelementRef.current.className.concat(
+            " border focus:border-red-600"
+          );
     }
   }
   function handlNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -88,7 +92,8 @@ export default function Settings() {
     }
     URL.revokeObjectURL(createObjectURL);
     setCreateObjectURL(`${ProfileImg.src}`);
-    dataSettings.photo_path = `default_img`;
+    setDataSettings({ ...dataSettings, photo_path: "default_img" });
+    // dataSettings.photo_path = `default_img`;
     setSelectedImage(undefined);
     // send an empty json
   }
@@ -99,7 +104,7 @@ export default function Settings() {
     formData.forEach((item) => (checkItem = item.toString()));
     console.log("checkItem", checkItem);
     if (selectedImage) {
-      console.log('shoul not enter');
+      console.log("shoul not enter");
       const toastId = toast.loading("Saving changes", {
         style: {
           backgroundColor: "#383546",
@@ -112,7 +117,7 @@ export default function Settings() {
         style: {
           backgroundColor: "#383546",
           color: "white",
-        }
+        },
       });
       console.log("putted", putted);
     }
@@ -120,16 +125,37 @@ export default function Settings() {
   async function handlSaveChanges() {
     const fullNameRegex = /^(?!.*  )[A-Za-z][A-Za-z ]{4,28}[A-Za-z]$/;
     const nickNameRegex = /^(?!.*\s)[a-zA-Z0-9_-]{2,8}$/;
+    console.log("settings before", firstDataSettings);
+    console.log("ettings sent", dataSettings);
+    console.log("imageeeeeeeee", createObjectURL);
+    console.log("photo img", dataSettings.photo_path);
+    const checkIschanged = _.isEqual(firstDataSettings, dataSettings);
+    console.log("entered hereeeeeeeeeee", checkIschanged);
+    //neeed to work on
+    // const checkIschanged = JSON.stringify(firstDataSettings) === JSON.stringify(dataSettings);
+    if (checkIschanged) {
+      toast.success("Saved", {
+        style: {
+          backgroundColor: "#383546",
+          color: "white",
+        },
+      });
+      return;
+    }
+    setFirstDataSettings(dataSettings);
     if (fullNamelementRef.current && nickNamelementRef.current) {
       if (
         fullNameRegex.test(fullNamelementRef.current.value) &&
         nickNameRegex.test(nickNamelementRef.current.value)
       ) {
         // send put method
-        console.log("ettings sent", dataSettings);
-        console.log("selected ", selectedImage);
+        // console.log("ettings sent", dataSettings);
+        console.log("selected ", dataSettings.full_name);
         const twofa = await PutSettings(dataSettings);
-        setDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
+        if (twofa.qr_code_url) {
+          setDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url });
+          setFirstDataSettings({ ...dataSettings, qr_code_url: twofa.qr_code_url }); 
+        }
         handlImageChange();
         if (dataSettings.photo_path === "default_img") {
           console.log("deleted", dataSettings.photo_path);
@@ -140,7 +166,7 @@ export default function Settings() {
             style: {
               backgroundColor: "#383546",
               color: "white",
-            }
+            },
           });
         }
         console.log("save");
@@ -150,7 +176,7 @@ export default function Settings() {
           style: {
             backgroundColor: "#383546",
             color: "white",
-          }
+          },
         });
         console.log("dont save");
       }
@@ -158,7 +184,9 @@ export default function Settings() {
   }
   useEffect(() => {
     async function fetcher() {
-      setDataSettings(await getSettings());
+      const response = await getSettings();
+      setDataSettings(response);
+      setFirstDataSettings(response);
     }
     fetcher();
   }, []);
@@ -186,6 +214,7 @@ export default function Settings() {
             <Toaster />
             <div className="flex flex-col justify-center items-center">
               <Image
+                draggable={false}
                 className="m-4 md:m-8 2xl:m-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-36 xl:h-36 2xl:w-44 2xl:h-44 rounded-full"
                 src={
                   dataSettings.photo_path === `${ProfileImg.src}` ||
@@ -201,6 +230,7 @@ export default function Settings() {
               <div className="flex justify-center gap-4 md:gap-12">
                 <div className="w-[94px] md:h-8 md:w-[100px] lg:w-[130px] xl:w-[170px] 2xl:w-[240px] lg:h-9 xl:h-12 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 border-solid border rounded-[15px] 2xl:rounded-[30px] justify-center items-center cursor-pointer">
                   <Image
+                    draggable={false}
                     className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9 "
                     src={TrashImg.src}
                     width={14}
@@ -220,6 +250,7 @@ export default function Settings() {
                 >
                   <div className=" text-white w-[94px] md:h-8 md:w-[100px]  xl:w-[170px] lg:w-[130px] xl:h-12 2xl:w-[240px] lg:h-9 2xl:h-16 flex gap-1 xl:gap-3 2xl:gap-7 bg-[#E95A3A] rounded-[15px]  2xl:rounded-[30px] justify-center items-center">
                     <Image
+                      draggable={false}
                       className="lg:w-5 lg:h-5 xl:w-7 2xl:w-9 xl:h-7 2xl:h-9"
                       src={ChangeImg.src}
                       width={14}
@@ -239,7 +270,10 @@ export default function Settings() {
                           const file = e.target.files[0];
                           if (e.target.files.length > 0) {
                             setCreateObjectURL(URL.createObjectURL(file));
-                            dataSettings.photo_path = `${ProfileImg.src}`;
+                            setDataSettings({
+                              ...dataSettings,
+                              photo_path: `${ProfileImg.src}`,
+                            });
                             console.log("imagechange:", createObjectURL);
                             setSelectedImage(file);
                           }
@@ -255,13 +289,12 @@ export default function Settings() {
               <div className="m-3 sm:flex sm:gap-20 md:gap-32 justify-evenly">
                 <form>
                   <p
-                    className={`${NeuePlakFont.className} text-white text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px] 2xl:text-[33px] `}
+                    className={`${NeuePlakFont.className} text-white text-[12px] md:text-[14px] lg:text-[22px] xl:text-[25px]  2xl:text-[33px] `}
                   >
                     Full name
                   </p>
                   <input
-                    style={{ outline: "none" }}
-                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    className={`${NeuePlakFont.className} text-white  bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] focus:outline-none focus:ring-0 focus:ring-transparent md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
                     ref={fullNamelementRef}
                     value={dataSettings.full_name}
@@ -279,8 +312,7 @@ export default function Settings() {
                     Nickname
                   </p>
                   <input
-                    style={{ outline: "none" }}
-                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
+                    className={`${NeuePlakFont.className} text-white bg-[#383546] rounded-[5px] 2xl:rounded-[10px] h-8 w-[200px] sm:w-[240px] focus:outline-none focus:ring-0 focus:ring-transparent md:w-[260px] lg:w-[300px] xl:w-[400px] 2xl:w-[500px] lg:h-10 xl:h-12 2xl:h-16 pl-1`}
                     type="text"
                     ref={nickNamelementRef}
                     value={dataSettings.nickName}
@@ -342,6 +374,7 @@ export default function Settings() {
               </div>
               <div className="flex justify-center md:w-[10%]">
                 <Image
+                  draggable={false}
                   className="md:hidden"
                   src={Horizontal.src}
                   width={119}
@@ -349,6 +382,7 @@ export default function Settings() {
                   alt="horizontal red"
                 />
                 <Image
+                  draggable={false}
                   className="hidden md:block xl:w-[5px] 2xl:w-[6px]"
                   src={Vertical.src}
                   width={2}
@@ -359,6 +393,7 @@ export default function Settings() {
               {dataSettings.fac_auth && dataSettings.qr_code_url && (
                 <div className="m-5 flex justify-center items-center md:w-[20%] bg-slate-50">
                   <Image
+                    draggable={false}
                     className="md:w-full md:h-full"
                     src={dataSettings.qr_code_url}
                     width={132}

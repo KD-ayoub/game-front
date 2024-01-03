@@ -6,6 +6,7 @@ export default function PlayMode({ Picture, Mode }: { Picture:string, Mode: stri
   return (
     <div>
       <Image
+        draggable={false}
         className= "sm:w-[220px] sm:h-[221px] lg:w-[320px] lg:h-[321px] xl:w-[420px] xl:h-[421px] 2xl:w-[620px] 2xl:h-[621px]"
         src={Picture}
         width={178}

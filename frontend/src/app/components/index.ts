@@ -15,6 +15,7 @@ import FriendConversation from "./chat/friendConversation";
 import FriendsMessaged from "./chat/friendsMessaged";
 import OnlineNow from "./chat/onlineNow";
 
+import ModalGameComponent from "./game/ModalGameComponent";
 
 export {
     Header,
@@ -34,4 +35,5 @@ export {
     FriendsMessaged,
     OnlineNow,
     
+    ModalGameComponent,
 }
