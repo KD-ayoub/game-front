@@ -270,7 +270,7 @@ export class chatService {
 
 	async create_channel_obj(channel: Room,userid : string): Promise<channels>
 	{
-		let b : channels = {id : "", joined: false, name : "", type: ""};
+		let b : channels = {id : "", isJoined: false, nameOfChannel : "", type: "" , photo: "https://ichef.bbci.co.uk/news/976/cpsprodpb/15951/production/_117310488_16.jpg.webp"};
 
 		if (channel.type == RoomType.PRIVATE)
 		{
@@ -303,10 +303,9 @@ export class chatService {
 			if (private_room)
 			{
 				b.id = private_room.id;
-				b.joined = true;
-				b.name = private_room.name;
+				b.isJoined = true;
+				b.nameOfChannel = private_room.name;
 				b.type = private_room.type;
-
 			}
 			return b;
 		}
@@ -342,18 +341,18 @@ export class chatService {
 			if (rooms)
 			{
 				b.id = rooms.id;
-				b.name = rooms.name;
+				b.nameOfChannel = rooms.name;
 				b.type = rooms.type;
 				if (rooms.owner.id == userid)
 				{
-					b.joined = true;
+					b.isJoined = true;
 					return b;
 				}
 				for (let i = 0; i < rooms.members.length; i++)
 				{
 					if (rooms.members[i].id == userid)
 					{
-						b.joined = true;
+						b.isJoined = true;
 						return b;
 					}
 				}
@@ -361,7 +360,7 @@ export class chatService {
 				{
 					if (rooms.admins[i].id == userid)
 					{
-						b.joined = true;
+						b.isJoined = true;
 						return b;
 					}
 				}
@@ -1079,5 +1078,29 @@ export class chatService {
 
 	async room_messages(userid: string,channel_id : string)
 	{
+		try {
+			const friends = await this.prisma.friendship.findMany({
+				where: {
+					userId: userid,
+					is_blocked: true
+				},
+				select: {
+					friendId: true,
+					userId : true
+				}
+			})
+			console.log("friends : ",friends);
+			const room = await this.prisma.roomMessage.findMany({
+				where: {
+					roomId : channel_id,
+				},
+				select: {
+					senderId: true
+				}
+			})
+			
+		} catch (error) {
+			
+		}
 	}
 }
