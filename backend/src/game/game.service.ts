@@ -121,6 +121,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 
 		find[i].ball = new Ball(payload);
 		let chk = (find[0].paddle || find[1].paddle) ? true : false;
+		//console.log('chk = ', chk);
 		find[i].paddle = new Paddle(payload, chk);
 
 		//find[i].gameData = {
@@ -138,6 +139,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			const sight = find[0].ball.calculeBallSight();
 			for (let i = 0; i != 2; i++)
 				find[i].ball.setBallSight(sight);
+			find[0].paddle.sight = "BOTTOM";
 			//find[0].gameData.getdx = find[1].gameData.getdx;
 			//find[0].gameData.getdy = find[1].gameData.getdy;
 			//console.log('l = ', find[0].gameData);
@@ -154,6 +156,10 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			//	find[1].paddle.getData(find[1].value)
 			//]);
 			console.log('still');
+			//console.log('here ', find[0].paddle.sight);
+			//console.log('here ', find[1].paddle.sight);
+			console.log('paddle = ', find[0].value, ' ',  find[0].paddle);
+			console.log('paddle = ', find[1].value, ' ',  find[1].paddle);
 			this.ws.to(payload.room).emit("playNow");
 			//emit here
 		}
@@ -170,10 +176,12 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 		let find = this.playerRoom.get(payload.room);
 		let i = find[0].value === client.id ? 0 : 1;
 		//console.log('movePaddle');
+		//if (payload.move === "right") {
 		if (payload.move === "right" && !find[i].paddle.checkRightWall()) {
 			find[i].paddle.movePaddle(payload.move);
 			console.log('done');
 		}
+		//else if (payload.move === "left")
 		else if (payload.move === "left" && !find[i].paddle.checkLeftWall())
 			find[i].paddle.movePaddle(payload.move);
 	}
@@ -205,7 +213,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 		};
 		//console.log('data = ', client.id, ' ', data);
 		//if (!payload.firstTime)
-			find[i].ball.updateBall(payload.delta, data);
+		find[i].ball.updateBall(payload.delta, data);
 		//if (!payload.firstTime) {
     //	if (find[i].gameData.x + find[i].gameData.r >= find[i].gameData.width)
 		//		find[i].gameData.getdx = -find[i].gameData.getdx;

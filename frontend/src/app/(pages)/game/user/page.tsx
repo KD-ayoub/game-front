@@ -71,6 +71,14 @@ export default function Bot() {
      console.log('allllll');
      const ballData = document.getElementById('ball');
      const ballElem = document.getElementById('ball');
+     const paddleTop = document.getElementById('paddle-top');
+     const paddleBottom = document.getElementById('paddle-bottom');
+     //console.log('paddle up width = ',
+     //document.getElementById('paddle-top').offsetWidth,
+     //'paddle up height = ', document.getElementById('paddle-top').offsetHeight);
+     //console.log('paddle bottom width = ',
+     //document.getElementById('paddle-bottom').offsetWidth,
+     //'paddle bottom height = ', document.getElementById('paddle-bottom').offsetHeight);
      console.log(ballData?.offsetWidth)
      SocketClient.emit("setGameDefaultData", {
        room: ioClient.room, //here and other use SocketClient
@@ -146,7 +154,7 @@ export default function Bot() {
      //  //downPaddle.reset(xdownPaddle, ydownPaddle);
      //  //upPaddle.reset(xupPaddle, yupPaddle);
      //};
-
+     let chk = true;
      SocketClient.on("playNow", (data: any) => {
        //console.log('f play now');
        let lastTime: number;
@@ -157,21 +165,53 @@ export default function Bot() {
           {socket: string, xpos: number, ypos: number, radius: number}
         ],
         paddle: [
-          {socket: string, xpos: number, ypos: number},
-          {socket: string, xpos: number, ypos: number}
+          {socket: string, pos: number, sight: string, speed: number},
+          {socket: string, pos: number, sight: string, speed: number}
+          //{socket: string, xpos: number, ypos: number},
+          //{socket: string, xpos: number, ypos: number}
         ]
       ) => {
         let i = (ball[0].socket === SocketClient.id) ? 0 : 1;
-         // const ballElem = document.getElementById('ball');
-         // ballElem?.style.setProperty("--y", "50");
-         // ballElem?.style.setProperty("--x", "50");
-         if (i === 0) {
-           ballElem?.style.setProperty("--y", ball[i].ypos.toString());
-           ballElem?.style.setProperty("--x", ball[i].xpos.toString());
-         } else {
-           ballElem?.style.setProperty("--y", (ball[i].ypos).toString());
-           ballElem?.style.setProperty("--x", ball[i].xpos.toString());
-         }
+        //const ballElem = document.getElementById('ball');
+        //ballElem?.style.setProperty("--y", "50");
+        //ballElem?.style.setProperty("--x", "50");
+        ballElem?.style.setProperty("--y", ball[i].ypos.toString());
+        ballElem?.style.setProperty("--x", ball[i].xpos.toString());
+           //paddleTop?.style.setProperty("--position", "15");
+           if (paddle[i].sight === "BOTTOM") {
+             const j = (paddle[0].socket !== SocketClient.id) ? 0 : 1;
+             paddleBottom?.style.setProperty("--position", paddle[i].pos.toString());
+             paddleTop?.style.setProperty("--position", paddle[j].pos.toString());
+           }
+           else {
+             if (chk) {
+              const a = document.getElementById('game');
+              a?.classList.add('rotate-180');
+              chk = false;
+             }
+             const j = (paddle[0].socket !== SocketClient.id) ? 0 : 1;
+             paddleTop?.style.setProperty("--position", paddle[i].pos.toString());
+             paddleBottom?.style.setProperty("--position", paddle[j].pos.toString());
+           }
+           //ballElem?.style.setProperty("--x", ball[i].xpos.toString());
+
+
+           //********later
+           //if (paddle[i].xpos) {
+           //  const a = document.getElementById('game');
+           //  a?.classList.add('rotate-180');
+           //  //a?.classList.add('-scale-x-100');
+           //  //table?.classList.add('-scale-x-100');
+           //}
+
+         //if (i === 0) {
+         //  ballElem?.style.setProperty("--y", ball[i].ypos.toString());
+         //  ballElem?.style.setProperty("--x", ball[i].xpos.toString());
+         //} else {
+         //  ballElem?.style.setProperty("--y", (ball[i].ypos).toString());
+         //  ballElem?.style.setProperty("--x", ball[i].xpos.toString());
+         //}
+
          //const paddleElem = document.getElementById('paddle-top');
          //const tableElem = document.getElementById('table');
          //document.addEventListener('keydown', (e) => {
@@ -414,10 +454,13 @@ export default function Bot() {
             }}
             id="table"
           >
-            <div className="ball" id="ball"></div>
-            <div className="paddle top" id="paddle-top"></div>
-            <div className="paddle bottom" id="paddle-bottom"></div>
-            <div className="middle-line"></div>
+            <div className="h-full w-full -scale-x-100" id="game">
+              <div className="ball" id="ball"></div>
+              <div className="paddle top" id="paddle-top"></div>
+              <div className="paddle bottom" id="paddle-bottom"></div>
+              <div className="middle-line"></div>
+            </div>
+
             {/* {!openModal && (
               <canvas
                 className="w-full h-full absolute top-0 z-10 aspect-video"
