@@ -19,22 +19,7 @@ export default function ChannelMessaged({
 }: {
   onSelect: (id: ChannelChatType) => void;
 }) {
-  const [channel, setChannel] = useState<ChannelChatType[]>([
-    {
-      id: "1",
-      nameOfChannel: "1337",
-      photo: hic_avatar.src,
-      isBlocked: false,
-      isJoined: false,
-    },
-    {
-      id: "2",
-      nameOfChannel: "Mimoo",
-      photo: lwaghch.src,
-      isBlocked: true,
-      isJoined: true,
-    },
-  ]);
+  const [channel, setChannel] = useState<ChannelChatType[]>([]);
   const [searching, setSearching] = useState("");
 
   // here we filterSearch the friends list:
@@ -52,13 +37,16 @@ export default function ChannelMessaged({
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
     async function fetcher() {
-      const getChannel = await fetch("http://localhost:3001/chat/list_channels", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const getChannel = await fetch(
+        "http://localhost:3001/chat/list_channels",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       if (!getChannel.ok) {
         console.log("error fetcher");
         throw new Error("Network response was not ok");

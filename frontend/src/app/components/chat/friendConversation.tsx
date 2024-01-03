@@ -10,7 +10,7 @@ import submitBtn from "@/app/assets/svg/chat/submitBtn.svg";
 import { GetChatConverssationType } from "@/app/types/getChatConverssation";
 import { FriendsChatType } from "@/app/types/friendsChatType";
 import Image from "next/image";
-import ioClient from "../../api/instance";
+// import ioClient from "../../api/instance";
 import moment from "moment";
 import tilijo from "../../assets/svg/chat/tilijo.svg";
 

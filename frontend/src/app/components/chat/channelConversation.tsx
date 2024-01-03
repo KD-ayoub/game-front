@@ -9,7 +9,7 @@ import submitBtn from "@/app/assets/svg/chat/submitBtn.svg";
 import { GetChatConverssationType } from "@/app/types/getChatConverssation";
 import { ChannelChatType } from "@/app/types/ChannelChatType";
 import Image from "next/image";
-import ioClient from "../../api/instance";
+// import ioClient from "../../api/instance";
 import moment from "moment";
 import tilijo from "../../assets/svg/chat/tilijo.svg";
 import { DataChannelConversationType } from "@/app/types/dataChannelConversationType";
@@ -102,8 +102,8 @@ export default function ChannelConversation({}: //   channelSelected,
     nameOfChannel: "Mimoo",
     id: "10",
     photo: lwaghch.src,
-    isBlocked: false,
     isJoined: true,
+    type: "private",
   });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // information about members of channel
@@ -369,7 +369,7 @@ export default function ChannelConversation({}: //   channelSelected,
               />
               <p className="channelName">{channelSelected.nameOfChannel}</p>
               {/* hna 5asni n3ref wessh ana admin wla owner bach n affichi select options wla bach n affichi ghi p "channel private or public or protected" */}
-              <p className="channelType">Channel private</p>
+              <p className="channelType">Channel {channelSelected.type}</p>
             </div>
             {/* start list members of channel with their roles */}
             <div className="infoMembersOfChannel">
