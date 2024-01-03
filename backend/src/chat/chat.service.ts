@@ -270,7 +270,7 @@ export class chatService {
 
 	async create_channel_obj(channel: Room,userid : string): Promise<channels>
 	{
-		let b : channels = {id : "", isJoined: false, nameOfChannel : "", type: "" , photo: "assets/svg/fakeAvatar.svg"};
+		let b : channels = {id : "", isJoined: false, nameOfChannel : "", type: "" , photo: "https://cdn.intra.42.fr/users/a8bb89f49d75ccc6a0c1da0dcbf3f109/akouame.jpg"};
 
 		if (channel.type == RoomType.PRIVATE)
 		{
