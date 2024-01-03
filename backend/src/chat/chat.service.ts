@@ -1093,6 +1093,7 @@ export class chatService {
 			const messages = await this.prisma.roomMessage.findMany({
 				where: {
 					roomId : channel_id,
+					// check if the user is in the room
 				},
 				orderBy: {
 					createdAt: 'asc'
@@ -1153,5 +1154,35 @@ export class chatService {
 			return messagehistory;
 		}
 		return messagehistory;
+	}
+
+
+	async members(userid: string,channel_id : string)
+	{
+		try {
+			const members = await this.prisma.room.findUnique({
+				where: {
+					id : channel_id
+					// check if the user is in the room
+				},
+				select: {
+					ownerId:true,
+					members: {
+						select: {
+							id : true,
+						}
+					},
+					admins: {
+						select: {
+							id : true,
+						}
+					}
+				}
+			})
+			console.log(members);
+		} catch (error) {
+			console.log("zbi");
+			return [];
+		}
 	}
 }
