@@ -120,48 +120,48 @@ export default function ChannelConversation({}: //   channelSelected,
       photo: fakeAvatar.src,
       role: "admin",
     },
-    {
-      nickname: "abdo",
-      id: "132",
-      photo: fakeAvatar.src,
-      role: "admin",
-    },
-    {
-      nickname: "nasser",
-      id: "102",
-      photo: fakeAvatar.src,
-      role: "admin",
-    },
-    {
-      nickname: "yasser",
-      id: "1211",
-      photo: fakeAvatar.src,
-      role: "admin",
-    },
-    {
-      nickname: "Hicham",
-      id: "12212",
-      photo: fakeAvatar.src,
-      role: "member",
-    },
-    {
-      nickname: "frida",
-      id: "12212",
-      photo: fakeAvatar.src,
-      role: "admin",
-    },
-    {
-      nickname: "simo",
-      id: "12212",
-      photo: fakeAvatar.src,
-      role: "member",
-    },
-    {
-      nickname: "3bi9a",
-      id: "12212",
-      photo: fakeAvatar.src,
-      role: "member",
-    },
+    // {
+    //   nickname: "abdo",
+    //   id: "132",
+    //   photo: fakeAvatar.src,
+    //   role: "admin",
+    // },
+    // {
+    //   nickname: "nasser",
+    //   id: "102",
+    //   photo: fakeAvatar.src,
+    //   role: "admin",
+    // },
+    // {
+    //   nickname: "yasser",
+    //   id: "1211",
+    //   photo: fakeAvatar.src,
+    //   role: "admin",
+    // },
+    // {
+    //   nickname: "Hicham",
+    //   id: "12212",
+    //   photo: fakeAvatar.src,
+    //   role: "member",
+    // },
+    // {
+    //   nickname: "frida",
+    //   id: "12212",
+    //   photo: fakeAvatar.src,
+    //   role: "admin",
+    // },
+    // {
+    //   nickname: "simo",
+    //   id: "12212",
+    //   photo: fakeAvatar.src,
+    //   role: "member",
+    // },
+    // {
+    //   nickname: "3bi9a",
+    //   id: "12212",
+    //   photo: fakeAvatar.src,
+    //   role: "member",
+    // },
     {
       nickname: "jilali",
       id: "12212",
@@ -375,7 +375,7 @@ export default function ChannelConversation({}: //   channelSelected,
             <div className="infoMembersOfChannel">
               <h3 className="role">Owner</h3>
               {/* start owner of channel */}
-              <div className="membersOfChannel">
+              <div className="ownerBox">
                 {memberList.map((member, index) => (
                   <div className="">
                     {member.role === "owner" && (

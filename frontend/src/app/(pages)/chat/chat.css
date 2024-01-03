@@ -551,13 +551,20 @@
 
 .ownerBox {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   color: #FFF;
   font-size: 11px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   border-radius: 10px;
+  background: #252134;
+  padding: 5px 15px;
+  overflow-y: auto;
+
+  max-height: 50%;
+  min-height: 15%;
+  
 }
 
 .infoMembersOfChannel .listMembersOfChannel {
@@ -574,6 +581,7 @@
   overflow-y: auto;
 
   max-height: 50%;
+  /* min-height: 15%; */
 }
 
 .infoMembersOfChannel .role {
@@ -607,6 +615,7 @@
   font-weight: 400;
   line-height: normal;
   border-radius: 10px;
+  min-height: 100%;
 }
 
 .infoMembersOfChannel .memberName {
@@ -631,7 +640,7 @@
   line-height: normal;
 
   padding: 5px 10px;
-  margin: 10px 0 0 0 ;
+  margin: 15px 0 0 0 ;
 }
 
 .leave-btn:hover {
