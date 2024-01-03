@@ -32,10 +32,11 @@ export type create_channel = {
 }
 
 export type channels = {
-	name : string,
-	type : string,
-	joined: boolean,
-	id : string
+	nameOfChannel: string;
+    photo: string;
+    id: string;
+	type: string;
+    isJoined: boolean;
 }
 
 export type join_private_channel = {
