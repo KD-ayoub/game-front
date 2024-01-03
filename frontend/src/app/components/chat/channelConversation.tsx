@@ -136,10 +136,34 @@ export default function ChannelConversation({}: //   channelSelected,
       nickname: "yasser",
       id: "1211",
       photo: fakeAvatar.src,
+      role: "admin",
+    },
+    {
+      nickname: "Hicham",
+      id: "12212",
+      photo: fakeAvatar.src,
       role: "member",
     },
     {
-      nickname: "saad",
+      nickname: "frida",
+      id: "12212",
+      photo: fakeAvatar.src,
+      role: "admin",
+    },
+    {
+      nickname: "simo",
+      id: "12212",
+      photo: fakeAvatar.src,
+      role: "member",
+    },
+    {
+      nickname: "3bi9a",
+      id: "12212",
+      photo: fakeAvatar.src,
+      role: "member",
+    },
+    {
+      nickname: "jilali",
       id: "12212",
       photo: fakeAvatar.src,
       role: "member",
@@ -147,9 +171,9 @@ export default function ChannelConversation({}: //   channelSelected,
   ]);
   // information about me if im an owner or admin or member
   const [aboutMe, setAboutMe] = useState<aboutMe>({
-    nickname: "Mouha",
+    nickname: "Akouame",
     id: "12",
-    role: "owner",
+    role: "member",
   });
 
   const handleTextareaChange = () => {
@@ -175,6 +199,20 @@ export default function ChannelConversation({}: //   channelSelected,
       body: JSON.stringify({ messageSent: textareaRef.current!.value }),
     });
     textareaRef.current!.value = "";
+  };
+
+  const handleChallenge = () => {
+    console.log("challenge");
+  }
+
+  const handleLeaveChannel = () => {
+    // fetch(`http://localhost:3001/chat/${channelSelected.id}`, {
+    //   method: "DELETE",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   credentials: "include",
+    // });
   };
 
   // Here we fetch the channel conversation :
@@ -233,7 +271,7 @@ export default function ChannelConversation({}: //   channelSelected,
                 </div>
               </div>
               {/* setting optionss in bar info */}
-              <div className="optionUserDiv">
+              {/* <div className="optionUserDiv">
                 <button onClick={handleClickBtnBack}>
                   <Image
                     src={pointsOption.src}
@@ -252,7 +290,7 @@ export default function ChannelConversation({}: //   channelSelected,
                     <option value="Challenge">Challenge</option>
                   </select>
                 </button>
-              </div>
+              </div> */}
               {/* end of setting options in bar info */}
             </div>
 
@@ -333,65 +371,149 @@ export default function ChannelConversation({}: //   channelSelected,
               {/* hna 5asni n3ref wessh ana admin wla owner bach n affichi select options wla bach n affichi ghi p "channel private or public or protected" */}
               <p className="channelType">Channel private</p>
             </div>
-            {memberList.length > 0 &&
-              memberList.map((member, index) => (
-                <div>
-                  <div className="infoMembersOfChannel" key={index}>
-                    <p className="channelOwner">Owner</p>
-                    <div className="membersOfChannel">
-                      {/* should i fix it with the picture of owner */}
-                      {member.role === "owner" && (
-                        <div className="boxMember">
-                          <Image
-                            src={
-                              member.photo === "defautl_img"
-                                ? fakeAvatar.src
-                                : member.photo
-                            }
-                            alt="memberPhoto"
-                            className="imageMember"
-                            width={30}
-                            height={30}
-                          />
-                          <p className="memberName"></p>
-                        </div>
-                      )}  
-                    </div>
-                  </div>
-                  <div className="infoMembersOfChannel">
-                    <p className="channelOwner">Admin</p>
-                    <div className="listMembersOfChannel">
-                      {/* should i fix it with the picture of owner */}
-                      <div className="boxMember">
+            {/* start list members of channel with their roles */}
+            <div className="infoMembersOfChannel">
+              <h3 className="role">Owner</h3>
+              {/* start owner of channel */}
+              <div className="membersOfChannel">
+                {memberList.map((member, index) => (
+                  <div className="">
+                    {member.role === "owner" && (
+                      <div className="boxMember" key={index}>
                         <Image
-                          src={fakeAvatar.src}
-                          alt="memberPhoto"
-                          className="imageMember"
-                          width={30}
-                          height={30}
+                          src={member.photo}
+                          alt="member"
+                          className="memberPhoto"
+                          width={35}
+                          height={35}
                         />
-                        <p className="memberName">Ayoub</p>
+                        <p className="memberName">{member.nickname}</p>
+                        {/* if im just a member i cant see this select option */}
+                        {(aboutMe.role === "member" && aboutMe.nickname !== member.nickname) && (
+                          <div className="memberSee">
+                            <button className="Challenge-btn" onClick={handleChallenge}><i className="ri-ping-pong-line"> Challenge</i></button>
+                          </div>
+                        )}
+                        {/* if im an admin i can see this select option */}
+                        {(aboutMe.role === "admin" && aboutMe.nickname !== member.nickname) && (
+                          <div className="selectOwnerOptions">
+                            <select name="" id="">
+                              mok
+                            </select>
+                          </div>
+                        )}
+                        {/* if im an owner i can see this select option */}
+                        {(aboutMe.role === "owner" && aboutMe.nickname !== member.nickname) && (
+                          <div className="selectOwnerOptions">
+                            <select name="" id="">
+                              mok
+                              <option value="mok">mok</option>
+                              <option value="mok">bak</option>
+                            </select>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    )}
                   </div>
-                  <div className="infoMembersOfChannel">
-                    <p className="channelOwner">Members</p>
-                    <div className="listMembersOfChannel">
-                      {/* should i fix it with the picture of owner */}
-                      <div className="boxMember">
+                ))}
+              </div>
+              {/* end owener of channel */}
+              <h3 className="role">Admins</h3>
+              {/* start admins of channel */}
+              <div className="listMembersOfChannel">
+                {memberList.map((member, index) => (
+                  <div className="">
+                    {member.role === "admin" && (
+                      <div className="boxMember" key={index}>
                         <Image
-                          src={fakeAvatar.src}
-                          alt="memberPhoto"
-                          className="imageMember"
-                          width={30}
-                          height={30}
+                          src={member.photo}
+                          alt="member"
+                          className="memberPhoto"
+                          width={35}
+                          height={35}
                         />
-                        <p className="memberName">Aissa</p>
+                        <p className="memberName">{member.nickname}</p>
+                        {/* if im just a member i cant see this select option */}
+                        {(aboutMe.role === "member" && aboutMe.nickname !== member.nickname) && (
+                          <div className="memberSee">
+                            <button className="Challenge-btn"><i className="ri-ping-pong-line"> Challenge</i></button>
+                          </div>
+                        )}
+                        {/* if im an admin i can see this select option */}
+                        {(aboutMe.role === "admin" && aboutMe.nickname !== member.nickname) && (
+                          <div className="selectOwnerOptions">
+                            <select name="" id="">
+                              mok
+                            </select>
+                          </div>
+                        )}
+                        {/* if im an owner i can see this select option */}
+                        {(aboutMe.role === "owner" && aboutMe.nickname !== member.nickname) && (
+                          <div className="selectOwnerOptions">
+                            <select name="" id="">
+                              mok
+                              <option value="mok">mok</option>
+                              <option value="mok">bak</option>
+                            </select>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              {/* end admins of channel */}
+              <h3 className="role">Members</h3>
+              {/* start members of channel */}
+              <div className="listMembersOfChannel">
+                {memberList.map((member, index) => (
+                  <div className="">
+                    {member.role === "member" && (
+                      <div className="boxMember" key={index}>
+                        <Image
+                          src={member.photo}
+                          alt="member"
+                          className="memberPhoto"
+                          width={35}
+                          height={35}
+                        />
+                        <p className="memberName">{member.nickname}</p>
+                        {/* if im just a member i cant see this select option */}
+                        {(aboutMe.role === "member" && aboutMe.nickname !== member.nickname) && (
+                          <div className="memberSee">
+                            <button className="Challenge-btn"><i className="ri-ping-pong-line"> Challenge</i></button>
+                          </div>
+                        )}
+                        {/* if im an admin i can see this select option */}
+                        {(aboutMe.role === "admin" && aboutMe.nickname !== member.nickname) && (
+                          <div className="selectOwnerOptions">
+                            <select name="" id="">
+                              mok
+                            </select>
+                          </div>
+                        )}
+                        {/* if im an owner i can see this select option */}
+                        {(aboutMe.role === "owner" && aboutMe.nickname !== member.nickname) && (
+                          <div className="selectOwnerOptions">
+                            <select name="" id="">
+                              mok
+                              <option value="mok">mok</option>
+                              <option value="mok">bak</option>
+                            </select>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* end list members of channel with their roles */}
+            <div className="leave-btn">
+              <button className="leaveChannel" onClick={handleLeaveChannel}>
+                Leave Channel
+              </button>
+            </div>
           </div>
           {/* end of right side of channel */}
         </>

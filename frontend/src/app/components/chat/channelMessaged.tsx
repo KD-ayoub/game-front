@@ -50,23 +50,23 @@ export default function ChannelMessaged({
   const filter_Search = filterSearch();
 
   // Here we fetch channels from server and set them to state:
-  // useEffect(() => {
-  //   async function fetcher() {
-  //     const getChannel = await fetch("http://localhost:3001/chat/conv", {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include",
-  //     });
-  //     if (!getChannel.ok) {
-  //       console.log("error fetcher");
-  //       throw new Error("Network response was not ok");
-  //     }
-  //     setChannel(await getChannel.json());
-  //   }
-  //   fetcher();
-  // }, []);
+  useEffect(() => {
+    async function fetcher() {
+      const getChannel = await fetch("http://localhost:3001/chat/list_channels", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      if (!getChannel.ok) {
+        console.log("error fetcher");
+        throw new Error("Network response was not ok");
+      }
+      setChannel(await getChannel.json());
+    }
+    fetcher();
+  }, [channel]);
 
   console.log("Channel", channel);
 

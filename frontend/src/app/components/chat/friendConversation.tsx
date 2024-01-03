@@ -124,7 +124,7 @@ export default function FriendConversation({
                   className="optionsUserSelect"
                 >
                   <option value="profile">Profile</option>
-                  <option value="block">Block</option>
+                  <option value="block" >Block</option>
                   <option value="Challenge">Challenge</option>
                 </select>
               </button>

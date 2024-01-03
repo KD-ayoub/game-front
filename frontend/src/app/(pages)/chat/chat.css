@@ -473,8 +473,8 @@
   /* justify-content: center; */
   width: 25%;
   border-radius: 25px;
-  /* background: linear-gradient(116deg, #110D1F 44.59%, rgba(17, 13, 31, 0.00) 103.76%); */
-  background: #717273;
+  background: linear-gradient(116deg, #110D1F 44.59%, rgba(17, 13, 31, 0.00) 103.76%);
+  /* background: #717273; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -520,21 +520,12 @@
 .infoMembersOfChannel {
   display: flex;
   flex-direction: column;
-  background: #E95A3A;
-  ;
+  
   width: 90%;
-  max-height: 20%;
+  max-height: 45%;
 }
 
-.infoMembersOfChannel .channelOwner {
-  color: #FFF;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  padding: 3px;
-}
-
+/* this to display the picture and the name of the members of the channel */
 .infoMembersOfChannel .membersOfChannel {
   display: flex;
   align-items: center;
@@ -546,6 +537,17 @@
   border-radius: 10px;
   background: #252134;
   padding: 5px 15px;
+}
+
+.ownerBox {
+  display: flex;
+  align-items: center;
+  color: #FFF;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border-radius: 10px;
 }
 
 .infoMembersOfChannel .listMembersOfChannel {
@@ -561,6 +563,16 @@
   padding: 5px 15px;
   overflow-y: auto;
 
+  max-height: 50%;
+}
+
+.infoMembersOfChannel .role {
+  color: #FFF;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 3px;
 }
 
 .infoMembersOfChannel .listMembersOfChannel::-webkit-scrollbar {
@@ -573,6 +585,7 @@
 
 .memberName {
   padding-left: 4px;
+  padding-right: 10px;
 }
 
 .infoMembersOfChannel .boxMember {
@@ -584,6 +597,85 @@
   font-weight: 400;
   line-height: normal;
   border-radius: 10px;
+}
+
+.infoMembersOfChannel .memberName {
+  color: #FFF;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+
+}
+
+.leave-btn {
+  border-radius: 12.5px;
+  border: 1px solid #383546;
+  background: #252134;
+
+  color: #FFF;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  padding: 5px 10px;
+  margin: 10px 0 0 0 ;
+}
+
+.leave-btn:hover {
+  background-color: #E95A3A;
+  color: #FFF;
+  transition: color .15s ease-in-out;
+}
+
+.leave-btn:active {
+  background-color: #252134;
+  color: #FFF;
+  transition: color .15s ease-in-out;
+}
+
+.Challenge-btn {
+  border-radius: 12.5px;
+  border: 1px solid #383546;
+  background-color: #E95A3A;
+  
+  color: #FFF;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 5px 4px;
+  /* margin: 10px 0 0 0 ; */
+}
+
+.memberSee {
+  display: flex;
+  align-items: center;
+  color: #FFF;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border-radius: 10px;
+  background: #252134;
+  padding: 5px 15px;
+  overflow-y: auto;
+  margin-left: auto;
+  max-height: 50%;
+}
+
+.Challenge-btn:hover {
+  background: #252134;
+  color: #FFF;
+  transition: color .15s ease-in-out;
+}
+
+.Challenge-btn:active {
+  background: #383546;
+  color: #FFF;
+  transition: color .15s ease-in-out;
 }
 
 /* end channel styles  */
