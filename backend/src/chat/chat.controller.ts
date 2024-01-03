@@ -211,12 +211,19 @@ export class ChatController{
 	}
 
 
-	// remove and change password from a channel
+
 
 
 
 	// list all messages in a channel
 
-
 	//  list all channel members and admins and owner
+	@Get('list_room_messsages/:id')
+	async room_messages(@Session() session: Record<string,any>,@Param('id') channel_id : string)
+	{
+		return ;
+	}
+
+	// remove and change password from a channel
+
 }

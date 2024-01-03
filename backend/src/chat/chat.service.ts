@@ -170,11 +170,12 @@ export class chatService {
 							}
 						}		
 					}
-				}
+				},
+				is_blocked: true
 			}
 		})
 		const reshapedResult = friends.map(user => {
-				return {id : user.friend.id,nickname: user.friend.nickName, photo: user.friend.profile.photo_path}
+				return {id : user.friend.id,nickname: user.friend.nickName, photo: user.friend.profile.photo_path, blocked: user.is_blocked}
 		});
 		return reshapedResult;
 	}
@@ -1073,5 +1074,10 @@ export class chatService {
 			return false;
 		}
 		return false;
+	}
+
+
+	async room_messages(userid: string,channel_id : string)
+	{
 	}
 }
