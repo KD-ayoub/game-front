@@ -54,7 +54,7 @@ export default function ChannelMessaged({
       setChannel(await getChannel.json());
     }
     fetcher();
-  }, [channel]);
+  }, []);
 
   console.log("Channel", channel);
 

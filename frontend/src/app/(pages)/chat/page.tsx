@@ -66,8 +66,8 @@ export default function Chat() {
             {!showConv && (
               <div className="msgSelect">
                 <select
-                  name="Messages"
-                  className="bg-[#15131D] text-center w-32 h-7 rounded-md "
+                  name="List of friends"
+                  className="bg-[#15131D]"
                   value={option}
                   onChange={(e) => setOption(e.target.value)}
                 >

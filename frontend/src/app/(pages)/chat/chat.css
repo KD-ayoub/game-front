@@ -69,15 +69,25 @@
 /* end onlineNow */
 
 /* start option select friends or channel */
-.msgSelect {
-  background-color: #15131D;
+
+.msgSelect select {
+  background-color: #252134;
   font-size: 16px;
+  border-radius: 0.375rem;
   height: 90%;
-  width: 100%;
-  padding: 5px;
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 8px;
+  border: 0;
   /* width: 866px; */
 }
 
+.msgSelect select:active {
+  background-color: #15131D;
+}
 /* end option select friends or channel */
 
 /* start friends list */
