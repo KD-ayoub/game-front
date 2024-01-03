@@ -3,4 +3,5 @@ export type ChannelChatType = {
     photo: string;
     id: string;
     isBlocked: boolean;
-    };
+    isJoined: boolean;
+};

@@ -14,6 +14,8 @@ import moment from "moment";
 import tilijo from "../../assets/svg/chat/tilijo.svg";
 import { DataChannelConversationType } from "@/app/types/dataChannelConversationType";
 import lwaghch from "../../assets/svg/chat/lwaghch.svg";
+import { MemberListChannel, aboutMe } from "../../types/memberListChannel";
+
 // const socket = io("");
 
 export default function ChannelConversation({}: //   channelSelected,
@@ -21,6 +23,7 @@ export default function ChannelConversation({}: //   channelSelected,
   //   channelSelected: ChannelChatType;
 }) {
   // const { channelSelected } = friend;
+  // information about the channel conversation
   const [dataConversation, setDataConversation] = useState<
     DataChannelConversationType[]
   >([
@@ -57,7 +60,8 @@ export default function ChannelConversation({}: //   channelSelected,
       name: "Aissa",
     },
     {
-      content: "helasdasdsasdasdasdasdasdaslansdlkanslkdnalskdnnslkdnlaksndlkansdlkansdlknaslkdnalksndlkasndlka sndlkansdlknaslkdnalskndlaksdnlkasndlkasndlkasndlkansldknasldknaslkdnldalo",
+      content:
+        "helasdasdsasdasdasdasdasdaslansdlkanslkdnalskdnnslkdnlaksndlkansdlkansdlknaslkdnalksndlkasndlka sndlkansdlknaslkdnalskndlaksdnlkasndlkasndlkasndlkansldknasldknaslkdnldalo",
       sended_at: "2021-09-01T15:00:00.000Z",
       mine: false,
       name: "Mimooo",
@@ -93,14 +97,60 @@ export default function ChannelConversation({}: //   channelSelected,
       name: "Mimoo",
     },
   ]);
-
+  // information about the channel selected
   const [channelSelected, setChannelSelected] = useState<ChannelChatType>({
     nameOfChannel: "Mimoo",
     id: "10",
     photo: lwaghch.src,
     isBlocked: false,
+    isJoined: true,
   });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // information about members of channel
+  const [memberList, setMemberList] = useState<MemberListChannel[]>([
+    {
+      nickname: "Mouha",
+      id: "12",
+      photo: fakeAvatar.src,
+      role: "owner",
+    },
+    {
+      nickname: "said",
+      id: "112",
+      photo: fakeAvatar.src,
+      role: "admin",
+    },
+    {
+      nickname: "abdo",
+      id: "132",
+      photo: fakeAvatar.src,
+      role: "admin",
+    },
+    {
+      nickname: "nasser",
+      id: "102",
+      photo: fakeAvatar.src,
+      role: "admin",
+    },
+    {
+      nickname: "yasser",
+      id: "1211",
+      photo: fakeAvatar.src,
+      role: "member",
+    },
+    {
+      nickname: "saad",
+      id: "12212",
+      photo: fakeAvatar.src,
+      role: "member",
+    },
+  ]);
+  // information about me if im an owner or admin or member
+  const [aboutMe, setAboutMe] = useState<aboutMe>({
+    nickname: "Mouha",
+    id: "12",
+    role: "owner",
+  });
 
   const handleTextareaChange = () => {
     if (textareaRef.current) {
@@ -268,6 +318,7 @@ export default function ChannelConversation({}: //   channelSelected,
               </button>
             </div>
           </div>
+          {/* right side of channel */}
           <div className="infoChannel">
             <div className="topSideOfChannel">
               <h2>Channel</h2>
@@ -282,79 +333,72 @@ export default function ChannelConversation({}: //   channelSelected,
               {/* hna 5asni n3ref wessh ana admin wla owner bach n affichi select options wla bach n affichi ghi p "channel private or public or protected" */}
               <p className="channelType">Channel private</p>
             </div>
-            <div className="infoMembersOfChannel">
-              <p className="channelOwner">Owner</p>
-              <div className="membersOfChannel">
-                {/* should i fix it with the picture of owner */}
-                <Image
-                  src={fakeAvatar.src}
-                  alt="memberPhoto"
-                  className="imageMember"
-                  width={30}
-                  height={30}
-                />
-                <p className="memberName">Mouha</p>
-              </div>
-            </div>
-            <div className="infoMembersOfChannel">
-              <p className="channelOwner">Admin</p>
-              <div className="listMembersOfChannel">
-                {/* should i fix it with the picture of owner */}
-                <div className="boxMember">
-                  <Image
-                    src={fakeAvatar.src}
-                    alt="memberPhoto"
-                    className="imageMember"
-                    width={30}
-                    height={30}
-                  />
-                  <p className="memberName">Ayoub</p>
+            {memberList.length > 0 &&
+              memberList.map((member, index) => (
+                <div>
+                  <div className="infoMembersOfChannel" key={index}>
+                    <p className="channelOwner">Owner</p>
+                    <div className="membersOfChannel">
+                      {/* should i fix it with the picture of owner */}
+                      {member.role === "owner" && (
+                        <div className="boxMember">
+                          <Image
+                            src={
+                              member.photo === "defautl_img"
+                                ? fakeAvatar.src
+                                : member.photo
+                            }
+                            alt="memberPhoto"
+                            className="imageMember"
+                            width={30}
+                            height={30}
+                          />
+                          <p className="memberName"></p>
+                        </div>
+                      )}  
+                    </div>
+                  </div>
+                  <div className="infoMembersOfChannel">
+                    <p className="channelOwner">Admin</p>
+                    <div className="listMembersOfChannel">
+                      {/* should i fix it with the picture of owner */}
+                      <div className="boxMember">
+                        <Image
+                          src={fakeAvatar.src}
+                          alt="memberPhoto"
+                          className="imageMember"
+                          width={30}
+                          height={30}
+                        />
+                        <p className="memberName">Ayoub</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="infoMembersOfChannel">
+                    <p className="channelOwner">Members</p>
+                    <div className="listMembersOfChannel">
+                      {/* should i fix it with the picture of owner */}
+                      <div className="boxMember">
+                        <Image
+                          src={fakeAvatar.src}
+                          alt="memberPhoto"
+                          className="imageMember"
+                          width={30}
+                          height={30}
+                        />
+                        <p className="memberName">Aissa</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="infoMembersOfChannel">
-              <p className="channelOwner">Members</p>
-              <div className="listMembersOfChannel">
-                {/* should i fix it with the picture of owner */}
-                <div className="boxMember">
-                  <Image
-                    src={fakeAvatar.src}
-                    alt="memberPhoto"
-                    className="imageMember"
-                    width={30}
-                    height={30}
-                  />
-                  <p className="memberName">Aissa</p>
-                </div>
-                <div className="boxMember">
-                  <Image
-                    src={fakeAvatar.src}
-                    alt="memberPhoto"
-                    className="imageMember"
-                    width={30}
-                    height={30}
-                  />
-                  <p className="memberName">Younes</p>
-                </div>
-                <div className="boxMember">
-                  <Image
-                    src={fakeAvatar.src}
-                    alt="memberPhoto"
-                    className="imageMember"
-                    width={30}
-                    height={30}
-                  />
-                  <p className="memberName">hicham</p>
-                </div>
-                
-              </div>
-            </div>
+              ))}
           </div>
+          {/* end of right side of channel */}
         </>
       )}
       {/* {!channelSelected && (
         <div className="noConversation">
-          <p className="MessageDisplay" > Welcome to the chat with channels</p>
+        <p className="MessageDisplay" > Welcome to the chat with channels</p>
         </div>
       )} */}
     </>
