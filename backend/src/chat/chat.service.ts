@@ -1014,7 +1014,7 @@ export class chatService {
 		try {
 			if (await this.is_admin(userid,channel.channel) || await this.is_member(userid,channel.channel))
 			{
-				console.log("admin");
+				console.log("admin && member");
 				try {
 					const room = this.prisma.room.update({
 						where: {
@@ -1035,7 +1035,9 @@ export class chatService {
 					})
 					if (!room)
 						return false;
-					this.appGateway.server.socketsLeave(channel.channel);
+					const sockets = await this.appGateway.server.in(this.appGateway.get_socketID_by_id(userid)).fetchSockets();
+					const socket = sockets.find(socket => socket.id.toString() === this.appGateway.get_socketID_by_id(userid));
+					socket.leave(channel.channel);
 					return true;
 				} catch (error) {
 					return false;
@@ -1059,7 +1061,7 @@ export class chatService {
 					if (!room)
 						return false;
 					this.appGateway.server.socketsLeave(channel.channel);
-					// emit a message that the room is deleted and delete the room 
+					// emit a message that the room is deleted and delete the room  to all the members
 					return true;
 				} catch (error) {
 					console.log(error);
