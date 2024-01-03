@@ -1078,6 +1078,7 @@ export class chatService {
 
 	async room_messages(userid: string,channel_id : string)
 	{
+		let messagehistory :room_msg_history [] = [];
 		try {
 			const friends = await this.prisma.friendship.findMany({
 				where: {
@@ -1085,22 +1086,72 @@ export class chatService {
 					is_blocked: true
 				},
 				select: {
-					friendId: true,
-					userId : true
+					friendId: true
 				}
 			})
-			console.log("friends : ",friends);
-			const room = await this.prisma.roomMessage.findMany({
+			//console.log("friends : ",friends);
+			const messages = await this.prisma.roomMessage.findMany({
 				where: {
 					roomId : channel_id,
 				},
+				orderBy: {
+					createdAt: 'asc'
+				},
 				select: {
-					senderId: true
+					createdAt: true,
+					content: true,
+					sender: {
+						select: {
+							nickName: true,
+							id: true,
+							profile: {
+								select: {
+									photo_path: true
+								}
+							}
+						}
+					}
 				}
 			})
-			
+			messages.forEach( (message) => {
+				if (friends.length == 0)
+				{
+					let node : room_msg_history = {content : "", mine : false , photo : "", name : "" , time: new Date(),sender_id : ""};
+					node.photo = message.sender.profile.photo_path;
+					node.name = message.sender.nickName;
+					node.content = message.content;
+					node.time = message.createdAt;
+					node.sender_id = message.sender.id;
+					if (message.sender.id == userid)
+					{
+						node.mine = true;
+						node.name = "you";
+					}
+					messagehistory.push(node);
+				}
+				friends.forEach((friend) => {
+					if (friend.friendId != message.sender.id)
+					{
+						let node : room_msg_history = {content : "", mine : false , photo : "", name : "" , time: new Date(),sender_id : ""};
+						node.photo = message.sender.profile.photo_path;
+						node.name = message.sender.nickName;
+						node.content = message.content;
+						node.time = message.createdAt;
+						node.sender_id = message.sender.id;
+						if (message.sender.id == userid)
+						{
+							node.mine = true;
+							node.name = "you";
+						}
+						messagehistory.push(node);
+					}
+				})
+
+			});
+			return messagehistory;		
 		} catch (error) {
-			
+			return messagehistory;
 		}
+		return messagehistory;
 	}
 }
