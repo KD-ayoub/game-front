@@ -242,7 +242,7 @@ export default function FriendConversation({
           </div>
         </div>
       )}
-      {!friendSelected && <div className="noConversation"></div>}
+      {!friendSelected && <div className="noConversation">Welcome to the chat with channels</div>}
     </>
   );
 }

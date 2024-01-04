@@ -9,7 +9,6 @@ import {
   FriendsMessaged,
   FriendConversation,
   ChannelConversation,
-
 } from "@/app/components";
 import "./chat.css";
 import { NeuePlakFont } from "@/app/utils/NeuePlakFont";
@@ -17,6 +16,8 @@ import io from "socket.io-client";
 import { FriendsChatType } from "@/app/types/friendsChatType";
 import { get } from "http";
 import { error } from "console";
+import { ChannelChatType } from "@/app/types/ChannelChatType";
+
 // const socket = io("http://localhost:3001/chat/conv");
 
 export default function Chat() {
@@ -26,12 +27,17 @@ export default function Chat() {
   const [messages, setMessages] = useState<string[]>([]);
   const [messageText, setMessageText] = useState<string>("");
   const [showConv, setShowConv] = useState(false); // set initial value to false
-  const [idOfuserSelected, setIdOfuserSelected] = useState<FriendsChatType>();
+  const [friend_Selected, setfriend_Selected] = useState<FriendsChatType>();
+  const [idOfChannelSelected, setIdOfChannelSelected] = useState<ChannelChatType>();
   // const [friends, setFriends] = useState<FriendsChatType[]>([]);
 
-  const hundleIdOfuserSelected = (infoUser: FriendsChatType) => {
-    setIdOfuserSelected(infoUser);
+  const hundlefriend_Selected = (infoUser: FriendsChatType) => {
+    setfriend_Selected(infoUser);
   };
+
+  const hundleIdOfChannelSelected = (infoChannel: ChannelChatType) => {
+    setIdOfChannelSelected(infoChannel);
+  }
 
   // useEffect(() => {
   //   socket.on("message", (message: string) => {
@@ -78,20 +84,24 @@ export default function Chat() {
             )}
             {option === "Friends" && !showConv && (
               <FriendsMessaged
-                onSelect={hundleIdOfuserSelected}
+                onSelectFriend={hundlefriend_Selected}
                 // onChange={(value: boolean) => setShowConv(value)}
-                />
-                )}
-            {option === "Channels"  && (
-              <ChannelMessaged 
-              onSelect={hundleIdOfuserSelected}
-              // onChange={(value: boolean) => setShowConv(value)}
               />
-              )}
+            )}
+            {option === "Channels" && !showConv && (
+              <ChannelMessaged
+                onSelectChannel={hundleIdOfChannelSelected}
+                // onChange={(value: boolean) => setShowConv(value)}
+              />
+            )}
           </div>
           {/* {showConv && <FriendConversation />} only render if showConv */}
-            {option === "Friends" && <FriendConversation friendSelected={idOfuserSelected} />}
-            {option === "Channels" && <ChannelConversation channelSelected={idOfuserSelected} />}
+          {option === "Friends" &&  friend_Selected &&(
+            <FriendConversation friendSelected={friend_Selected} />
+          )}
+          {option === "Channels" &&  idOfChannelSelected && (
+            <ChannelConversation channelSelected={idOfChannelSelected} />
+          )}
         </div>
       </div>
     </main>

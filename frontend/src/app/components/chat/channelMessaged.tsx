@@ -16,9 +16,9 @@ import { ioClient } from "@/app/api/instance";
 // type friendT = { nickname: string; picture: string; unread: number };
 
 export default function ChannelMessaged({
-  onSelect,
+  onSelectChannel,
 }: {
-  onSelect: (id: ChannelChatType) => void;
+  onSelectChannel: (id: ChannelChatType) => void;
 }) {
   const [channel, setChannel] = useState<ChannelChatType[]>([]);
   const [searching, setSearching] = useState("");
@@ -87,7 +87,7 @@ export default function ChannelMessaged({
                 className="selectFriend w-[100%]"
                 onClick={() => {
                   //console.log("channel.id", channel.id);
-                  onSelect(channel);
+                  onSelectChannel(channel);
                   // props.onChange(false);
                 }}
               >

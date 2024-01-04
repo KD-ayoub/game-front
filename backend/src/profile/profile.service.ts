@@ -54,6 +54,7 @@ export class ProfileService {
         id: true,
         full_name: true,
         nickName: true,
+        is_active: true,
       }
     });
     const profile = await this.prisma.profile.findUnique({
@@ -70,6 +71,7 @@ export class ProfileService {
       id: opponent.id,
       full_name: opponent.full_name,
       nickName: opponent.nickName,
+      is_active: opponent.is_active,  
       photo_path: profile.photo_path,
     };
     return data;

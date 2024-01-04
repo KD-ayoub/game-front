@@ -19,9 +19,10 @@ import { ioClient } from "@/app/api/instance";
 
 // const socket = io("");
 
-export default function ChannelConversation({}: //   channelSelected,
-{
-  //   channelSelected: ChannelChatType;
+export default function ChannelConversation({
+  channelSelected,
+}: {
+  channelSelected: ChannelChatType;
 }) {
   // const { channelSelected } = friend;
   // information about the channel conversation
@@ -29,19 +30,21 @@ export default function ChannelConversation({}: //   channelSelected,
     DataChannelConversationType[]
   >([]);
   // information about the channel selected
-  const [channelSelected, setChannelSelected] = useState<ChannelChatType>({
-    nameOfChannel: "Mimoo",
-    id: "54aa9314-8512-43f9-ac7d-5fa3bc8707b6",
-    photo: lwaghch.src,
-    isJoined: true,
-    type: "private",
-  });
+  // const [channelSelected, setChannelSelected] = useState<ChannelChatType>({
+  //   nameOfChannel: "Mimoo",
+  //   id: "54aa9314-8512-43f9-ac7d-5fa3bc8707b6",
+  //   photo: lwaghch.src,
+  //   isJoined: true,
+  //   type: "private",
+  // });
+
+  console.log("id dyal channel", channelSelected.id);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // information about members of channel
   const [memberList, setMemberList] = useState<MemberListChannel[]>([]);
   // information about me if im an owner or admin or member
-  const [aboutMe, setAboutMe] = useState<aboutMe>({});
+  const [aboutMe, setAboutMe] = useState<aboutMe>();
 
   const handleTextareaChange = () => {
     if (textareaRef.current) {
@@ -57,14 +60,17 @@ export default function ChannelConversation({}: //   channelSelected,
 
   // handle send message
   const handleSendMessage = () => {
-  	console.log("test");
-	const client = ioClient.getSocketClient();
-	client.emit("room",{"channel_id":  channelSelected.id, "content" : textareaRef.current?.value});
+    console.log("test");
+    const client = ioClient.getSocketClient();
+    client.emit("room", {
+      channel_id: channelSelected.id,
+      content: textareaRef.current?.value,
+    });
   };
 
   const handleChallenge = () => {
     //console.log("challenge");
-  }
+  };
 
   const handleLeaveChannel = () => {
     // fetch(`http://localhost:3001/chat/${channelSelected.id}`, {
@@ -103,76 +109,86 @@ export default function ChannelConversation({}: //   channelSelected,
   //console.log("dataConversation-->", dataConversation);
   //console.log("channelSelected-->", channelSelected);
   useEffect(() => {
-  const historychatdiv = document.getElementById("scroll");
-  if (historychatdiv)
-  {
-  	historychatdiv.scrollTop = historychatdiv.scrollHeight;
-  }
-  },[dataConversation]);
+    const historychatdiv = document.getElementById("scroll");
+    if (historychatdiv) {
+      historychatdiv.scrollTop = historychatdiv.scrollHeight;
+    }
+  }, [dataConversation]);
 
-  useEffect( () => {
-	const client = ioClient.getSocketClient();
-	if (!channelSelected)
-		return ;
-	client.on(channelSelected.id,(data) => {
-		console.log(client.id)
-		console.log("younes",data);
-		setDataConversation(dataConversation => [...dataConversation,data] )
-	})
-
+  useEffect(() => {
+    const client = ioClient.getSocketClient();
+    if (!channelSelected) return;
+    client.on(channelSelected.id, (data) => {
+      console.log(client.id);
+      console.log("younes", data);
+      setDataConversation((dataConversation) => [...dataConversation, data]);
+    });
   }, [channelSelected]);
 
-  useEffect( () => {
+  useEffect(() => {
     async function fetcher() {
-      const getconv = await fetch(`http://localhost:3001/chat/list_room_messsages/${channelSelected.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const getconv = await fetch(
+        `http://localhost:3001/chat/list_room_messsages/${channelSelected.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       if (!getconv.ok) {
         throw new Error("Network response was not ok");
       }
-	  const conv: DataChannelConversationType[] = await getconv.json();
-	  setDataConversation(conv);
+      const conv: DataChannelConversationType[] = await getconv.json();
+      setDataConversation(conv);
     }
     fetcher();
-  },[]);
 
-  useEffect( () => {
+    // console.log("id dyal channel", channelSelected.id);
+  }, []);
+
+  useEffect(() => {
     async function fetcher() {
-      const getconv = await fetch(`http://localhost:3001/chat/members/${channelSelected.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const getconv = await fetch(
+        `http://localhost:3001/chat/members/${channelSelected.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       if (!getconv.ok) {
         throw new Error("Network response was not ok");
       }
-	  setMemberList(await getconv.json());
+      setMemberList(await getconv.json());
     }
     fetcher();
-  } ,[])
+  }, [channelSelected]);
 
-  useEffect( () => {
+  useEffect(() => {
     async function fetcher() {
-      const getconv = await fetch(`http://localhost:3001/chat/role/${channelSelected.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const getconv = await fetch(
+        `http://localhost:3001/chat/role/${channelSelected.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       // if (!getconv.ok) {
       //   throw new Error("Network response was not ok");
       // }
-	  setAboutMe(await getconv.json());
+      setAboutMe(await getconv.json());
     }
     fetcher();
-  }, [])
+  }, [channelSelected]);
+
+  console.log("about me", aboutMe);
 
   return (
     <>
@@ -293,7 +309,11 @@ export default function ChannelConversation({}: //   channelSelected,
             <div className="topSideOfChannel">
               <h2>Channel</h2>
               <Image
-                src={lwaghch.src}
+                src={
+                  channelSelected.photo === "defautl_img"
+                    ? lwaghch.src
+                    : channelSelected.photo
+                }
                 alt="Channel overview"
                 className="channelOverview"
                 width={140}
@@ -313,7 +333,11 @@ export default function ChannelConversation({}: //   channelSelected,
                     {member.role === "owner" && (
                       <div className="boxMember" key={index}>
                         <Image
-                          src={member.photo}
+                          src={
+                            member.photo === "defautl_img"
+                              ? fakeAvatar.src
+                              : member.photo
+                          }
                           alt="member"
                           className="memberPhoto"
                           width={35}
@@ -321,29 +345,37 @@ export default function ChannelConversation({}: //   channelSelected,
                         />
                         <p className="memberName">{member.nickname}</p>
                         {/* if im just a member i cant see this select option */}
-                        {(aboutMe.role === "member" && aboutMe.nickname !== member.nickname) && (
-                          <div className="memberSee">
-                            <button className="Challenge-btn" onClick={handleChallenge}><i className="ri-ping-pong-line"> Challenge</i></button>
-                          </div>
-                        )}
+                        {aboutMe && aboutMe.role === "member" &&
+                          aboutMe.nickname !== member.nickname && (
+                            <div className="memberSee">
+                              <button
+                                className="Challenge-btn"
+                                onClick={handleChallenge}
+                              >
+                                <i className="ri-ping-pong-line"> Challenge</i>
+                              </button>
+                            </div>
+                          )}
                         {/* if im an admin i can see this select option */}
-                        {(aboutMe.role === "admin" && aboutMe.nickname !== member.nickname) && (
-                          <div className="selectOwnerOptions">
-                            <select name="" id="">
-                              mok
-                            </select>
-                          </div>
-                        )}
+                        {aboutMe && aboutMe.role === "admin" &&
+                          aboutMe.nickname !== member.nickname && (
+                            <div className="selectOwnerOptions">
+                              <select name="" id="">
+                                mok
+                              </select>
+                            </div>
+                          )}
                         {/* if im an owner i can see this select option */}
-                        {(aboutMe.role === "owner" && aboutMe.nickname !== member.nickname) && (
-                          <div className="selectOwnerOptions">
-                            <select name="" id="">
-                              mok
-                              <option value="mok">mok</option>
-                              <option value="mok">bak</option>
-                            </select>
-                          </div>
-                        )}
+                        {aboutMe && aboutMe.role === "owner" &&
+                          aboutMe.nickname !== member.nickname && (
+                            <div className="selectOwnerOptions">
+                              <select name="" id="">
+                                mok
+                                <option value="mok">mok</option>
+                                <option value="mok">bak</option>
+                              </select>
+                            </div>
+                          )}
                       </div>
                     )}
                   </div>
@@ -358,7 +390,11 @@ export default function ChannelConversation({}: //   channelSelected,
                     {member.role === "admin" && (
                       <div className="boxMember" key={index}>
                         <Image
-                          src={member.photo}
+                          src={
+                            member.photo === "defautl_img"
+                              ? fakeAvatar.src
+                              : member.photo
+                          }
                           alt="member"
                           className="memberPhoto"
                           width={35}
@@ -366,29 +402,34 @@ export default function ChannelConversation({}: //   channelSelected,
                         />
                         <p className="memberName">{member.nickname}</p>
                         {/* if im just a member i cant see this select option */}
-                        {(aboutMe.role === "member" && aboutMe.nickname !== member.nickname) && (
-                          <div className="memberSee">
-                            <button className="Challenge-btn"><i className="ri-ping-pong-line"> Challenge</i></button>
-                          </div>
-                        )}
+                        {aboutMe && aboutMe.role === "member" &&
+                          aboutMe.nickname !== member.nickname && (
+                            <div className="memberSee">
+                              <button className="Challenge-btn">
+                                <i className="ri-ping-pong-line"> Challenge</i>
+                              </button>
+                            </div>
+                          )}
                         {/* if im an admin i can see this select option */}
-                        {(aboutMe.role === "admin" && aboutMe.nickname !== member.nickname) && (
-                          <div className="selectOwnerOptions">
-                            <select name="" id="">
-                              mok
-                            </select>
-                          </div>
-                        )}
+                        {aboutMe && aboutMe.role === "admin" &&
+                          aboutMe.nickname !== member.nickname && (
+                            <div className="selectOwnerOptions">
+                              <select name="" id="">
+                                mok
+                              </select>
+                            </div>
+                          )}
                         {/* if im an owner i can see this select option */}
-                        {(aboutMe.role === "owner" && aboutMe.nickname !== member.nickname) && (
-                          <div className="selectOwnerOptions">
-                            <select name="" id="">
-                              mok
-                              <option value="mok">mok</option>
-                              <option value="mok">bak</option>
-                            </select>
-                          </div>
-                        )}
+                        {aboutMe && aboutMe.role === "owner" &&
+                          aboutMe.nickname !== member.nickname && (
+                            <div className="selectOwnerOptions">
+                              <select name="" id="">
+                                mok
+                                <option value="mok">mok</option>
+                                <option value="mok">bak</option>
+                              </select>
+                            </div>
+                          )}
                       </div>
                     )}
                   </div>
@@ -403,7 +444,11 @@ export default function ChannelConversation({}: //   channelSelected,
                     {member.role === "member" && (
                       <div className="boxMember" key={index}>
                         <Image
-                          src={member.photo}
+                          src={
+                            member.photo === "defautl_img"
+                              ? fakeAvatar.src
+                              : member.photo
+                          }
                           alt="member"
                           className="memberPhoto"
                           width={35}
@@ -411,29 +456,34 @@ export default function ChannelConversation({}: //   channelSelected,
                         />
                         <p className="memberName">{member.nickname}</p>
                         {/* if im just a member i cant see this select option */}
-                        {(aboutMe.role === "member" && aboutMe.nickname !== member.nickname) && (
-                          <div className="memberSee">
-                            <button className="Challenge-btn"><i className="ri-ping-pong-line"> Challenge</i></button>
-                          </div>
-                        )}
+                        {aboutMe && aboutMe.role === "member" &&
+                          aboutMe.nickname !== member.nickname && (
+                            <div className="memberSee">
+                              <button className="Challenge-btn">
+                                <i className="ri-ping-pong-line"> Challenge</i>
+                              </button>
+                            </div>
+                          )}
                         {/* if im an admin i can see this select option */}
-                        {(aboutMe.role === "admin" && aboutMe.nickname !== member.nickname) && (
-                          <div className="selectOwnerOptions">
-                            <select name="" id="">
-                              mok
-                            </select>
-                          </div>
-                        )}
+                        {aboutMe && aboutMe.role === "admin" &&
+                          aboutMe.nickname !== member.nickname && (
+                            <div className="selectOwnerOptions">
+                              <select name="" id="">
+                                mok
+                              </select>
+                            </div>
+                          )}
                         {/* if im an owner i can see this select option */}
-                        {(aboutMe.role === "owner" && aboutMe.nickname !== member.nickname) && (
-                          <div className="selectOwnerOptions">
-                            <select name="" id="">
-                              mok
-                              <option value="mok">mok</option>
-                              <option value="mok">bak</option>
-                            </select>
-                          </div>
-                        )}
+                        {aboutMe && aboutMe.role === "owner" &&
+                          aboutMe.nickname !== member.nickname && (
+                            <div className="selectOwnerOptions">
+                              <select name="" id="">
+                                mok
+                                <option value="mok">mok</option>
+                                <option value="mok">bak</option>
+                              </select>
+                            </div>
+                          )}
                       </div>
                     )}
                   </div>
@@ -450,11 +500,11 @@ export default function ChannelConversation({}: //   channelSelected,
           {/* end of right side of channel */}
         </>
       )}
-      {/* {!channelSelected && (
+      {!channelSelected && (
         <div className="noConversation">
-        <p className="MessageDisplay" > Welcome to the chat with channels</p>
+          <p className="MessageDisplay"> Welcome to the chat with channels</p>
         </div>
-      )} */}
+      )}
     </>
   );
 }

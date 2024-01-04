@@ -12,11 +12,13 @@ import { FriendsChatType } from "@/app/types/friendsChatType";
 import { GetChatConverssationType } from "@/app/types/getChatConverssation";
 // type friendT = { nickname: string; picture: string; unread: number };
 
-export default function FriendsMessaged({onSelect}: {onSelect: (id:FriendsChatType) => void}) {
-  
+export default function FriendsMessaged({
+  onSelectFriend,
+}: {
+  onSelectFriend: (friendSelected: FriendsChatType) => void;
+}) {
   const [friends, setFriends] = useState<FriendsChatType[]>([]);
   const [searching, setSearching] = useState("");
-  
 
   // here we filterSearch the friends list:
   const filterSearch = () => {
@@ -47,8 +49,6 @@ export default function FriendsMessaged({onSelect}: {onSelect: (id:FriendsChatTy
     fetcher();
   }, []);
 
-
-
   return (
     <>
       <div className="friendsMessaged">
@@ -67,7 +67,7 @@ export default function FriendsMessaged({onSelect}: {onSelect: (id:FriendsChatTy
                 className="selectFriend w-[100%]"
                 onClick={() => {
                   //console.log("friend.id", friend.id);
-                  onSelect(friend);
+                  onSelectFriend(friend);
                   // props.onChange(false);
                 }}
               >
