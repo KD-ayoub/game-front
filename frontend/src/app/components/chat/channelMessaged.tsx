@@ -11,6 +11,7 @@ import Image from "next/image";
 import { ChannelChatType } from "@/app/types/ChannelChatType";
 import { GetChatConverssationType } from "@/app/types/getChatConverssation";
 import lwaghch from "../../assets/svg/chat/lwaghch.svg";
+import { ioClient } from "@/app/api/instance";
 
 // type friendT = { nickname: string; picture: string; unread: number };
 
@@ -36,6 +37,8 @@ export default function ChannelMessaged({
 
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
+  	console.log("zbi");
+	const client = ioClient.getSocketClient();
     async function fetcher() {
       const getChannel = await fetch(
         "http://localhost:3001/chat/list_channels",
@@ -48,15 +51,23 @@ export default function ChannelMessaged({
         }
       );
       if (!getChannel.ok) {
-        console.log("error fetcher");
+        //console.log("error fetcher");
         throw new Error("Network response was not ok");
       }
-      setChannel(await getChannel.json());
+	  const channels: ChannelChatType[] = await getChannel.json();
+	  channels.forEach((channel) => {
+	  	if (channel.isJoined)
+	  		client.emit('join',{"channel_id": channel.id});
+	  })
+      setChannel(channels);
     }
     fetcher();
   }, []);
 
-  console.log("Channel", channel);
+
+  //  i need to list in sockets if i delete a channel or if i add a channel
+
+  //console.log("Channel", channel);
 
   return (
     <>
@@ -75,7 +86,7 @@ export default function ChannelMessaged({
               <button
                 className="selectFriend w-[100%]"
                 onClick={() => {
-                  console.log("channel.id", channel.id);
+                  //console.log("channel.id", channel.id);
                   onSelect(channel);
                   // props.onChange(false);
                 }}

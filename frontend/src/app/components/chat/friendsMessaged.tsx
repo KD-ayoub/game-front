@@ -40,7 +40,6 @@ export default function FriendsMessaged({onSelect}: {onSelect: (id:FriendsChatTy
         credentials: "include",
       });
       if (!getFriends.ok) {
-        console.log("error fetcher");
         throw new Error("Network response was not ok");
       }
       setFriends(await getFriends.json());
@@ -48,7 +47,7 @@ export default function FriendsMessaged({onSelect}: {onSelect: (id:FriendsChatTy
     fetcher();
   }, []);
 
-  console.log("friends", friends);
+
 
   return (
     <>
@@ -67,7 +66,7 @@ export default function FriendsMessaged({onSelect}: {onSelect: (id:FriendsChatTy
               <button
                 className="selectFriend w-[100%]"
                 onClick={() => {
-                  console.log("friend.id", friend.id);
+                  //console.log("friend.id", friend.id);
                   onSelect(friend);
                   // props.onChange(false);
                 }}

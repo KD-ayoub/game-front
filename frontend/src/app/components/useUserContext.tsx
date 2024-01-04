@@ -42,14 +42,14 @@ export default function UserContextProvider({
       credentials: 'include',
     })
     if (!response.ok) {
-      console.log("response error in context");
+      //console.log("response error in context");
       return;
     }
     setUserData(await response.json());
   }
 
   useEffect(() => {
-    console.log('************* profile');
+    //console.log('************* profile');
     ioClient;
     // async function fetcher() {
     //   const response = await fetch('http://localhost:3001/auth/getUserStatus', {
@@ -67,7 +67,7 @@ export default function UserContextProvider({
     // }
     fetcher();
   }, [])
-  console.log("user data", userData);
+  //console.log("user data", userData);
   return (
     <UserContext.Provider value={{ userData, setUserData, fetcher }}>{children}</UserContext.Provider>
   );

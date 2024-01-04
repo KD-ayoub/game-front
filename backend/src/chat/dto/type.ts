@@ -41,8 +41,25 @@ type room_msg = {
 	content: string,
 	time : Date,
 	photo: string
+	mine: boolean
 }
 
 type leave_channel = {
 	channel  : string,
+}
+
+type room_msg_history = {
+	sender_id: string,
+	content: string,
+	mine: Boolean,
+	time: Date,
+	photo: string,
+	name: string
+}
+
+type member = {
+	nickname: string,
+	photo: string,
+	role: string
+	id: string,
 }

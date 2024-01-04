@@ -57,8 +57,12 @@ export class ChatController{
 			throw new HttpException('bad',HttpStatus.BAD_REQUEST);
 		else
 			throw new HttpException('good',HttpStatus.OK);
-
 	}
+
+
+	// delete friendship
+
+	// add friendship
 
 
 
@@ -216,14 +220,20 @@ export class ChatController{
 
 
 
-
-	// list all messages in a channel
-
 	//  list all channel members and admins and owner
+	@UseGuards(AuthenticatedGuard)
+	@Get('members/:id')
+	async members(@Session() session: Record<string,any>,@Param('id') channel_id : string)
+	{
+		return this.chatService.members(session.passport.user.id,channel_id);
+	}
+	
+	// list all messages in a channel
+	@UseGuards(AuthenticatedGuard)
 	@Get('list_room_messsages/:id')
 	async room_messages(@Session() session: Record<string,any>,@Param('id') channel_id : string)
 	{
-		return ;
+		return await this.chatService.room_messages(session.passport.user.id,channel_id);
 	}
 
 	// remove and change password from a channel

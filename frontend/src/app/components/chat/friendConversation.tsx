@@ -13,6 +13,7 @@ import Image from "next/image";
 // import ioClient from "../../api/instance";
 import moment from "moment";
 import tilijo from "../../assets/svg/chat/tilijo.svg";
+import { ioClient } from "@/app/api/instance";
 
 // const socket = io("");
 
@@ -26,14 +27,15 @@ export default function FriendConversation({
     GetChatConverssationType[]
   >([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
 
-  const handleTextareaChange = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      const newHeight = `${textareaRef.current.scrollHeight}px`;
-      textareaRef.current.style.height = newHeight;
-    }
-  };
+  // const handleTextareaChange = () => {
+  //   if (textareaRef.current) {
+  //     textareaRef.current.style.height = "auto";
+  //     const newHeight = `${textareaRef.current.scrollHeight}px`;
+  //     textareaRef.current.style.height = newHeight;
+  //   }
+  // };
 
   const handleClickBtnBack = () => {
     // showConv = false;
@@ -41,15 +43,27 @@ export default function FriendConversation({
 
   // handle send message
   const handleSendMessage = () => {
-    fetch(`http://localhost:3001/chat/ansiftLkMsg`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ messageSent: textareaRef.current!.value }),
+    // this for sending data
+    const client = ioClient.getSocketClient();
+    console.log("send");
+    client.emit("dm", {
+      recieverId: friendSelected.id,
+      message: textareaRef.current?.value,
     });
     textareaRef.current!.value = "";
+  };
+
+  const sendToProfile = () => {
+    console.log("send to profile");
+  };
+
+  const handleBlock = () => {
+    console.log("block");
+    // here we gonna block the user
+  };
+
+  const sendChallenge = () => {
+    console.log("send challenge");
   };
 
   // Here we fetch the conversation with friend:
@@ -69,15 +83,41 @@ export default function FriendConversation({
         }
       );
       if (!response.ok) {
-        console.log("error at handleShowFriendConversssation fetch");
+        //console.log("error at handleShowFriendConversssation fetch");
       }
       setDataConversation(await response.json());
     }
     handlShowFriendConversation();
   }, [friendSelected]);
 
-  console.log("dataConversation-->", dataConversation);
-  console.log("friendSelected-->", friendSelected);
+  useEffect(() => {
+    const historychatdiv = document.getElementById("scroll");
+    if (historychatdiv) {
+      historychatdiv.scrollTop = historychatdiv.scrollHeight;
+    }
+  }, [dataConversation]);
+
+  useEffect(() => {
+    const client = ioClient.getSocketClient();
+    console.log("wa khdm azzbi:  ");
+
+    client.on("chat", (data) => {
+      console.log("data: ", data);
+      if (!friendSelected) {
+        // here increment the unread
+        return;
+      }
+      setDataConversation((dataConversation) => [...dataConversation, data]);
+      //console.log("hani hna --------------------------------------",test);
+    });
+
+    return () => {
+      client.off("chat");
+    };
+  }, [friendSelected]);
+
+  //console.log("dataConversation-->", dataConversation);
+  //console.log("friendSelected-->", friendSelected);
 
   return (
     <>
@@ -111,28 +151,37 @@ export default function FriendConversation({
             {/* setting optionss in bar info */}
             <div className="optionUserDiv">
               <button onClick={handleClickBtnBack}>
-                <Image
-                  src={pointsOption.src}
-                  alt="."
-                  width={5}
-                  height={5}
-                  className="btn-option"
-                />
                 <select
                   name="optionsChatUser"
                   id="optionsChatUser"
                   className="optionsUserSelect"
                 >
-                  <option value="profile">Profile</option>
-                  <option value="block" >Block</option>
-                  <option value="Challenge">Challenge</option>
+                  <option value="Chat" >
+                    Chat
+                  </option>
+                  <option value="profile" onClick={sendToProfile}>
+                    Profile
+                  </option>
+
+                  {friendSelected.isBlocked === false ? (
+                    <option value="block" onClick={handleBlock}>
+                      Block
+                    </option>
+                  ) : (
+                    <option value="unblock" onClick={handleBlock}>
+                      Unblock
+                    </option>
+                  )}
+                  <option value="Challenge" onClick={sendChallenge}>
+                    Challenge
+                  </option>
                 </select>
               </button>
             </div>
             {/* end of setting options in bar info */}
           </div>
 
-          <div className="historyChat">
+          <div className="historyChat" id="scroll">
             {dataConversation.length > 0 &&
               dataConversation.map((message, index) => (
                 <div className="message" key={index}>
@@ -141,7 +190,7 @@ export default function FriendConversation({
                       <div className="send-msg">
                         <div className="message-details ">
                           <span className="infoTime">
-                            {moment(message.sended_at).calendar()}
+                            {moment(message.sended_at).format('lll')}
                           </span>
                           <span className="infoName pl-4">You</span>
                         </div>
@@ -154,7 +203,7 @@ export default function FriendConversation({
                         <div className="message-details ">
                           <span className="infoName pr-4">{message.name}</span>
                           <span className="infoTime">
-                            {moment(message.sended_at).calendar()}
+                            {moment(message.sended_at).format('lll')}
                           </span>
                         </div>
                         <div className="message-text-recieve">
@@ -173,8 +222,8 @@ export default function FriendConversation({
                 placeholder="Type here..."
                 required
                 ref={textareaRef}
-                onKeyUp={handleTextareaChange}
-                maxLength={300}
+                // onKeyUp={handleTextareaChange}
+                maxLength={250}
               ></textarea>
             </div>
             <button
@@ -193,11 +242,7 @@ export default function FriendConversation({
           </div>
         </div>
       )}
-      {!friendSelected && (
-        <div className="noConversation">
-          <p className="MessageDisplay" > Welcome to the chat with friends</p>
-        </div>
-      )}
+      {!friendSelected && <div className="noConversation"></div>}
     </>
   );
 }

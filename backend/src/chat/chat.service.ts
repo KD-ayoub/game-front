@@ -49,12 +49,23 @@ export class chatService {
 		try {
 			const friendship = await this.prisma.friendship.findFirst({
 				where: {
-					userId : senderId,
-					friendId : content.recieverId,
-					is_blocked : false
+					OR :[
+						{
+							userId : senderId,
+							friendId : content.recieverId,
+							is_blocked: true
+
+						},
+						{
+							userId : content.recieverId,
+							friendId : senderId,
+							is_blocked: true
+						}
+
+					],
 				}
 			});
-			if (!friendship)
+			if (friendship)
 				return false;
 			const dm = await this.prisma.directMessage.create({
 				data: {
@@ -694,7 +705,6 @@ export class chatService {
 					}
 				}
 			})
-			console.log("room : ", room);
 			if (!room)
 				return false;
 		} catch (error) {
@@ -733,7 +743,6 @@ export class chatService {
 					}
 				}
 			})
-			console.log("room : ", room);
 			if (!room)
 				return false;
 		} catch (error) {
@@ -971,7 +980,8 @@ export class chatService {
 			senderid: "",
 			content: "",
 			time: new Date(),
-			photo: ""
+			photo: "",
+			mine: false
 		}
 
 		try {
@@ -1014,7 +1024,6 @@ export class chatService {
 		try {
 			if (await this.is_admin(userid,channel.channel) || await this.is_member(userid,channel.channel))
 			{
-				console.log("admin && member");
 				try {
 					const room = this.prisma.room.update({
 						where: {
@@ -1078,6 +1087,7 @@ export class chatService {
 
 	async room_messages(userid: string,channel_id : string)
 	{
+		let messagehistory :room_msg_history [] = [];
 		try {
 			const friends = await this.prisma.friendship.findMany({
 				where: {
@@ -1085,22 +1095,141 @@ export class chatService {
 					is_blocked: true
 				},
 				select: {
-					friendId: true,
-					userId : true
+					friendId: true
 				}
 			})
-			console.log("friends : ",friends);
-			const room = await this.prisma.roomMessage.findMany({
+			//console.log("friends : ",friends);
+			const messages = await this.prisma.roomMessage.findMany({
 				where: {
 					roomId : channel_id,
+					// check if the user is in the room
+				},
+				orderBy: {
+					createdAt: 'asc'
 				},
 				select: {
-					senderId: true
+					createdAt: true,
+					content: true,
+					sender: {
+						select: {
+							nickName: true,
+							id: true,
+							profile: {
+								select: {
+									photo_path: true
+								}
+							}
+						}
+					}
 				}
 			})
-			
+			messages.forEach( (message) => {
+				if (friends.length == 0)
+				{
+					let node : room_msg_history = {content : "", mine : false , photo : "", name : "" , time: new Date(),sender_id : ""};
+					node.photo = message.sender.profile.photo_path;
+					node.name = message.sender.nickName;
+					node.content = message.content;
+					node.time = message.createdAt;
+					node.sender_id = message.sender.id;
+					if (message.sender.id == userid)
+					{
+						node.mine = true;
+						node.name = "you";
+					}
+					messagehistory.push(node);
+				}
+				friends.forEach((friend) => {
+					if (friend.friendId != message.sender.id)
+					{
+						let node : room_msg_history = {content : "", mine : false , photo : "", name : "" , time: new Date(),sender_id : ""};
+						node.photo = message.sender.profile.photo_path;
+						node.name = message.sender.nickName;
+						node.content = message.content;
+						node.time = message.createdAt;
+						node.sender_id = message.sender.id;
+						if (message.sender.id == userid)
+						{
+							node.mine = true;
+							node.name = "you";
+						}
+						messagehistory.push(node);
+					}
+				})
+
+			});
+			return messagehistory;		
 		} catch (error) {
-			
+			return messagehistory;
 		}
+		return messagehistory;
+	}
+
+
+	async members(userid: string,channel_id : string)
+	{
+		let list_members : member[] = [];
+		try {
+			const members = await this.prisma.room.findUnique({
+				where: {
+					id : channel_id
+					// check if the user is in the room
+				},
+				select: {
+					owner:{
+						select: {
+							id: true,
+							nickName: true,
+							profile: {
+								select: {
+									photo_path: true,
+								}
+							}
+						}
+					},
+					members: {
+						select: {
+							id : true,
+							nickName: true,
+							profile: {
+								select: {
+									photo_path: true,
+								}
+							}
+						}
+					},
+					admins: {
+						select: {
+							id : true,
+							nickName: true,
+							profile: {
+								select: {
+									photo_path: true,
+								}
+							}
+						}
+					}
+				}
+			})
+			if (!members)
+				return list_members;
+			if (members.owner)
+			{
+				let node : member = {id: members.owner.id,nickname: members.owner.nickName, photo: members.owner.profile.photo_path, role: "owner"};
+				list_members.push(node);
+				//console.log("owner");
+			}
+			members.admins.forEach((admin) => {
+				let node : member = {id: admin.id ,nickname: admin.nickName, photo: admin.profile.photo_path, role: "admin"};
+				list_members.push(node);
+			});
+			members.members.forEach((member) => {
+				let node : member = {id: member.id ,nickname: member.nickName, photo: member.profile.photo_path, role: "member"};
+				list_members.push(node);
+			});
+		} catch (error) {
+			return list_members;
+		}
+		return list_members;
 	}
 }

@@ -58,22 +58,26 @@ export class chatGateway implements OnGatewayConnection
 		const user : string = this.appGateway.get_id_by_socketId(client.id)
 
 		// get pic and name of the sender
-		/*if (!user)
+		if (!user)
 		{
 			console.log(client.rooms);
 			//while(1);
 			return ;
-		}*/
+		}
+
 		const sender_pic_name = await this.chatService.get_picture_name(user);
 		sender_obj.picture = sender_pic_name.profile.photo_path;
 		receiver_obj.picture = sender_pic_name.profile.photo_path;
 		receiver_obj.name = sender_pic_name.nickName;
 		const recieversocket_id = this.appGateway.get_socketID_by_id(body.recieverId);
 
-
-
 		if ( !( await this.chatService.create_a_direct_message(user,body,recieversocket_id,client.id) ) )
 			return false;
+
+		console.log("hahouwa ja")
+		console.log("zbi");
+		// get all connected sockets and userid
+		// this.appGateway.print();
 		// get socket id of the reciever
 
 		// if no socket found don't emit
@@ -99,6 +103,7 @@ export class chatGateway implements OnGatewayConnection
 	@SubscribeMessage('room')
 	async sendchannel(client: Socket, data: channel_msg)
 	{
+		console.log(data);
 		if (!data.channel_id || !data.content)
 			return ;
 		if (client.rooms.has(data.channel_id))
@@ -106,9 +111,15 @@ export class chatGateway implements OnGatewayConnection
 			if ((await this.chatService.is_muted(this.appGateway.get_id_by_socketId(client.id), data.channel_id)))
 			{
 				const mssg : room_msg  = await this.chatService.create_room_msg(this.appGateway.get_id_by_socketId(client.id),data);
+				const client_msg: room_msg = {...mssg};
+				client_msg.mine = true;
 				//console.log(mssg);
 				if (mssg.content)
-					this.appGateway.server.to(data.channel_id).emit(data.channel_id, mssg);
+				{
+					console.log(client.id);
+					this.appGateway.server.to(data.channel_id).except(client.id).emit(data.channel_id, mssg);
+					this.appGateway.server.to(client.id).emit(data.channel_id, client_msg);
+				}
 			}
 
 		}
