@@ -71,6 +71,7 @@ export default function Bot() {
      console.log('allllll');
      const ballData = document.getElementById('ball');
      const ballElem = document.getElementById('ball');
+     //const tst = document.getElementById('tst');
      const paddleTop = document.getElementById('paddle-top');
      const paddleBottom = document.getElementById('paddle-bottom');
      //console.log('paddle up width = ',
@@ -83,9 +84,9 @@ export default function Bot() {
      SocketClient.emit("setGameDefaultData", {
        room: ioClient.room, //here and other use SocketClient
        ballWidth: ballData?.offsetWidth,
-       ballHeight: ballData?.offsetHeight
-       //tableWidth: table.width,
-       //tableHeight: table.height
+       ballHeight: ballData?.offsetHeight,
+       tableWidth: document.getElementById('game').offsetWidth,
+       tableHeight: document.getElementById('game').offsetHeight
      });
 
      //SocketClient.on("setGameDefaultRender", (
@@ -177,6 +178,16 @@ export default function Bot() {
         //ballElem?.style.setProperty("--x", "50");
         ballElem?.style.setProperty("--y", ball[i].ypos.toString());
         ballElem?.style.setProperty("--x", ball[i].xpos.toString());
+
+        //tst?.style.setProperty("background-color", "black");
+        ////tst?.style.setProperty("--y", (document.getElementById('game').offsetHeight * (2 / 100) - 4).toString());
+        //tst?.style.setProperty("--y", "2");
+        //const game = document.getElementById('game');
+        //let g = (game?.offsetWidth * (30 / 100)) / 2;
+        ////tst?.style.setProperty("--x", (paddle[i].pos - g).toString());
+        //tst?.style.setProperty("--x", "38");
+
+        //tst?.style.setProperty("--x", "90");
            //paddleTop?.style.setProperty("--position", "15");
            if (paddle[i].sight === "BOTTOM") {
              const j = (paddle[0].socket !== SocketClient.id) ? 0 : 1;
@@ -187,6 +198,7 @@ export default function Bot() {
              if (chk) {
               const a = document.getElementById('game');
               a?.classList.add('rotate-180');
+              a?.classList.add('-scale-x-100');
               chk = false;
              }
              const j = (paddle[0].socket !== SocketClient.id) ? 0 : 1;
@@ -244,6 +256,8 @@ export default function Bot() {
              firstTime
            });
            firstTime = false;
+           //if (ball.checkLoss(data))
+           //  resetAll();
            
          }
          lastTime = time;
@@ -454,7 +468,7 @@ export default function Bot() {
             }}
             id="table"
           >
-            <div className="h-full w-full -scale-x-100" id="game">
+            <div className="h-full w-full" id="game">
               <div className="ball" id="ball"></div>
               <div className="paddle top" id="paddle-top"></div>
               <div className="paddle bottom" id="paddle-bottom"></div>
