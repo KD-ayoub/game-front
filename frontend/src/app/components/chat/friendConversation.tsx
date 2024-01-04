@@ -81,12 +81,44 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
   };
 
   const handleBlock = () => {
-	setIsBlocked(true);
+    async function block() {
+      const response = await fetch(
+        `http://localhost:3001/chat/block/${friendSelected.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+		setIsBlocked(true);
+        //console.log("error at handleShowFriendConversssation fetch");
+      }
+    }
+    block();
     // here we gonna block the user
   };
 
   const handleUnblock = () => {
-	  setIsBlocked(false);
+    async function block() {
+      const response = await fetch(
+        `http://localhost:3001/chat/unblock/${friendSelected.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+		setIsBlocked(false);
+        //console.log("error at handleShowFriendConversssation fetch");
+      }
+    }
+    block();
   }
 
   const sendChallenge = () => {
