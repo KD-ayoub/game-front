@@ -71,7 +71,7 @@ export default function Bot() {
      console.log('allllll');
      const ballData = document.getElementById('ball');
      const ballElem = document.getElementById('ball');
-     const tst = document.getElementById('tst');
+     //const tst = document.getElementById('tst');
      const paddleTop = document.getElementById('paddle-top');
      const paddleBottom = document.getElementById('paddle-bottom');
      //console.log('paddle up width = ',
@@ -179,8 +179,15 @@ export default function Bot() {
         ballElem?.style.setProperty("--y", ball[i].ypos.toString());
         ballElem?.style.setProperty("--x", ball[i].xpos.toString());
 
-        tst?.style.setProperty("--y", "87");
-        tst?.style.setProperty("--x", "50");
+        //tst?.style.setProperty("background-color", "black");
+        ////tst?.style.setProperty("--y", (document.getElementById('game').offsetHeight * (2 / 100) - 4).toString());
+        //tst?.style.setProperty("--y", "2");
+        //const game = document.getElementById('game');
+        //let g = (game?.offsetWidth * (30 / 100)) / 2;
+        ////tst?.style.setProperty("--x", (paddle[i].pos - g).toString());
+        //tst?.style.setProperty("--x", "38");
+
+        //tst?.style.setProperty("--x", "90");
            //paddleTop?.style.setProperty("--position", "15");
            if (paddle[i].sight === "BOTTOM") {
              const j = (paddle[0].socket !== SocketClient.id) ? 0 : 1;
@@ -249,6 +256,8 @@ export default function Bot() {
              firstTime
            });
            firstTime = false;
+           //if (ball.checkLoss(data))
+           //  resetAll();
            
          }
          lastTime = time;
@@ -461,7 +470,6 @@ export default function Bot() {
           >
             <div className="h-full w-full" id="game">
               <div className="ball" id="ball"></div>
-              <div className="ball" id="tst"></div>
               <div className="paddle top" id="paddle-top"></div>
               <div className="paddle bottom" id="paddle-bottom"></div>
               <div className="middle-line"></div>

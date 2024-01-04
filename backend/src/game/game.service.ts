@@ -201,19 +201,29 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
     //  width: find[i].paddle.paddleWidth,
     //  height: find[i].paddle.paddleHeight
 		//};
+		//const data = {
+		//	xDown: find[0].paddle.x > find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
+		//	yDown: find[0].paddle.y > find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
+		//	xUp: find[0].paddle.x < find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
+		//	yUp: find[0].paddle.y < find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
+    //  //xUp: find[i].paddle.gap,
+    //  //yUp: find[i].paddle.gap,
+    //  width: find[i].paddle.paddleWidth,
+    //  height: find[i].paddle.paddleHeight
+		//};
 		const data = {
-			xDown: find[0].paddle.x > find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
-			yDown: find[0].paddle.y > find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
-			xUp: find[0].paddle.x < find[1].paddle.x ? find[0].paddle.x : find[1].paddle.x,
-			yUp: find[0].paddle.y < find[1].paddle.y ? find[0].paddle.y : find[1].paddle.y,
-      //xUp: find[i].paddle.gap,
-      //yUp: find[i].paddle.gap,
-      width: find[i].paddle.paddleWidth,
-      height: find[i].paddle.paddleHeight
+			upPos: (find[0].paddle.sight === "TOP") ? find[0].paddle.pos : find[1].paddle.pos,
+			downPos: (find[0].paddle.sight === "BOTTOM") ? find[0].paddle.pos : find[1].paddle.pos
 		};
+
+
 		//console.log('data = ', client.id, ' ', data);
 		//if (!payload.firstTime)
-		find[i].ball.updateBall(payload.delta, data);
+		if (!find[i].ball.updateBall(payload.delta, data)) {
+			find[0].paddle.pos = 50;
+			find[1].paddle.pos = 50;
+		}
+
 		//if (!payload.firstTime) {
     //	if (find[i].gameData.x + find[i].gameData.r >= find[i].gameData.width)
 		//		find[i].gameData.getdx = -find[i].gameData.getdx;
