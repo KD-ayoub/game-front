@@ -31,10 +31,10 @@ export default function ChannelConversation({}: //   channelSelected,
   // information about the channel selected
   const [channelSelected, setChannelSelected] = useState<ChannelChatType>({
     nameOfChannel: "Mimoo",
-    id: "54aa9314-8512-43f9-ac7d-5fa3bc8707b6",
+    id: "67894b4b-5f5d-49d0-a963-cb15086400f7",
     photo: lwaghch.src,
     isJoined: true,
-    type: "private",
+    type: "public",
   });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -119,6 +119,9 @@ export default function ChannelConversation({}: //   channelSelected,
 		console.log("younes",data);
 		setDataConversation(dataConversation => [...dataConversation,data] )
 	})
+    return () => {
+      client.off(channelSelected.id);
+    };
 
   }, [channelSelected]);
 
