@@ -57,8 +57,12 @@ export class ChatController{
 			throw new HttpException('bad',HttpStatus.BAD_REQUEST);
 		else
 			throw new HttpException('good',HttpStatus.OK);
-
 	}
+
+
+	// delete friendship
+
+	// add friendship
 
 
 
@@ -218,10 +222,10 @@ export class ChatController{
 
 	//  list all channel members and admins and owner
 	@UseGuards(AuthenticatedGuard)
-	@Get('members')
+	@Get('members/:id')
 	async members(@Session() session: Record<string,any>,@Param('id') channel_id : string)
 	{
-		this.chatService.members(session.passport.user.id,channel_id);
+		return this.chatService.members(session.passport.user.id,channel_id);
 	}
 	
 	// list all messages in a channel

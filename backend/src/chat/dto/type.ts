@@ -55,3 +55,10 @@ type room_msg_history = {
 	photo: string,
 	name: string
 }
+
+type member = {
+	nickname: string,
+	photo: string,
+	role: string
+	id: string,
+}

@@ -58,22 +58,26 @@ export class chatGateway implements OnGatewayConnection
 		const user : string = this.appGateway.get_id_by_socketId(client.id)
 
 		// get pic and name of the sender
-		/*if (!user)
+		if (!user)
 		{
 			console.log(client.rooms);
 			//while(1);
 			return ;
-		}*/
+		}
+
 		const sender_pic_name = await this.chatService.get_picture_name(user);
 		sender_obj.picture = sender_pic_name.profile.photo_path;
 		receiver_obj.picture = sender_pic_name.profile.photo_path;
 		receiver_obj.name = sender_pic_name.nickName;
 		const recieversocket_id = this.appGateway.get_socketID_by_id(body.recieverId);
 
-
-
 		if ( !( await this.chatService.create_a_direct_message(user,body,recieversocket_id,client.id) ) )
 			return false;
+
+		console.log("hahouwa ja")
+		console.log("zbi");
+		// get all connected sockets and userid
+		// this.appGateway.print();
 		// get socket id of the reciever
 
 		// if no socket found don't emit

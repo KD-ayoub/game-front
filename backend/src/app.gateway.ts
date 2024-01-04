@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 import * as Cookies from 'cookie';
 import * as cookiesParser from 'cookie-parser';
+import { Session } from 'inspector';
 
 @Injectable()
 @WebSocketGateway({
@@ -32,7 +33,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//console.log('size = ', this.socketUser.size);
 		if (this.socketUser.size) {
 			this.socketUser.forEach((value, key) => {
-				//console.log(`key = ${key} | value = ${value}`);
+				console.log(`key = ${key} | value = ${value}`);
 			})
 		}
 		//console.log('done');
@@ -58,17 +59,25 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const parse = Cookies.parse(cookie);
 		const sid = cookiesParser.signedCookie(parse['connect.sid'], process.env.SESSION_SECRET);
 		//console.log(`sid = ${sid}`);
-		const sessionDb = await this.prisma.session.findUnique({
-			where: {
-				sid,
+		console.log(sid);
+		let sessionDb;
+		try {
+			sessionDb = await this.prisma.session.findUnique({
+				where: {
+					sid,
+				}
+			});
+			if (!sessionDb) {
+				//console.log("no session");
+				clientSocket.disconnect();
+				return ;
 			}
-		});
-		if (!sessionDb) {
-			//console.log("no session");
-			clientSocket.disconnect();
-			return ;
+			
+		} catch (error) {
+				clientSocket.disconnect();
+				return ;
 		}
-		const db = JSON.parse(sessionDb.data).passport;
+		const db = await JSON.parse(sessionDb.data).passport;
 		if (!db || !db.user || !db.user.id) {
 			clientSocket.disconnect();
 			return ;

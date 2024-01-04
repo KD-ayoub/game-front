@@ -81,12 +81,15 @@ export default function FriendConversation({
 
   useEffect( () => {
 	const client = ioClient.getSocketClient();
-	console.log("wa khdm azzbi,")
+	console.log("wa khdm azzbi:  ",friendSelected);
 
-    if (!friendSelected) {
-        return;
-      }
-	client.on('chat',(test) => {
+    	if (!friendSelected) {
+    	    return () => {
+				console.log("test");
+				client.off('chat')
+			};
+    	  }
+		client.on('chat',(test) => {
     	if (!friendSelected) {
 			// here increment the unread
        		return;
@@ -96,7 +99,7 @@ export default function FriendConversation({
 	})
 
 	return () => {
-	client.off('chat')
+		client.off('chat')
 	}
   }, [friendSelected]);
 
@@ -219,7 +222,6 @@ export default function FriendConversation({
       )}
       {!friendSelected && (
         <div className="noConversation">
-          <p className="MessageDisplay" > Welcome to the chat with friends</p>
         </div>
       )}
     </>

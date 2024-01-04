@@ -705,7 +705,6 @@ export class chatService {
 					}
 				}
 			})
-			console.log("room : ", room);
 			if (!room)
 				return false;
 		} catch (error) {
@@ -744,7 +743,6 @@ export class chatService {
 					}
 				}
 			})
-			console.log("room : ", room);
 			if (!room)
 				return false;
 		} catch (error) {
@@ -1025,7 +1023,6 @@ export class chatService {
 		try {
 			if (await this.is_admin(userid,channel.channel) || await this.is_member(userid,channel.channel))
 			{
-				console.log("admin && member");
 				try {
 					const room = this.prisma.room.update({
 						where: {
@@ -1170,6 +1167,7 @@ export class chatService {
 
 	async members(userid: string,channel_id : string)
 	{
+		let list_members : member[] = [];
 		try {
 			const members = await this.prisma.room.findUnique({
 				where: {
@@ -1177,23 +1175,60 @@ export class chatService {
 					// check if the user is in the room
 				},
 				select: {
-					ownerId:true,
+					owner:{
+						select: {
+							id: true,
+							nickName: true,
+							profile: {
+								select: {
+									photo_path: true,
+								}
+							}
+						}
+					},
 					members: {
 						select: {
 							id : true,
+							nickName: true,
+							profile: {
+								select: {
+									photo_path: true,
+								}
+							}
 						}
 					},
 					admins: {
 						select: {
 							id : true,
+							nickName: true,
+							profile: {
+								select: {
+									photo_path: true,
+								}
+							}
 						}
 					}
 				}
 			})
-			console.log(members);
+			if (!members)
+				return list_members;
+			if (members.owner)
+			{
+				let node : member = {id: members.owner.id,nickname: members.owner.nickName, photo: members.owner.profile.photo_path, role: "owner"};
+				list_members.push(node);
+				//console.log("owner");
+			}
+			members.admins.forEach((admin) => {
+				let node : member = {id: admin.id ,nickname: admin.nickName, photo: admin.profile.photo_path, role: "admin"};
+				list_members.push(node);
+			});
+			members.members.forEach((member) => {
+				let node : member = {id: member.id ,nickname: member.nickName, photo: member.profile.photo_path, role: "member"};
+				list_members.push(node);
+			});
 		} catch (error) {
-			console.log("zbi");
-			return [];
+			return list_members;
 		}
+		return list_members;
 	}
 }

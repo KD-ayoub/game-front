@@ -26,155 +26,21 @@ export default function ChannelConversation({}: //   channelSelected,
   // information about the channel conversation
   const [dataConversation, setDataConversation] = useState<
     DataChannelConversationType[]
-  >([
-    {
-      content: "hello",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: true,
-      name: "Aissa",
-    },
-    {
-      content:
-        "nalssndlkanslkdnasl alsdlks ndalksndksnda sdd asshdbajshbdajhsbdaj",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: false,
-      name: "Youness",
-    },
-    {
-      content:
-        "hellasd asd asldnlak snldakns laksnlndasdiahsdiuhiuqwbiubwieubiwuefwiue w f wefeo",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: false,
-      name: "Akadi",
-    },
-    {
-      content: "hels dfksdlf jsdlfsdlf sldf sldknldkn flkd fsldlfskndflsklo",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: false,
-      name: "tibari",
-    },
-    {
-      content: "hellasdsdso",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: true,
-      name: "Aissa",
-    },
-    {
-      content:
-        "helasdasdsasdasdasdasdasdaslansdlkanslkdnalskdnnslkdnlaksndlkansdlkansdlknaslkdnalksndlkasndlka sndlkansdlknaslkdnalskndlaksdnlkasndlkasndlkasndlkansldknasldknaslkdnldalo",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: false,
-      name: "Mimooo",
-    },
-    {
-      content: "helasdddasdasdasdaslo",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: false,
-      name: "Mimoo",
-    },
-    {
-      content: "helasdddasdasdasdaslo",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: false,
-      name: "Mimoo",
-    },
-    {
-      content: "helasdddasdasdasdaslo",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: false,
-      name: "Mimoo",
-    },
-    {
-      content: "helasdddasdasdasdaslo",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: false,
-      name: "Mimoo",
-    },
-    {
-      content: "helasdddasdasdasdaslo",
-      sended_at: "2021-09-01T15:00:00.000Z",
-      mine: false,
-      name: "Mimoo",
-    },
-  ]);
+  >([]);
   // information about the channel selected
   const [channelSelected, setChannelSelected] = useState<ChannelChatType>({
     nameOfChannel: "Mimoo",
-    id: "10",
+    id: "54aa9314-8512-43f9-ac7d-5fa3bc8707b6",
     photo: lwaghch.src,
     isJoined: true,
     type: "private",
   });
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // information about members of channel
-  const [memberList, setMemberList] = useState<MemberListChannel[]>([
-    {
-      nickname: "Mouha",
-      id: "12",
-      photo: fakeAvatar.src,
-      role: "owner",
-    },
-    {
-      nickname: "said",
-      id: "112",
-      photo: fakeAvatar.src,
-      role: "admin",
-    },
-    {
-      nickname: "abdo",
-      id: "132",
-      photo: fakeAvatar.src,
-      role: "admin",
-    },
-    {
-      nickname: "nasser",
-      id: "102",
-      photo: fakeAvatar.src,
-      role: "admin",
-    },
-    {
-      nickname: "yasser",
-      id: "1211",
-      photo: fakeAvatar.src,
-      role: "admin",
-    },
-    {
-      nickname: "Hicham",
-      id: "12212",
-      photo: fakeAvatar.src,
-      role: "member",
-    },
-    {
-      nickname: "frida",
-      id: "12212",
-      photo: fakeAvatar.src,
-      role: "admin",
-    },
-    {
-      nickname: "simo",
-      id: "12212",
-      photo: fakeAvatar.src,
-      role: "member",
-    },
-    {
-      nickname: "3bi9a",
-      id: "12212",
-      photo: fakeAvatar.src,
-      role: "member",
-    },
-    {
-      nickname: "jilali",
-      id: "12212",
-      photo: fakeAvatar.src,
-      role: "member",
-    },
-  ]);
+  const [memberList, setMemberList] = useState<MemberListChannel[]>([]);
   // information about me if im an owner or admin or member
-  const [aboutMe, setAboutMe] = useState<aboutMe>({
-    nickname: "Akouame",
-    id: "12",
-    role: "member",
-  });
+  const [aboutMe, setAboutMe] = useState<aboutMe>({});
 
   const handleTextareaChange = () => {
     if (textareaRef.current) {
@@ -241,6 +107,57 @@ export default function ChannelConversation({}: //   channelSelected,
 
   //console.log("dataConversation-->", dataConversation);
   //console.log("channelSelected-->", channelSelected);
+  useEffect( () => {
+    async function fetcher() {
+      const getconv = await fetch(`http://localhost:3001/chat/list_room_messsages/${channelSelected.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      if (!getconv.ok) {
+        throw new Error("Network response was not ok");
+      }
+	  setDataConversation(await getconv.json());
+    }
+    fetcher();
+  },[]);
+
+  useEffect( () => {
+    async function fetcher() {
+      const getconv = await fetch(`http://localhost:3001/chat/members/${channelSelected.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      if (!getconv.ok) {
+        throw new Error("Network response was not ok");
+      }
+	  setMemberList(await getconv.json());
+    }
+    fetcher();
+  } ,[])
+
+  useEffect( () => {
+    async function fetcher() {
+      const getconv = await fetch(`http://localhost:3001/chat/role/${channelSelected.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      if (!getconv.ok) {
+        throw new Error("Network response was not ok");
+      }
+	  setAboutMe(await getconv.json());
+    }
+    fetcher();
+
+  }, [])
 
   return (
     <>
