@@ -14,6 +14,7 @@ import Image from "next/image";
 import moment from "moment";
 import tilijo from "../../assets/svg/chat/tilijo.svg";
 import { ioClient } from "@/app/api/instance";
+import { useRouter } from "next/navigation";
 
 // const socket = io("");
 
@@ -23,10 +24,12 @@ export default function FriendConversation({
   friendSelected: FriendsChatType;
 }) {
   // const { friendSelected } = friend;
+  const router = useRouter();
   const [dataConversation, setDataConversation] = useState<
     GetChatConverssationType[]
   >([]);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+	const [isBlocked, setIsBlocked] = useState<boolean>(friendSelected.isBlocked || false);
+  	const textareaRef = useRef<HTMLTextAreaElement>(null);
   
 
   // const handleTextareaChange = () => {
@@ -36,6 +39,26 @@ export default function FriendConversation({
   //     textareaRef.current.style.height = newHeight;
   //   }
   // };
+const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOption = event.target.value;
+
+    switch (selectedOption) {
+      case 'profile':
+        sendToProfile();
+        break;
+      case 'block':
+        handleBlock();
+        break;
+      case 'unblock':
+        handleUnblock(); // You may need to adjust this part based on your logic for unblocking
+        break;
+      case 'Challenge':
+        sendChallenge();
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleClickBtnBack = () => {
     // showConv = false;
@@ -45,7 +68,6 @@ export default function FriendConversation({
   const handleSendMessage = () => {
     // this for sending data
     const client = ioClient.getSocketClient();
-    console.log("send");
     client.emit("dm", {
       recieverId: friendSelected.id,
       message: textareaRef.current?.value,
@@ -54,17 +76,23 @@ export default function FriendConversation({
   };
 
   const sendToProfile = () => {
-    console.log("send to profile");
+	//redirect('profile/yaskour', 'push');
+	router.push(`/profile/${friendSelected.nickname}`);
   };
 
   const handleBlock = () => {
-    console.log("block");
+	setIsBlocked(true);
     // here we gonna block the user
   };
+
+  const handleUnblock = () => {
+	  setIsBlocked(false);
+  }
 
   const sendChallenge = () => {
     console.log("send challenge");
   };
+
 
   // Here we fetch the conversation with friend:
   useEffect(() => {
@@ -86,6 +114,7 @@ export default function FriendConversation({
         //console.log("error at handleShowFriendConversssation fetch");
       }
       setDataConversation(await response.json());
+	  setIsBlocked(friendSelected.isBlocked);
     }
     handlShowFriendConversation();
   }, [friendSelected]);
@@ -108,6 +137,7 @@ export default function FriendConversation({
         return;
       }
       setDataConversation((dataConversation) => [...dataConversation, data]);
+	  setIsBlocked(friendSelected.isBlocked);
       //console.log("hani hna --------------------------------------",test);
     });
 
@@ -150,29 +180,27 @@ export default function FriendConversation({
             </div>
             {/* setting optionss in bar info */}
             <div className="optionUserDiv">
-              <button onClick={handleClickBtnBack}>
+              <button >
                 <select
                   name="optionsChatUser"
                   id="optionsChatUser"
                   className="optionsUserSelect"
+					onChange={handleOptionChange}
                 >
-                  <option value="Chat" >
-                    Chat
-                  </option>
-                  <option value="profile" onClick={sendToProfile}>
+                  <option value="profile">
                     Profile
                   </option>
 
-                  {friendSelected.isBlocked === false ? (
-                    <option value="block" onClick={handleBlock}>
+                  {isBlocked === false ? (
+                    <option value="block">
                       Block
                     </option>
                   ) : (
-                    <option value="unblock" onClick={handleBlock}>
+                    <option value="unblock">
                       Unblock
                     </option>
                   )}
-                  <option value="Challenge" onClick={sendChallenge}>
+                  <option value="Challenge">
                     Challenge
                   </option>
                 </select>
