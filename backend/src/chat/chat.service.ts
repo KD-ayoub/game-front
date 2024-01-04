@@ -49,12 +49,23 @@ export class chatService {
 		try {
 			const friendship = await this.prisma.friendship.findFirst({
 				where: {
-					userId : senderId,
-					friendId : content.recieverId,
-					is_blocked : false
+					OR :[
+						{
+							userId : senderId,
+							friendId : content.recieverId,
+							is_blocked: true
+
+						},
+						{
+							userId : content.recieverId,
+							friendId : senderId,
+							is_blocked: true
+						}
+
+					],
 				}
 			});
-			if (!friendship)
+			if (friendship)
 				return false;
 			const dm = await this.prisma.directMessage.create({
 				data: {
