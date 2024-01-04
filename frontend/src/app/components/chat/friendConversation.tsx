@@ -13,6 +13,7 @@ import Image from "next/image";
 // import ioClient from "../../api/instance";
 import moment from "moment";
 import tilijo from "../../assets/svg/chat/tilijo.svg";
+import { ioClient } from "@/app/api/instance";
 
 // const socket = io("");
 
@@ -41,15 +42,9 @@ export default function FriendConversation({
 
   // handle send message
   const handleSendMessage = () => {
-    fetch(`http://localhost:3001/chat/ansiftLkMsg`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ messageSent: textareaRef.current!.value }),
-    });
-    textareaRef.current!.value = "";
+	// this for sending data 
+	const client = ioClient.getSocketClient();
+	client.emit("dm",{"recieverId" : "2d601b02-530c-4a0f-ad26-6956484324d1", "message": "zbi" });
   };
 
   // Here we fetch the conversation with friend:
@@ -69,15 +64,36 @@ export default function FriendConversation({
         }
       );
       if (!response.ok) {
-        console.log("error at handleShowFriendConversssation fetch");
+        //console.log("error at handleShowFriendConversssation fetch");
       }
       setDataConversation(await response.json());
     }
     handlShowFriendConversation();
   }, [friendSelected]);
 
-  console.log("dataConversation-->", dataConversation);
-  console.log("friendSelected-->", friendSelected);
+  useEffect( () => {
+	const client = ioClient.getSocketClient();
+	console.log("wa khdm azzbi,")
+
+    if (!friendSelected) {
+        return;
+      }
+	client.on('chat',(test) => {
+    	if (!friendSelected) {
+			// here increment the unread
+       		return;
+      	}
+  		setDataConversation(dataConversation => [...dataConversation, test]);
+		console.log("hani hna --------------------------------------",test);
+	})
+
+	return () => {
+	client.off('chat')
+	}
+  }, [friendSelected]);
+
+  //console.log("dataConversation-->", dataConversation);
+  //console.log("friendSelected-->", friendSelected);
 
   return (
     <>

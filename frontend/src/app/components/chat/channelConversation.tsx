@@ -202,7 +202,7 @@ export default function ChannelConversation({}: //   channelSelected,
   };
 
   const handleChallenge = () => {
-    console.log("challenge");
+    //console.log("challenge");
   }
 
   const handleLeaveChannel = () => {
@@ -239,8 +239,8 @@ export default function ChannelConversation({}: //   channelSelected,
   //     handlShowFriendConversation();
   //   }, [channelSelected]);
 
-  console.log("dataConversation-->", dataConversation);
-  console.log("channelSelected-->", channelSelected);
+  //console.log("dataConversation-->", dataConversation);
+  //console.log("channelSelected-->", channelSelected);
 
   return (
     <>

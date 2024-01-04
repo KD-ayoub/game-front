@@ -48,7 +48,7 @@ export default function ChannelMessaged({
         }
       );
       if (!getChannel.ok) {
-        console.log("error fetcher");
+        //console.log("error fetcher");
         throw new Error("Network response was not ok");
       }
       setChannel(await getChannel.json());
@@ -56,7 +56,7 @@ export default function ChannelMessaged({
     fetcher();
   }, []);
 
-  console.log("Channel", channel);
+  //console.log("Channel", channel);
 
   return (
     <>
@@ -75,7 +75,7 @@ export default function ChannelMessaged({
               <button
                 className="selectFriend w-[100%]"
                 onClick={() => {
-                  console.log("channel.id", channel.id);
+                  //console.log("channel.id", channel.id);
                   onSelect(channel);
                   // props.onChange(false);
                 }}

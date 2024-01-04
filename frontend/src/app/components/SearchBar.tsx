@@ -47,7 +47,7 @@ export default function SearchBar() {
     }
     router.push(`/profile/${user.nickName}`);
   }
-  console.log("done here", dataAllUsers);
+  //console.log("done here", dataAllUsers);
   return (
     <div className="h-[29.6px] sm:h-[33.6px] md:h-10 lg:h-14 xl:h-16 2xl:h-24 w-1/3 bg-[#252134] rounded-full  flex-grow mx-[5px] xl:mx-5 flex items-center relative">
       <div className="flex  gap-1 sm:gap-2 justify-start items-center w-full h-full">
