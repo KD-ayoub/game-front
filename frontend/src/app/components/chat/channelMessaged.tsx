@@ -112,7 +112,7 @@ export default function ChannelMessaged({
                     </span>
                   ) : null}{" "} */}
                   {channel.isJoined === false ? (
-                    <button className="isJoined">Join</button>
+                    <button className="isJoined" onClick={() => {console.log("join btn clicked!")}}>Join</button>
                   ) : null}
                 </div>
               </button>
