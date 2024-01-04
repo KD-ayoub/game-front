@@ -206,7 +206,7 @@ export class ChatController{
 	@Get('role/:id')
 	async user_role(@Session() session: Record<string,any>,@Param('id') channel_id : string)
 	{
-		console.log(session.passport.user);
+		//console.log(session.passport.user);
 		if (await this.chatService.is_admin(session.passport.user.id,channel_id))
 			return {"role": "admin" , "nickname" : session.passport.user.nickName, "id" : session.passport.user.id};
 		else if (await this.chatService.is_member(session.passport.user.id,channel_id))
