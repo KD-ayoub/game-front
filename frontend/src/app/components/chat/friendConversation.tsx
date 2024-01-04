@@ -44,6 +44,7 @@ export default function FriendConversation({
   const handleSendMessage = () => {
 	// this for sending data 
 	const client = ioClient.getSocketClient();
+	console.log("send");
 	client.emit("dm",{"recieverId" : friendSelected.id, "message": textareaRef.current?.value });
   };
 
@@ -80,21 +81,16 @@ export default function FriendConversation({
   },[dataConversation]);
 
   useEffect( () => {
-	const client = ioClient.getSocketClient();
-	console.log("wa khdm azzbi:  ",friendSelected);
+		const client = ioClient.getSocketClient();
+		console.log("wa khdm azzbi:  ");
 
-    	if (!friendSelected) {
-    	    return () => {
-				console.log("test");
-				client.off('chat')
-			};
-    	  }
-		client.on('chat',(test) => {
-    	if (!friendSelected) {
-			// here increment the unread
-       		return;
-      	}
-  		setDataConversation(dataConversation => [...dataConversation, test]);
+		client.on('chat',(data) => {
+		console.log("data: ", data);
+    		if (!friendSelected) {
+				// here increment the unread
+       			return;
+      		}
+  		setDataConversation(dataConversation => [...dataConversation, data]);
 		//console.log("hani hna --------------------------------------",test);
 	})
 

@@ -102,6 +102,14 @@ export default function ChannelConversation({}: //   channelSelected,
 
   //console.log("dataConversation-->", dataConversation);
   //console.log("channelSelected-->", channelSelected);
+  useEffect(() => {
+  const historychatdiv = document.getElementById("scroll");
+  if (historychatdiv)
+  {
+  	historychatdiv.scrollTop = historychatdiv.scrollHeight;
+  }
+  },[dataConversation]);
+
   useEffect( () => {
 	const client = ioClient.getSocketClient();
 	if (!channelSelected)
@@ -218,7 +226,7 @@ export default function ChannelConversation({}: //   channelSelected,
               {/* end of setting options in bar info */}
             </div>
 
-            <div className="historyChat">
+            <div className="historyChat" id="scroll">
               {dataConversation.length > 0 &&
                 dataConversation.map((message, index) => (
                   <div className="message" key={index}>
