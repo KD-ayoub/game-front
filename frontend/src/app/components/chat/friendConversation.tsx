@@ -44,7 +44,7 @@ export default function FriendConversation({
   const handleSendMessage = () => {
 	// this for sending data 
 	const client = ioClient.getSocketClient();
-	client.emit("dm",{"recieverId" : "2d601b02-530c-4a0f-ad26-6956484324d1", "message": "zbi" });
+	client.emit("dm",{"recieverId" : friendSelected.id, "message": textareaRef.current?.value });
   };
 
   // Here we fetch the conversation with friend:
@@ -71,6 +71,14 @@ export default function FriendConversation({
     handlShowFriendConversation();
   }, [friendSelected]);
 
+  useEffect(() => {
+  const historychatdiv = document.getElementById("scroll");
+  if (historychatdiv)
+  {
+  	historychatdiv.scrollTop = historychatdiv.scrollHeight;
+  }
+  },[dataConversation]);
+
   useEffect( () => {
 	const client = ioClient.getSocketClient();
 	console.log("wa khdm azzbi,")
@@ -84,7 +92,7 @@ export default function FriendConversation({
        		return;
       	}
   		setDataConversation(dataConversation => [...dataConversation, test]);
-		console.log("hani hna --------------------------------------",test);
+		//console.log("hani hna --------------------------------------",test);
 	})
 
 	return () => {
@@ -148,7 +156,7 @@ export default function FriendConversation({
             {/* end of setting options in bar info */}
           </div>
 
-          <div className="historyChat">
+          <div className="historyChat" id="scroll">
             {dataConversation.length > 0 &&
               dataConversation.map((message, index) => (
                 <div className="message" key={index}>

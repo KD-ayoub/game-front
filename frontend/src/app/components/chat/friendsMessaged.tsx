@@ -48,7 +48,6 @@ export default function FriendsMessaged({onSelect}: {onSelect: (id:FriendsChatTy
   }, []);
 
 
-  //console.log("friends", friends);
 
   return (
     <>
