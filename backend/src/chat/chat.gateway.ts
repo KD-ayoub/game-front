@@ -103,6 +103,7 @@ export class chatGateway implements OnGatewayConnection
 	@SubscribeMessage('room')
 	async sendchannel(client: Socket, data: channel_msg)
 	{
+		console.log(data);
 		if (!data.channel_id || !data.content)
 			return ;
 		if (client.rooms.has(data.channel_id))
@@ -110,9 +111,15 @@ export class chatGateway implements OnGatewayConnection
 			if ((await this.chatService.is_muted(this.appGateway.get_id_by_socketId(client.id), data.channel_id)))
 			{
 				const mssg : room_msg  = await this.chatService.create_room_msg(this.appGateway.get_id_by_socketId(client.id),data);
+				const client_msg: room_msg = {...mssg};
+				client_msg.mine = true;
 				//console.log(mssg);
 				if (mssg.content)
-					this.appGateway.server.to(data.channel_id).emit(data.channel_id, mssg);
+				{
+					console.log(client.id);
+					this.appGateway.server.to(data.channel_id).except(client.id).emit(data.channel_id, mssg);
+					this.appGateway.server.to(client.id).emit(data.channel_id, client_msg);
+				}
 			}
 
 		}

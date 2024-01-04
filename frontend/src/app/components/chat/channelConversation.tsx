@@ -15,6 +15,7 @@ import tilijo from "../../assets/svg/chat/tilijo.svg";
 import { DataChannelConversationType } from "@/app/types/dataChannelConversationType";
 import lwaghch from "../../assets/svg/chat/lwaghch.svg";
 import { MemberListChannel, aboutMe } from "../../types/memberListChannel";
+import { ioClient } from "@/app/api/instance";
 
 // const socket = io("");
 
@@ -56,15 +57,9 @@ export default function ChannelConversation({}: //   channelSelected,
 
   // handle send message
   const handleSendMessage = () => {
-    fetch(`http://localhost:3001/chat/ansiftLkMsg`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ messageSent: textareaRef.current!.value }),
-    });
-    textareaRef.current!.value = "";
+  	console.log("test");
+	const client = ioClient.getSocketClient();
+	client.emit("room",{"channel_id":  channelSelected.id, "content" : textareaRef.current?.value});
   };
 
   const handleChallenge = () => {
@@ -108,6 +103,18 @@ export default function ChannelConversation({}: //   channelSelected,
   //console.log("dataConversation-->", dataConversation);
   //console.log("channelSelected-->", channelSelected);
   useEffect( () => {
+	const client = ioClient.getSocketClient();
+	if (!channelSelected)
+		return ;
+	client.on(channelSelected.id,(data) => {
+		console.log(client.id)
+		console.log("younes",data);
+		setDataConversation(dataConversation => [...dataConversation,data] )
+	})
+
+  }, [channelSelected]);
+
+  useEffect( () => {
     async function fetcher() {
       const getconv = await fetch(`http://localhost:3001/chat/list_room_messsages/${channelSelected.id}`, {
         method: "GET",
@@ -119,7 +126,8 @@ export default function ChannelConversation({}: //   channelSelected,
       if (!getconv.ok) {
         throw new Error("Network response was not ok");
       }
-	  setDataConversation(await getconv.json());
+	  const conv: DataChannelConversationType[] = await getconv.json();
+	  setDataConversation(conv);
     }
     fetcher();
   },[]);
@@ -156,7 +164,6 @@ export default function ChannelConversation({}: //   channelSelected,
 	  setAboutMe(await getconv.json());
     }
     fetcher();
-
   }, [])
 
   return (

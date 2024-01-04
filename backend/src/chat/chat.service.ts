@@ -980,7 +980,8 @@ export class chatService {
 			senderid: "",
 			content: "",
 			time: new Date(),
-			photo: ""
+			photo: "",
+			mine: false
 		}
 
 		try {
