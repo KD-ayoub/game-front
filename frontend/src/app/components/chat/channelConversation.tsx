@@ -123,6 +123,19 @@ export default function ChannelConversation({
       console.log("younes", data);
       setDataConversation((dataConversation) => [...dataConversation, data]);
     });
+    return () => {
+      client.off(channelSelected.id);
+    };
+  });
+
+  useEffect(() => {
+    const client = ioClient.getSocketClient();
+    if (!channelSelected) return;
+    client.on(channelSelected.id, (data) => {
+      console.log(client.id);
+      console.log("younes", data);
+      setDataConversation((dataConversation) => [...dataConversation, data]);
+    });
   }, [channelSelected]);
 
   useEffect(() => {
@@ -146,7 +159,7 @@ export default function ChannelConversation({
     fetcher();
 
     // console.log("id dyal channel", channelSelected.id);
-  }, []);
+  }, [channelSelected]);
 
   useEffect(() => {
     async function fetcher() {
@@ -345,7 +358,8 @@ export default function ChannelConversation({
                         />
                         <p className="memberName">{member.nickname}</p>
                         {/* if im just a member i cant see this select option */}
-                        {aboutMe && aboutMe.role === "member" &&
+                        {aboutMe &&
+                          aboutMe.role === "member" &&
                           aboutMe.nickname !== member.nickname && (
                             <div className="memberSee">
                               <button
@@ -357,23 +371,39 @@ export default function ChannelConversation({
                             </div>
                           )}
                         {/* if im an admin i can see this select option */}
-                        {aboutMe && aboutMe.role === "admin" &&
+                        {aboutMe &&
+                          aboutMe.role === "admin" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="selectOwnerOptions">
-                              <select name="" id="">
-                                mok
-                              </select>
+                            <div className="memberSee">
+                              <div className="selectOwnerOptions">
+                                <select name="" id="">
+                                  mok
+                                </select>
+                              </div>
+                              <button
+                                className="Challenge-btn"
+                                onClick={handleChallenge}
+                              >
+                                <i className="ri-ping-pong-line"> Challenge</i>
+                              </button>
                             </div>
                           )}
                         {/* if im an owner i can see this select option */}
-                        {aboutMe && aboutMe.role === "owner" &&
+                        {aboutMe &&
+                          aboutMe.role === "owner" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="selectOwnerOptions">
-                              <select name="" id="">
-                                mok
-                                <option value="mok">mok</option>
-                                <option value="mok">bak</option>
-                              </select>
+                            <div className="memberSee">
+                              <div className="selectOwnerOptions">
+                                <select name="" id="">
+                                  mok
+                                </select>
+                              </div>
+                              <button
+                                className="Challenge-btn"
+                                onClick={handleChallenge}
+                              >
+                                <i className="ri-ping-pong-line"> Challenge</i>
+                              </button>
                             </div>
                           )}
                       </div>
@@ -402,7 +432,8 @@ export default function ChannelConversation({
                         />
                         <p className="memberName">{member.nickname}</p>
                         {/* if im just a member i cant see this select option */}
-                        {aboutMe && aboutMe.role === "member" &&
+                        {aboutMe &&
+                          aboutMe.role === "member" &&
                           aboutMe.nickname !== member.nickname && (
                             <div className="memberSee">
                               <button className="Challenge-btn">
@@ -411,7 +442,8 @@ export default function ChannelConversation({
                             </div>
                           )}
                         {/* if im an admin i can see this select option */}
-                        {aboutMe && aboutMe.role === "admin" &&
+                        {aboutMe &&
+                          aboutMe.role === "admin" &&
                           aboutMe.nickname !== member.nickname && (
                             <div className="selectOwnerOptions">
                               <select name="" id="">
@@ -420,7 +452,8 @@ export default function ChannelConversation({
                             </div>
                           )}
                         {/* if im an owner i can see this select option */}
-                        {aboutMe && aboutMe.role === "owner" &&
+                        {aboutMe &&
+                          aboutMe.role === "owner" &&
                           aboutMe.nickname !== member.nickname && (
                             <div className="selectOwnerOptions">
                               <select name="" id="">
@@ -456,7 +489,8 @@ export default function ChannelConversation({
                         />
                         <p className="memberName">{member.nickname}</p>
                         {/* if im just a member i cant see this select option */}
-                        {aboutMe && aboutMe.role === "member" &&
+                        {aboutMe &&
+                          aboutMe.role === "member" &&
                           aboutMe.nickname !== member.nickname && (
                             <div className="memberSee">
                               <button className="Challenge-btn">
@@ -465,7 +499,8 @@ export default function ChannelConversation({
                             </div>
                           )}
                         {/* if im an admin i can see this select option */}
-                        {aboutMe && aboutMe.role === "admin" &&
+                        {aboutMe &&
+                          aboutMe.role === "admin" &&
                           aboutMe.nickname !== member.nickname && (
                             <div className="selectOwnerOptions">
                               <select name="" id="">
@@ -474,7 +509,8 @@ export default function ChannelConversation({
                             </div>
                           )}
                         {/* if im an owner i can see this select option */}
-                        {aboutMe && aboutMe.role === "owner" &&
+                        {aboutMe &&
+                          aboutMe.role === "owner" &&
                           aboutMe.nickname !== member.nickname && (
                             <div className="selectOwnerOptions">
                               <select name="" id="">

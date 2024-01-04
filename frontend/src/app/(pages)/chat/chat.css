@@ -535,6 +535,9 @@
   padding-bottom: 15px;
 }
 
+.channelOverview {
+  border-radius: 9999px;
+}
 
 .infoChannel .channelName {
   color: #FFF;
@@ -574,6 +577,10 @@
   border-radius: 10px;
   background: #252134;
   padding: 5px 15px;
+}
+
+.memberPhoto {
+  border-radius: 9999px;
 }
 
 .ownerBox {
