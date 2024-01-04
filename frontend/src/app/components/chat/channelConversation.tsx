@@ -66,6 +66,7 @@ export default function ChannelConversation({
       channel_id: channelSelected.id,
       content: textareaRef.current?.value,
     });
+    textareaRef.current!.value = "";
   };
 
   const handleChallenge = () => {

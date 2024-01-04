@@ -56,6 +56,7 @@ export class AuthController {
 	async checkUserStatus(@Req() req: any, @Session() session: any) {
 		//this code is going to guard
 			//throw new ForbiddenException({message: loginStatus.FirstTime});
+		//console.log('checkuser');
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
 		const user = session.passport.user;
@@ -165,7 +166,7 @@ export class AuthController {
 		//console.log('ll = ', body);
 		//return {message: 'Good'};
 
-		console.log('ll = ', body);
+		//console.log('ll = ', body);
 		const checkFirstTime = await this.auth.checkFirstTime(req.user.id);
 		const twoFacCheck = await this.auth.check2fa(req.user.id);
 		const user = session.passport.user;

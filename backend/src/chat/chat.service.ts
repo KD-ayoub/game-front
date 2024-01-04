@@ -186,7 +186,7 @@ export class chatService {
 			}
 		})
 		const reshapedResult = friends.map(user => {
-				return {id : user.friend.id,nickname: user.friend.nickName, photo: user.friend.profile.photo_path, blocked: user.is_blocked}
+				return {id : user.friend.id,nickname: user.friend.nickName, photo: user.friend.profile.photo_path, isBlocked: user.is_blocked}
 		});
 		return reshapedResult;
 	}

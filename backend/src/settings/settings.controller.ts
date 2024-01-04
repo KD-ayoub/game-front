@@ -27,7 +27,7 @@ export class SettingsController {
 
   @Get()
   getSettings(@Req() req: any) {
-    console.log("entred in get");
+    //console.log("entred in get");
     return this.SettingsService.getSettingsData(req.user.id);
   }
 

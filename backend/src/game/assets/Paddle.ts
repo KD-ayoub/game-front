@@ -18,10 +18,10 @@ export class Paddle {
   constructor(data: any, chk: boolean) {
     //this.gap = data.tableWidth < 400 ? 3 : 5;
     this.gap = 1;
-    //this.tableWidth = data.tableWidth;
-    //this.tableHeight = data.tableHeight;
+    this.tableWidth = data.tableWidth;
+    this.tableHeight = data.tableHeight;
     //this.paddleWidth = this.tableWidth / 3;
-    //this.paddleHeight = this.tableWidth < 400 ? 6 : 12;
+    this.paddleHeight = this.tableHeight * (2 / 100);
     this.paddleSpeed = 1;
     //check
     //this.xpos = (!chk) ? (this.tableWidth - this.paddleWidth - this.gap) : this.gap;

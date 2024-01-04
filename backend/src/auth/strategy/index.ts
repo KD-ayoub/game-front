@@ -15,7 +15,7 @@ export class FT_Strategy extends PassportStrategy(Strategy, '42') {
 	}
 
 	async validate(accessToken: string, refreshToken: string, profile: Profile){
-		console.log('validate');
+		//console.log('validate');
 		//console.log(`accessToken ${accessToken}`);
 		//console.log(`refreshToken ${refreshToken}`);
 		const details : any = {

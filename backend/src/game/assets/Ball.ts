@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 
-const INITIAL_VELOCITY: number = 0.04,
+const INITIAL_VELOCITY: number = 0.1,
   VELOCITY_INCREASE: number = 0.3;
 
 export class Ball {
@@ -44,26 +44,77 @@ export class Ball {
 	}
 
   checkBallTouchPaddle(data: any, chk: boolean) {
-    if (
-      data.yUp + data.height >= this.ypos - this.radius &&
-      ((this.xpos - this.radius >= data.xUp &&
-        this.xpos - this.radius <= data.xUp + data.width) ||
-        (this.xpos + this.radius >= data.xUp &&
-          this.xpos + this.radius <= data.xUp + data.width))
-    ) {
+    //if (
+    //  data.yUp + data.height >= this.ypos - this.radius &&
+    //  ((this.xpos - this.radius >= data.xUp &&
+    //    this.xpos - this.radius <= data.xUp + data.width) ||
+    //    (this.xpos + this.radius >= data.xUp &&
+    //      this.xpos + this.radius <= data.xUp + data.width))
+    //) {
+    //  if (chk) this.dy = -this.dy;
+    //  return true;
+    //}
+    //if (
+    //  data.yDown <= this.ypos + this.radius &&
+    //  ((this.xpos - this.radius >= data.xDown &&
+    //    this.xpos - this.radius <= data.xDown + data.width) ||
+    //    (this.xpos + this.radius >= data.xDown &&
+    //      this.xpos + this.radius <= data.xDown + data.width))
+    //) {
+    //  if (chk) this.dy = -this.dy;
+    //  return true;
+    //}
+    //return false;
+
+
+
+    //if (
+    //  data.yUp + data.height >= this.ypos - this.radius &&
+    //  ((this.xpos - this.radius >= data.xUp &&
+    //    this.xpos - this.radius <= data.xUp + data.width) ||
+    //    (this.xpos + this.radius >= data.xUp &&
+    //      this.xpos + this.radius <= data.xUp + data.width))
+    //) 
+    if (this.ypos <= 5 &&
+        (((this.xpos - 3 >= data.upPos - 15) &&
+          (this.xpos - 3 <= data.upPos + 15)) ||
+            ((this.xpos + 3 >= data.upPos - 15) &&
+             (this.xpos + 3 <= data.upPos + 15))))
+    {
       if (chk) this.dy = -this.dy;
       return true;
     }
-    if (
-      data.yDown <= this.ypos + this.radius &&
-      ((this.xpos - this.radius >= data.xDown &&
-        this.xpos - this.radius <= data.xDown + data.width) ||
-        (this.xpos + this.radius >= data.xDown &&
-          this.xpos + this.radius <= data.xDown + data.width))
-    ) {
+    //if (
+    //  data.yDown <= this.ypos + this.radius &&
+    //  ((this.xpos - this.radius >= data.xDown &&
+    //    this.xpos - this.radius <= data.xDown + data.width) ||
+    //    (this.xpos + this.radius >= data.xDown &&
+    //      this.xpos + this.radius <= data.xDown + data.width))
+    //)
+    //if (this.ypos >= 95)
+    if (this.ypos >= 95 &&
+        (((this.xpos - 3 >= data.downPos - 15) &&
+          (this.xpos - 3 <= data.downPos + 15)) ||
+            ((this.xpos + 3 >= data.downPos - 15) &&
+             (this.xpos + 3 <= data.downPos + 15))))
+    {
       if (chk) this.dy = -this.dy;
       return true;
     }
+    return false;
+
+  }
+
+  checkLoss(data: any) {
+    //if ((this.ypos + this.radius) > (this.tableHeight - this.gap) ||
+    //    (this.ypos - this.radius) < this.gap)`j
+    //if (!this.checkBallTouchPaddle(data, false) &&
+    //    (((this.ypos - this.radius) < (data.yUp + data.height)) ||
+    //     ((this.ypos + this.radius) > data.yDown)))
+    if (!this.checkBallTouchPaddle(data, false) &&
+        (((this.ypos) < 5) ||
+         ((this.ypos) > 95)))
+      return true;
     return false;
   }
 
@@ -75,10 +126,18 @@ export class Ball {
     else if (this.ypos + 3 >= this.tableHeight) this.dy = -this.dy;
     else if (this.ypos - 3 <= 0) this.dy = -this.dy;
     //touch the paddle
-    //this.checkBallTouchPaddle(data, true);
+    this.checkBallTouchPaddle(data, true);
+    if (this.checkLoss(data)) {
+      this.xpos = 50;
+      this.ypos = 50;
+      data.upPos = 50;
+      data.downPos = 50;
+      return false;
+    }
 
     this.xpos += this.dx;
     this.ypos += this.dy;
+    return true;
     //this.xpos += this.dx * delta;
     //this.ypos += this.dy * delta;
     //console.log(this.xpos);
