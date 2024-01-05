@@ -28,32 +28,23 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//this.i = 0;
 	}
 
-	print(): void {
-		console.log('size = ', this.socketUser.size);
-		if (this.socketUser.size) {
-			this.socketUser.forEach((value, key) => {
-				console.log(`key = ${key} | value = ${value}`);
-			})
-		}
-		console.log('done');
-	}
+	//print(): void {
+	//	console.log('size = ', this.socketUser.size);
+	//	if (this.socketUser.size) {
+	//		this.socketUser.forEach((value, key) => {
+	//			console.log(`key = ${key} | value = ${value}`);
+	//		})
+	//	}
+	//	console.log('done');
+	//}
 
-	async handleConnection(client: Socket, ...args: any[]) {
-		//console.log(`${client.id} is connect size = ${this.socketUser.size}`);
-		//error in disconnect
-		console.log('hey ', client.id);
+	async getIdFromCookie(client: Socket): Promise<string | null> {
 		const clientSocket = this.server.sockets.sockets.get(client.id);
-		//this.socketUser.set(this.i.toString(), client.id);
-		//this.i++;
-		//console.log('add a socket to the map');
-		//return ;
-		//old logic for cookie now just trying
 		const cookie = client.request.headers.cookie;
 		console.log('cookie = ', cookie);
 		if (!cookie) {
 			console.log("no cookie");
-			clientSocket.disconnect();
-			return ;
+			return null;
 		}
 		const parse = Cookies.parse(cookie);
 		const sid = cookiesParser.signedCookie(parse['connect.sid'], process.env.SESSION_SECRET);
@@ -65,44 +56,81 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		});
 		if (!sessionDb) {
 			console.log("no session");
-			clientSocket.disconnect();
-			return ;
+			return null;
 		}
 		const db = JSON.parse(sessionDb.data).passport;
 		if (!db || !db.user || !db.user.id) {
-			clientSocket.disconnect();
-			return ;
+			return null;
 		}
-		//if (this.socketUser.has(db.user.id)) {
-		//	console.log('disconnect ', client.id);
+		return db.user.id;
+	}
+
+	async handleConnection(client: Socket, ...args: any[]) {
+		//console.log(`${client.id} is connect size = ${this.socketUser.size}`);
+		//error in disconnect
+		console.log('hey ', client.id);
+		//const clientSocket = this.server.sockets.sockets.get(client.id);
+		////this.socketUser.set(this.i.toString(), client.id);
+		////this.i++;
+		////console.log('add a socket to the map');
+		////return ;
+		////old logic for cookie now just trying
+		//const cookie = client.request.headers.cookie;
+		//console.log('cookie = ', cookie);
+		//if (!cookie) {
+		//	console.log("no cookie");
 		//	clientSocket.disconnect();
 		//	return ;
 		//}
-		if (this.socketUser.has(db.user.id)) {
-			console.log('disconnect ', client.id);
-			const hldClient = this.server.sockets.sockets.get(this.socketUser.get(db.user.id));
-			hldClient.disconnect();
+		//const parse = Cookies.parse(cookie);
+		//const sid = cookiesParser.signedCookie(parse['connect.sid'], process.env.SESSION_SECRET);
+		//console.log(`sid = ${sid}`);
+		//const sessionDb = await this.prisma.session.findUnique({
+		//	where: {
+		//		sid,
+		//	}
+		//});
+		//if (!sessionDb) {
+		//	console.log("no session");
+		//	clientSocket.disconnect();
+		//	return ;
+		//}
+		//const db = JSON.parse(sessionDb.data).passport;
+		//if (!db || !db.user || !db.user.id) {
+		//	clientSocket.disconnect();
+		//	return ;
+		//}
+		//here the front disconnect the socket no need to disconnect it again
+		//if (this.socketUser.has(db.user.id)) {
+		//	console.log('disconnect ', client.id);
+		//	const hldClient = this.server.sockets.sockets.get(this.socketUser.get(db.user.id));
+		//	console.log(this.socketUser.get(db.user.id));
+		//	console.log('ll ', hldClient);
+		//	//hldClient.disconnect();
+		//	//return ;
+		//}
+		const clientSocket = this.server.sockets.sockets.get(client.id);
+		const id: string = await this.getIdFromCookie(client);
+		if (!id) {
+			clientSocket.disconnect();
 			return ;
 		}
-		this.socketUser.set(db.user.id, client.id);
+		//this.socketUser.set(db.user.id, client.id);
+		this.socketUser.set(id, client.id);
 		console.log('add a socket to the map');
 	}
 
 	handleDisconnect(client: Socket) {
-		//console.log('bye');
-		const findValue = this.findSocketMap(client.id);
+		//const findValue = this.findSocketMap(client.id);
 		//this.socketUser.forEach((value, key) => {
 		//	findValue = value === client.id ? client.id : "";
 		//})
-		if (findValue)
-			this.socketUser.delete(findValue.key);
-		console.log('bye = ', this.socketUser);
-	}
 
-	@SubscribeMessage('newMessage')
-	onNewMessage(@MessageBody() body: any) {
-		console.log(body);
-		this.server.emit('onMessage', body)
+		//if (findValue)
+		//	this.socketUser.delete(findValue.key);
+
+		//here when login out should take off that id
+		console.log('bye = ', this.socketUser);
 	}
 
 	getKeyByValue(map: Map<any,any>,searchValue: any) {
@@ -113,10 +141,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	//just for now
-	findSocketMap(socketId: string) {
+	findSocketMap(socketId: string): {key: string, value: string} {
 		for (const [key, value] of this.socketUser.entries()) {
 			if (value === socketId)
-				return {key, value};
+				return { key, value };
 		}
 	}
 

@@ -47,309 +47,151 @@ export default function Bot() {
   const playerRef = useRef<HTMLParagraphElement>(null);
   const unmounted = useRef(false);
   const animationFrameRef = useRef(-1);
-   useEffect(() => {
-     //let table = canvasRef.current;
-     //console.log("client", table?.clientWidth, table?.clientHeight);
-     //if (!table) return;
-     //table.width = table.clientWidth;
-     //table.height = table.clientHeight;
-     //const context = table.getContext("2d");
-     //if (!context) return;
-     //const wallGap = table.width < 400 ? 3 : 5;
-     //const paddleWidth = table.width / 3;
-     //const paddleHeight = table.width < 400 ? 6 : 12;
-     //const xdownPaddle = table.width - paddleWidth - wallGap;
-     //const ydownPaddle = table.height - paddleHeight - wallGap;
-     //const xupPaddle = wallGap;
-     //const yupPaddle = wallGap;
-     //here socket
-       let ballObj: Ball;
-       let paddlePlayer: Paddle;
-       let paddleOpponent: Paddle;
-       //give this one a type to work with
-     const SocketClient = ioClient.getSocketClient();
-     console.log('allllll');
-     const ballData = document.getElementById('ball');
-     const ballElem = document.getElementById('ball');
-     //const tst = document.getElementById('tst');
-     const paddleTop = document.getElementById('paddle-top');
-     const paddleBottom = document.getElementById('paddle-bottom');
-     //console.log('paddle up width = ',
-     //document.getElementById('paddle-top').offsetWidth,
-     //'paddle up height = ', document.getElementById('paddle-top').offsetHeight);
-     //console.log('paddle bottom width = ',
-     //document.getElementById('paddle-bottom').offsetWidth,
-     //'paddle bottom height = ', document.getElementById('paddle-bottom').offsetHeight);
-     console.log(ballData?.offsetWidth)
-     SocketClient.emit("setGameDefaultData", {
-       room: ioClient.room, //here and other use SocketClient
-       ballWidth: ballData?.offsetWidth,
-       ballHeight: ballData?.offsetHeight,
-       tableWidth: document.getElementById('game').offsetWidth,
-       tableHeight: document.getElementById('game').offsetHeight
-     });
-
-     //SocketClient.on("setGameDefaultRender", (
-     //  ballData: [
-     //    {socket: string, radius: number, speed: number, xpos: number, ypos: number, dx: number, dy: number},
-     //    {socket: string, radius: number, speed: number, xpos: number, ypos: number, dx: number, dy: number}
-     //  ],
-     //  paddleData: [
-     //    {socket: string, speed: number, xpos: number, ypos: number},
-     //    {socket: string, speed: number, xpos: number, ypos: number}
-     //  ]
-     //) => {
-     //  //console.log('ballData = ', ballData);
-     //  //console.log('paddleData = ', paddleData);
-     //  let i = (ballData[0].socket === SocketClient.id) ? 0 : 1;
-     //  ballObj = new Ball(context, {
-     //    radius: ballData[i].radius,
-     //    speed: ballData[i].speed,
-     //    color: "#fff",
-     //    gap: wallGap,
-     //    dx: ballData[i].dx,
-     //    dy: ballData[i].dy,
-     //    xpos: ballData[i].xpos,
-     //    ypos: ballData[i].ypos,
-     //    tableWidth: table?.width,
-     //    tableHeight: table?.height,
-     //  });
-
-     //  if (paddleData[i].ypos === wallGap) {
-     //    //console.log('************ GGGGGGGG');
-     //    table?.classList.add('rotate-180');
-     //    table?.classList.add('-scale-x-100');
-     //    //console.log();
-     //  //  table?.className.concat('rotate-180');
-     //  }
-     //    //table?.className.concat('rotate-180');
-     //  //i = (paddleData[0].socket === SocketClient.id) ? 0 : 1;
-     //  paddlePlayer = new Paddle(context, {
-     //    x: paddleData[i].xpos,
-     //    y: paddleData[i].ypos,
-     //    gap: wallGap,
-     //    speed: paddleData[i].speed,
-     //    color: "#fff",
-     //    width: paddleWidth,
-     //    height: paddleHeight,
-     //    tableWidth: table?.width ?? 0,
-     //    tableHeight: table?.height ?? 0,
-     //  });
-
-     //  i = (paddleData[0].socket !== SocketClient.id) ? 0 : 1;
-     //  paddleOpponent = new Paddle(context, {
-     //    x: paddleData[i].xpos,
-     //    y: paddleData[i].ypos,
-     //    gap: wallGap,
-     //    speed: paddleData[i].speed,
-     //    color: "#fff",
-     //    width: paddleWidth,
-     //    height: paddleHeight,
-     //    tableWidth: table?.width ?? 0,
-     //    tableHeight: table?.height ?? 0,
-     //  });
-     //});
-
-     //const resetAll = function () {
-     //  //ball.reset();
-     //  //downPaddle.reset(xdownPaddle, ydownPaddle);
-     //  //upPaddle.reset(xupPaddle, yupPaddle);
-     //};
-     let chk = true;
-     SocketClient.on("playNow", (data: any) => {
-       //console.log('f play now');
-       let lastTime: number;
-       let firstTime: boolean = true;
-       SocketClient.on("drawGameAssets", (
+  useEffect(() => {
+    //here socket
+    let ballObj: Ball;
+    let paddlePlayer: Paddle;
+    let paddleOpponent: Paddle;
+    //give this one a type to work with
+    const SocketClient = ioClient.getSocketClient();
+    console.log('allllll');
+    const ballElem = document.getElementById('ball');
+    const paddleTop = document.getElementById('paddle-top');
+    const paddleBottom = document.getElementById('paddle-bottom');
+    SocketClient.emit("fireTheGameUp", {room: ioClient.room});
+    let chk = true;
+    SocketClient.on("playNow", () => {
+      console.log('f play now');
+      let lastTime: number;
+      let firstTime: boolean = true;
+      SocketClient.on("drawGameAssets", (
         ball: [
           {socket: string, xpos: number, ypos: number, radius: number},
           {socket: string, xpos: number, ypos: number, radius: number}
         ],
         paddle: [
-          {socket: string, pos: number, sight: string, speed: number},
-          {socket: string, pos: number, sight: string, speed: number}
-          //{socket: string, xpos: number, ypos: number},
-          //{socket: string, xpos: number, ypos: number}
-        ]
+          {socket: string, pos: number, sight: string, speed: number, win: boolean},
+          {socket: string, pos: number, sight: string, speed: number, win: boolean}
+        ],
+        win: {socket: string, win: boolean}
       ) => {
         let i = (ball[0].socket === SocketClient.id) ? 0 : 1;
-        //const ballElem = document.getElementById('ball');
-        //ballElem?.style.setProperty("--y", "50");
-        //ballElem?.style.setProperty("--x", "50");
         ballElem?.style.setProperty("--y", ball[i].ypos.toString());
         ballElem?.style.setProperty("--x", ball[i].xpos.toString());
-
-        //tst?.style.setProperty("background-color", "black");
-        ////tst?.style.setProperty("--y", (document.getElementById('game').offsetHeight * (2 / 100) - 4).toString());
-        //tst?.style.setProperty("--y", "2");
-        //const game = document.getElementById('game');
-        //let g = (game?.offsetWidth * (30 / 100)) / 2;
-        ////tst?.style.setProperty("--x", (paddle[i].pos - g).toString());
-        //tst?.style.setProperty("--x", "38");
-
-        //tst?.style.setProperty("--x", "90");
-           //paddleTop?.style.setProperty("--position", "15");
-           if (paddle[i].sight === "BOTTOM") {
-             const j = (paddle[0].socket !== SocketClient.id) ? 0 : 1;
-             paddleBottom?.style.setProperty("--position", paddle[i].pos.toString());
-             paddleTop?.style.setProperty("--position", paddle[j].pos.toString());
-           }
-           else {
-             if (chk) {
-              const a = document.getElementById('game');
-              a?.classList.add('rotate-180');
-              a?.classList.add('-scale-x-100');
-              chk = false;
-             }
-             const j = (paddle[0].socket !== SocketClient.id) ? 0 : 1;
-             paddleTop?.style.setProperty("--position", paddle[i].pos.toString());
-             paddleBottom?.style.setProperty("--position", paddle[j].pos.toString());
-           }
-           //ballElem?.style.setProperty("--x", ball[i].xpos.toString());
-
-
-           //********later
-           //if (paddle[i].xpos) {
-           //  const a = document.getElementById('game');
-           //  a?.classList.add('rotate-180');
-           //  //a?.classList.add('-scale-x-100');
-           //  //table?.classList.add('-scale-x-100');
-           //}
-
-         //if (i === 0) {
-         //  ballElem?.style.setProperty("--y", ball[i].ypos.toString());
-         //  ballElem?.style.setProperty("--x", ball[i].xpos.toString());
-         //} else {
-         //  ballElem?.style.setProperty("--y", (ball[i].ypos).toString());
-         //  ballElem?.style.setProperty("--x", ball[i].xpos.toString());
-         //}
-
-         //const paddleElem = document.getElementById('paddle-top');
-         //const tableElem = document.getElementById('table');
-         //document.addEventListener('keydown', (e) => {
-         //  if (e.code === 'ArrowLeft') {
-         //    // 16 -> 700 left right 83
-         //    // x -> 200
-         //    paddleElem?.style.setProperty("--position", "16");
-         //    ballElem?.style.setProperty("--y", "16");
-         //    ballElem?.style.setProperty("--x", "20");
-         //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-         //  }
-         //  if (e.code === 'ArrowRight') {
-         //    paddleElem?.style.setProperty("--position", "83");
-         //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-         //  }
-         //  console.log(e.code)
-         //})
-         //ballObj.updateBall(ball[i]);
-         //paddlePlayer.updatePaddle(paddle[i]);
-          //i = (ball[0].sockt !== SocketClient.id) ? 0 : 1;
-         //paddleOpponent.updatePaddle(paddle[i]);
+        if (paddle[i].sight === "BOTTOM") {
+          const j = (paddle[0].socket !== SocketClient.id) ? 0 : 1;
+          paddleBottom?.style.setProperty("--position", paddle[i].pos.toString());
+          paddleTop?.style.setProperty("--position", paddle[j].pos.toString());
+        }
+        else {
+          if (chk) {
+            const table = document.getElementById('game');
+            table?.classList.add('rotate-180');
+            table?.classList.add('-scale-x-100');
+            chk = false;
+          }
+          const j = (paddle[0].socket !== SocketClient.id) ? 0 : 1;
+          paddleTop?.style.setProperty("--position", paddle[i].pos.toString());
+          paddleBottom?.style.setProperty("--position", paddle[j].pos.toString());
+        }
+        //if (paddle[0].win || paddle[1].win)
+        //here gotta show it 
+        if (paddle[0].win)
+          console.log('socket = ', paddle[0].socket, ' win');
+        else if (paddle[1].win)
+          console.log('socket = ', paddle[0].socket, ' win');
       })
-       function update(time: number) {
-         if (lastTime) {
-           const delta = time - lastTime;
-           //hona l3amal
-           SocketClient.emit("moveBall", {
-             delta,
-             room: ioClient.room,
-             firstTime
-           });
-           firstTime = false;
-           //if (ball.checkLoss(data))
-           //  resetAll();
-           
-         }
-         lastTime = time;
-         if (!unmounted.current) {
+      function update(time: number) {
+        if (lastTime) {
+          const delta = time - lastTime;
+          SocketClient.emit("moveBall", {
+            delta,
+            room: ioClient.room,
+            firstTime
+          });
+          firstTime = false;
+          //if (ball.checkLoss(data))
+          //resetAll();
+        }
+        lastTime = time;
+        if (!unmounted.current) {
           animationFrameRef.current = window.requestAnimationFrame(update);
-         }
-         // window.requestAnimationFrame(update);
-       }
-      //  window.requestAnimationFrame(update);
-       animationFrameRef.current = window.requestAnimationFrame(update);
-     })
-     function handlKeyDown(e: KeyboardEvent) {
-       switch (e.code) {
-         case "ArrowRight":
-           SocketClient.emit("movePaddle", {room: ioClient.room, move: "right"});
-           break;
-         case "ArrowLeft":
-           SocketClient.emit("movePaddle", {room: ioClient.room, move: "left"});
-           break;
-       }
-     }
-     document.addEventListener("keydown", handlKeyDown);
-     // function handlresize() {
-     //  ballObj.reset();
-     // }
-     // window.addEventListener("resize", handlresize);
-     // return () => {
-     //  window.removeEventListener("resize", handlresize);
-     //  document.removeEventListener("keydown", handlKeyDown);
-     //  window.cancelAnimationFrame(animationFrameRef.current);
-     //  resetAll();
-     // };
-     //let lastTime: number;
-     //function update(time: number) {
-     //  if (lastTime) {
-     //    const delta = time - lastTime;
-     //    const data = {
-     //      //xDown: downPaddle.x,
-     //      //yDown: downPaddle.y,
-     //      //xUp: upPaddle.x,
-     //      //yUp: upPaddle.y,
-     //      width: paddleWidth,
-     //      height: paddleHeight,
-     //    };
-     //    //if (ball.checkLoss(data)) {
-     //    //  resetAll();
-     //    //  playerRef.current!.innerHTML = (
-     //    //    parseInt(playerRef.current!.innerHTML) + 1
-     //    //  ).toString();
-     //    //  if (playerRef.current!.innerHTML === "7") {
-     //    //    //show modal
-     //    //    // redirect to profile
-     //    //    Swal.fire({
-     //    //      title: "You have lost",
-     //    //      text: "",
-     //    //      imageUrl: `${ProfileImg.src}`,
-     //    //      imageWidth: 400,
-     //    //      imageHeight: 200,
-     //    //      imageAlt: "Custom image",
-     //    //      allowOutsideClick: false,
-     //    //    }).then(res => {
-     //    //      router.push('/game')
-     //    //    });
-     //    //    return () => {
-     //    //      window.removeEventListener("resize", handlresize);
-     //    //      document.removeEventListener("keydown", handlKeyDown);
-     //    //      window.cancelAnimationFrame(animationFrameRef.current);
-     //    //      resetAll();
-     //    //    }
-     //    //  }
-     //    //}
-     //    //ball.updateBall(delta, data);
-     //    //downPaddle.updatePaddle();
-     //    //upPaddle.updateBotPaddle(ball.x);
-     //  }
-     //  lastTime = time;
-     //  if (!unmounted.current) {
-     //    animationFrameRef.current = window.requestAnimationFrame(update);
-     //  }
-     //}
-     //animationFrameRef.current = window.requestAnimationFrame(update);
-     //function handlKeyDown(e: KeyboardEvent) {
-     //  switch (e.code) {
-     //    case "ArrowRight":
-     //      if (!downPaddle.checkRightWall()) downPaddle.movePaddle(e.code);
-     //      break;
-     //    case "ArrowLeft":
-     //      if (!downPaddle.checkLeftWall()) downPaddle.movePaddle(e.code);
-     //      break;
-     //  }
-     //}
-     //document.addEventListener("keydown", handlKeyDown);
+        }
+      // window.requestAnimationFrame(update);
+    }
+   //  window.requestAnimationFrame(update);
+    animationFrameRef.current = window.requestAnimationFrame(update);
+  })
+  function handlKeyDown(e: KeyboardEvent) {
+    switch (e.code) {
+      case "ArrowRight":
+        SocketClient.emit("movePaddle", {room: ioClient.room, move: "right"});
+        break;
+      case "ArrowLeft":
+        SocketClient.emit("movePaddle", {room: ioClient.room, move: "left"});
+        break;
+    }
+  }
+  document.addEventListener("keydown", handlKeyDown);
+  // function handlresize() {
+  //  ballObj.reset();
+  // }
+  // window.addEventListener("resize", handlresize);
+  // return () => {
+  //  window.removeEventListener("resize", handlresize);
+  //  document.removeEventListener("keydown", handlKeyDown);
+  //  window.cancelAnimationFrame(animationFrameRef.current);
+  //  resetAll();
+  // };
+  //let lastTime: number;
+  //function update(time: number) {
+  //  if (lastTime) {
+  //    const delta = time - lastTime;
+  //    const data = {
+  //      //xDown: downPaddle.x,
+  //      //yDown: downPaddle.y,
+  //      //xUp: upPaddle.x,
+  //      //yUp: upPaddle.y,
+  //      width: paddleWidth,
+  //      height: paddleHeight,
+  //    };
+  //    //if (ball.checkLoss(data)) {
+  //    //  resetAll();
+  //    //  playerRef.current!.innerHTML = (
+  //    //    parseInt(playerRef.current!.innerHTML) + 1
+  //    //  ).toString();
+  //    //  if (playerRef.current!.innerHTML === "7") {
+  //    //    //show modal
+  //    //    // redirect to profile
+  //    //    Swal.fire({
+  //    //      title: "You have lost",
+  //    //      text: "",
+  //    //      imageUrl: `${ProfileImg.src}`,
+  //    //      imageWidth: 400,
+  //    //      imageHeight: 200,
+  //    //      imageAlt: "Custom image",
+  //    //      allowOutsideClick: false,
+  //    //    }).then(res => {
+  //    //      router.push('/game')
+  //    //    });
+  //    //    return () => {
+  //    //      window.removeEventListener("resize", handlresize);
+  //    //      document.removeEventListener("keydown", handlKeyDown);
+  //    //      window.cancelAnimationFrame(animationFrameRef.current);
+  //    //      resetAll();
+  //    //    }
+  //    //  }
+  //    //}
+  //    //ball.updateBall(delta, data);
+  //    //downPaddle.updatePaddle();
+  //    //upPaddle.updateBotPaddle(ball.x);
+  //  }
+  //  lastTime = time;
+  //  if (!unmounted.current) {
+  //    animationFrameRef.current = window.requestAnimationFrame(update);
+  //  }
+  //}
+  //animationFrameRef.current = window.requestAnimationFrame(update);
   
    }, []);
   // useEffect(() => {

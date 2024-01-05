@@ -17,7 +17,6 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 //test redirect
-//import { useRouter } from 'next/router';
 import { useRouter } from "next/navigation";
 import ModalMapsComponent from "@/app/components/game/ModalMapsComponent";
 
@@ -32,26 +31,31 @@ export default function Game() {
   const marginbody = isHumburgClicked ? "ml-6" : "";
 
   const router = useRouter();
+
   function handlFriendClick() {
     setFriendCard(true);
     setRandomCard(false);
     setBotCard(false);
   }
+
   function handlRandomClick() {
     setFriendCard(false);
     setRandomCard(true);
     setBotCard(false);
   }
+
   function handlBotClick() {
     setFriendCard(false);
     setRandomCard(false);
     setBotCard(true);
   }
+
   function handlUserClick() {
     setOpenMapMoadl(!openMapModal);
   }
+
   function playRandom() {
-    console.log("hmmmmmmmm");
+    console.log("playRandom");
     ioClient.playRandom();
     const SocketClient = ioClient.getSocketClient();
     SocketClient.on("redirectToGame", (data: { room: string }) => {
