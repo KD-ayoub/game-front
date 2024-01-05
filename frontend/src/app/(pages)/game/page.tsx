@@ -10,14 +10,14 @@ import { NeuePlakFont, NeuePlakFontBold } from "@/app/utils/NeuePlakFont";
 import Profilepic from "@/app/assets/svg/profile.svg";
 import { LittleSearchBar } from "@/app/components";
 //import socket
-import { ioClient, SocketClient } from "@/app/api/instance";
 import { type Socket, io } from "socket.io-client";
 import { Manager } from "socket.io-client/debug";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 //test redirect
-import { useRouter } from "next/navigation";
+//import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from "next/navigation";
 import ModalMapsComponent from "@/app/components/game/ModalMapsComponent";
 
 export default function Game() {
@@ -26,6 +26,9 @@ export default function Game() {
   const [friendCard, setFriendCard] = useState(false);
   const [randomCard, setRandomCard] = useState(false);
   const [botCard, setBotCard] = useState(false);
+  const [orange, setOrange] = useState(false);
+  const [blue, setBlue] = useState(false);
+  const [green, setGreen] = useState(false);
   const [src, setSrc] = useState(false);
 
   const marginbody = isHumburgClicked ? "ml-6" : "";
@@ -53,20 +56,8 @@ export default function Game() {
   function handlUserClick() {
     setOpenMapMoadl(!openMapModal);
   }
-
-  function playRandom() {
-    console.log("playRandom");
-    ioClient.playRandom();
-    const SocketClient = ioClient.getSocketClient();
-    SocketClient.on("redirectToGame", (data: { room: string }) => {
-      ioClient.room = data.room;
-      console.log("****** ", ioClient.room);
-      router.push("/game/user");
-      //window.history.pushState("", "", "/game/user");
-      //window.location.href = "/game/user";
-    });
-  }
-
+  
+  console.log("div color", orange, blue, green);
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div className="h-[80px] w-[80px] sm:w-28 sm:h-28 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-[480px] xl:h-[480px] 2xl:w-[550px] 2xl:h-[550px] rounded-full fixed -top-5 sm:-top-10 md:-top-32 lg:-top-40 xl:-top-64 right-0 opacity-70 sm:opacity-60 md:opacity-30 lg:opacity-25 xl:opacity-20 2xl:opacity-[0.19] bg-gradient-to-b from-[#323138] via-[#E95A3A] to-[#60C58D] blur-3xl "></div>
@@ -85,6 +76,9 @@ export default function Game() {
         </div>
         {openMapModal && (
           <ModalMapsComponent
+            mapOrange={() => setOrange(true)}
+            mapBlue={() => setBlue(true)}
+            mapGreen={() => setGreen(true)}
             onClick={handlUserClick}
             openModal={openMapModal}
           />
@@ -122,11 +116,18 @@ export default function Game() {
                     height={80}
                     alt="Profile pic"
                   />
-                  <button> {/* TODO: when map is choosen need to hide modal and disable button  */}
+                  <button
+                    disabled={blue || green || orange ? true : false}
+                    onClick={() => {
+                      setOpenMapMoadl(true);
+                        console.log('entered hereeeeee', blue, green, orange);
+                        // playRandom();
+                    }}
+                  >
+                    {/* TODO: when map is choosen need to hide modal and disable button  */}
                     <div
                       className="w-[8rem] h-8 md:w-[9rem] md:h-9 lg:w-[12rem] lg:h-11 xl:w-[14rem] xl:h-14 2xl:w-[16rem] 2xl:h-16 bg-[#E95A3A] rounded-[20px] xl:rounded-[24px] 2xl:rounded-[28px] flex justify-center items-center cursor-pointer"
                       //onClick={() => setOpenMapMoadl(true)}
-                      onClick={() => playRandom()}
                     >
                       <p
                         className={`${NeuePlakFont.className} text-white md:text-[20px] lg:text-[25px] xl:text-[30px] 2xl:text-[36px]`}

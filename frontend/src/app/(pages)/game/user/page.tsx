@@ -21,7 +21,7 @@ import { ioClient, SocketClient } from "@/app/api/instance";
 import { type Socket, io } from "socket.io-client";
 import { Manager } from "socket.io-client/debug";
 
-export default function Bot() {
+export default function RandomMatch() {
   const [dataSettings, setDataSettings] = useState<SettingsType>({
     id: "",
     full_name: "",
@@ -33,15 +33,13 @@ export default function Bot() {
   const marginbody = isHumburgClicked ? "ml-6" : "";
   const [openModal, setOpenMoadl] = useState(true);
   const searchParams = useSearchParams();
-  const paddleSpeed = searchParams.get("paddle")
-    ? searchParams.get("paddle")
-    : "10";
-  const ballSpeed = searchParams.get("ball") ? searchParams.get("ball") : "0.3";
-  console.log(
-    "paddle\nspeed",
-    parseFloat(paddleSpeed!),
-    parseFloat(ballSpeed!)
-  );
+  const color = searchParams.get("color")
+    ? searchParams.get("color")
+    : "#E95A3A";
+  const colorbg = searchParams.get("colorbg")
+    ? searchParams.get("colorbg")
+    : "#F07559";
+  console.log('color', color, colorbg);
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const playerRef = useRef<HTMLParagraphElement>(null);
@@ -306,7 +304,7 @@ export default function Bot() {
             className="relative w-[200px] h-[400px] sm:w-[300px] sm:h-[500px] md:w-[400px] md:h-[600px] lg:w-[500px] lg:h-[700px] xl:w-[600px] xl:h-[800px] 2xl:w-[700px] 2xl:h-[900px] bg-[#E95A3A] rounded-[8px] md:rounded-[12px] lg:rounded-[18px] xl:rounded-[25px] 2xl:rounded-[28px]"
             style={{
               background:
-                "linear-gradient( to bottom, #E95A3A 0%,#E95A3A 50%, #F07559 50%, #F07559 100%)",
+                `linear-gradient( to bottom, #${color} 0%,#${color} 50%, #${colorbg} 50%, #${colorbg} 100%)`,
             }}
             id="table"
           >
