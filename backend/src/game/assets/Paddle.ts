@@ -3,12 +3,14 @@ export class Paddle {
   public pos: number;
   public sight: string;
   public win: boolean;
+  public winTimes: number;
 
   constructor(chk: boolean) {
     this.paddleSpeed = 1;
     this.pos = 50;
     this.sight = (!chk) ? "BOTTOM" : "TOP";
     this.win = false;
+    this.winTimes = 0;
   }
 
   checkRightWall() {

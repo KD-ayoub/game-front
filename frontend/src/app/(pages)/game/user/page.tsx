@@ -59,6 +59,8 @@ export default function RandomMatch() {
     const paddleBottom = document.getElementById("paddle-bottom");
     SocketClient.emit("fireTheGameUp", { room: ioClient.room });
     let chk = true;
+    let playerScore = 0;
+    let opponentScore = 0;
     SocketClient.on("playNow", () => {
       console.log("f play now");
       let lastTime: number;
@@ -121,14 +123,19 @@ export default function RandomMatch() {
           //if (paddle[0].win || paddle[1].win)
           //here gotta show it
           if (paddle[0].win) {
-            playerRef.current!.innerHTML = (
-              parseInt(playerRef.current!.innerHTML) + 1
-            ).toString();
+            //playerScore++;
+            //playerRef.current!.innerHTML = (parseInt(playerRef.current!.innerHTML) + 1).toString();
+            playerRef.current!.innerHTML = (++playerScore).toString();
+            //playerRef.current!.innerHTML = (
+            //  parseInt(playerRef.current!.innerHTML) + 1
+            //).toString();
           }
           else if (paddle[1].win) {
-            oponnentRef.current!.innerHTML = (
-              parseInt(oponnentRef.current!.innerHTML) + 1
-            ).toString();
+            //opponentScore++;
+            oponnentRef.current!.innerHTML = (++opponentScore).toString();
+            //oponnentRef.current!.innerHTML = (
+            //  parseInt(oponnentRef.current!.innerHTML) + 1
+            //).toString();
           }
         }
       );

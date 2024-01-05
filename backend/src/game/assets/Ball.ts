@@ -1,7 +1,5 @@
-import { Server, Socket } from 'socket.io';
-
-//const INITIAL_VELOCITY: number = 0.02;
-const INITIAL_VELOCITY: number = 0.005;
+const INITIAL_VELOCITY: number = 0.02;
+//const INITIAL_VELOCITY: number = 0.005;
 
 export class Ball {
   private speed: number;
@@ -60,10 +58,8 @@ export class Ball {
     else if (this.ypos - 3 <= 0) this.dy = -this.dy;
     //touch the paddle
     this.checkBallTouchPaddle(data, true);
-    if (this.checkLoss(data)) {
-
+    if (this.checkLoss(data))
       return false;
-    }
     this.xpos += this.dx * delta;
     this.ypos += this.dy * delta;
     return true;

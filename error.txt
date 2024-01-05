@@ -11,3 +11,6 @@ s:139:17)
     at /goinfre/hkaddour/transcendence/backend/node_modules/@nestjs/core/router/router-execution-context.js:
 46:28
     at /goinfre/hkaddour/transcendence/backend/node_modules/@nestjs/core/router/router-proxy.js:9:17
+
+****** HERE fix full_name in settings didn't get send
+****** full_name in a dto not the same for all

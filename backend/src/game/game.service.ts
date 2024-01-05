@@ -233,16 +233,25 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 				!thatRoomGame[i].ball.updateBall(payload.delta, data)) {
 			const upPos = (thatRoomGame[0].paddle.sight === "TOP") ? thatRoomGame[0] : thatRoomGame[1];
 			const downPos = (thatRoomGame[0].paddle.sight === "BOTTOM") ? thatRoomGame[0] : thatRoomGame[1];
-			if (thatRoomGame[i].ball.ypos < 5)
+			if (thatRoomGame[i].ball.ypos < 5) {
 				downPos.paddle.win = true;
-			else if (thatRoomGame[i].ball.ypos > 95)
+				downPos.paddle.winTimes++;
+			}
+			else if (thatRoomGame[i].ball.ypos > 95) {
 				upPos.paddle.win = true;
+				upPos.paddle.winTimes++;
+			}
 		}
 		thatRoomGame[i].emit = true;
 		if (thatRoomGame[0].emit && thatRoomGame[1].emit) {
 			//hitwall add to the player
-			if (thatRoomGame[0].paddle.win || thatRoomGame[1].paddle.win)
+			if (thatRoomGame[0].paddle.win || thatRoomGame[1].paddle.win) {
 				this.resetGameData(thatRoomGame);
+				if ((thatRoomGame[0].paddle.winTimes + thatRoomGame[1].paddle.winTimes) === 5) {
+					console.log('finish game');
+					//this.ws.to(payload.room).emit("finishGame")
+				}
+			}
 			this.ws.to(payload.room).emit("drawGameAssets",
 				[
 					thatRoomGame[0].ball.getData(thatRoomGame[0].socketId),
