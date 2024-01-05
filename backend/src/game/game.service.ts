@@ -228,21 +228,16 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			downPos:
 				(thatRoomGame[0].paddle.sight === "BOTTOM") ? thatRoomGame[0].paddle.pos : thatRoomGame[1].paddle.pos
 		};
-		if (!thatRoomGame[i].ball.updateBall(payload.delta, data)) {
+		//here check if someone win
+		if ((!thatRoomGame[0].paddle.win && !thatRoomGame[1].paddle.win) &&
+				!thatRoomGame[i].ball.updateBall(payload.delta, data)) {
 			const upPos = (thatRoomGame[0].paddle.sight === "TOP") ? thatRoomGame[0] : thatRoomGame[1];
 			const downPos = (thatRoomGame[0].paddle.sight === "BOTTOM") ? thatRoomGame[0] : thatRoomGame[1];
 			if (thatRoomGame[i].ball.ypos < 5)
 				downPos.paddle.win = true;
 			else if (thatRoomGame[i].ball.ypos > 95)
 				upPos.paddle.win = true;
-			console.log();
-			//***************// KML HONA
-				//thatRoomGame[]
-			//this.hitWall = true;
 		}
-		//will take off this one later
-		//this.check++;
-		//if (this.check == 2) {
 		thatRoomGame[i].emit = true;
 		if (thatRoomGame[0].emit && thatRoomGame[1].emit) {
 			//hitwall add to the player
@@ -258,11 +253,10 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 					thatRoomGame[1].paddle.getData(thatRoomGame[1].socketId)
 				],
 			);
-			thatRoomGame[0].emit = false;
-			thatRoomGame[1].emit = false;
-			thatRoomGame[0].paddle.win = false;
-			thatRoomGame[1].paddle.win = false;
-			//this.check = 0;
+			for (let i: number = 0; i != 2; i++) {
+				thatRoomGame[i].emit = false;
+				thatRoomGame[i].paddle.win = false;
+			}
 		}
 	}
 }

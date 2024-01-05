@@ -99,7 +99,7 @@ export default function Bot() {
         if (paddle[0].win)
           console.log('socket = ', paddle[0].socket, ' win');
         else if (paddle[1].win)
-          console.log('socket = ', paddle[0].socket, ' win');
+          console.log('socket = ', paddle[1].socket, ' win');
       })
       function update(time: number) {
         if (lastTime) {

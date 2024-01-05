@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io';
 
-const INITIAL_VELOCITY: number = 0.02;
+//const INITIAL_VELOCITY: number = 0.02;
+const INITIAL_VELOCITY: number = 0.005;
 
 export class Ball {
   private speed: number;
