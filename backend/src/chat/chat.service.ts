@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { BadRequestException, HttpException, HttpStatus, Injectable, Param } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
 import { Room, RoomMessage, RoomType } from "@prisma/client";
 import { errorMonitor } from "events";
@@ -6,10 +6,11 @@ import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
 import { add_admin, channels, create_channel, join_private_channel } from "src/utils/types";
 import * as bcrypt from  'bcrypt'
+import { CloudinaryService } from "src/cloudinary/cloudinary.service";
 
 @Injectable()
 export class chatService {
-	constructor(private prisma : PrismaService,private appGateway : AppGateway){}
+	constructor(private prisma : PrismaService,private appGateway : AppGateway, private cloudinaryService: CloudinaryService){}
 
 	async get_picture_name(id: string)
 	{
@@ -232,6 +233,28 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
+	}
+
+
+	async upload_channel_img(file: Express.Multer.File,id : string,userid: string)
+	{
+			try {
+      			const upload = await this.cloudinaryService.uploadFile(file);
+				const room = await this.prisma.room.update({
+					where: {
+						id,
+						ownerId: userid
+					},
+					data: {
+						photo: upload.url
+					}
+				})
+				if (!room)
+					return false;
+			} catch (error) {
+					return false;
+			}
+			return true;
 	}
 
 	// type : [private | public | protected]

@@ -172,6 +172,8 @@ model Room {
   name     String		@unique
   type     RoomType
   password String?
+
+  photo		String		@default("defautl_img")
   // ... other room fields
 
   // Define a relation to messages sent in the room

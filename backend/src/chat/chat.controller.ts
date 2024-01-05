@@ -1,10 +1,11 @@
-import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Session, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Session, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { chatService } from "./chat.service";
 import { Record } from "@prisma/client/runtime/library";
 import { add_admin, create_channel, join_private_channel } from "src/utils/types";
 import { RoomType } from "@prisma/client";
 import { session } from "passport";
 import { AuthenticatedGuard} from "src/auth/guards";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 
 
@@ -72,6 +73,14 @@ export class ChatController{
 
 
 	////////////////////////////// channels endpoints //////////////////////////////////////
+	@UseGuards(AuthenticatedGuard)
+  	@UseInterceptors(FileInterceptor('file'))
+	@Get('channel_photo/:id')
+	async channel_photo(@UploadedFile() file: Express.Multer.File,@Param('id') id: string,@Session() session: Record<string,any>)
+	{
+		if (!(await this.chatService.upload_channel_img(file,id,session.passport.user.id)))
+			throw new HttpException("id is not right or you don't have permission",HttpStatus.FORBIDDEN);
+	}
 
 
 
@@ -80,7 +89,7 @@ export class ChatController{
 	@Post('create_channel')
 	async create_channel(@Body() body: create_channel,@Session() session : Record<string,any>)
 	{
-		if (!body.name || !body.type || !body.photo) 
+		if (!body.name || !body.type) 
 			throw new HttpException('bad',HttpStatus.BAD_REQUEST);
 		if  (body.type == RoomType.PROTECTED && !body.password)
 			throw new HttpException('password not found',HttpStatus.NOT_FOUND)
@@ -88,7 +97,6 @@ export class ChatController{
 		{
 			throw new HttpException("name is already taken",HttpStatus.CONFLICT);
 		}
-
 	}
 
 	// get all channels

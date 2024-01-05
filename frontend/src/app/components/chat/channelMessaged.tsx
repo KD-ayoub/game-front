@@ -17,10 +17,13 @@ import { ioClient } from "@/app/api/instance";
 
 export default function ChannelMessaged({
   onSelectChannel,
+  //returnfromChannel,
 }: {
   onSelectChannel: (id: ChannelChatType) => void;
+  //returnfromChannel: ()
 }) {
   const [channel, setChannel] = useState<ChannelChatType[]>([]);
+  const [members_ref, setmembers_ref] = useState<boolean>(false);
   const [searching, setSearching] = useState("");
 
   // here we filterSearch the friends list:
@@ -34,6 +37,10 @@ export default function ChannelMessaged({
   };
 
   const filter_Search = filterSearch();
+  const younes = () => {
+  	
+  	console.log("younes---------------------------------------------");
+  }
 
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
@@ -51,7 +58,6 @@ export default function ChannelMessaged({
         }
       );
       if (!getChannel.ok) {
-        //console.log("error fetcher");
         throw new Error("Network response was not ok");
       }
 	  const channels: ChannelChatType[] = await getChannel.json();
@@ -62,7 +68,17 @@ export default function ChannelMessaged({
       setChannel(channels);
     }
     fetcher();
-  }, []);
+  }, [members_ref]);
+
+  useEffect( () => {
+    const client = ioClient.getSocketClient();
+    client.on("members_refresh", (data) => {
+      setmembers_ref(!members_ref);
+    });
+    return () => {
+      client.off("members_refresh");
+    };
+  }, [])
 
 
   //  i need to list in sockets if i delete a channel or if i add a channel
