@@ -27,6 +27,7 @@
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
     "react-verification-input": "^4.0.0",
+    "reactjs-popup": "^2.0.6",
     "remixicon": "^4.0.1",
     "socket.io-client": "^4.7.2",
     "sonner": "^1.2.4",

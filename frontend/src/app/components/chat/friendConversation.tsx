@@ -28,9 +28,10 @@ export default function FriendConversation({
   const [dataConversation, setDataConversation] = useState<
     GetChatConverssationType[]
   >([]);
-	const [isBlocked, setIsBlocked] = useState<boolean>(friendSelected.isBlocked || false);
-  	const textareaRef = useRef<HTMLTextAreaElement>(null);
-  
+  const [isBlocked, setIsBlocked] = useState<boolean>(
+    friendSelected.isBlocked || false
+  );
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // const handleTextareaChange = () => {
   //   if (textareaRef.current) {
@@ -39,20 +40,20 @@ export default function FriendConversation({
   //     textareaRef.current.style.height = newHeight;
   //   }
   // };
-const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = event.target.value;
 
     switch (selectedOption) {
-      case 'profile':
+      case "profile":
         sendToProfile();
         break;
-      case 'block':
+      case "block":
         handleBlock();
         break;
-      case 'unblock':
+      case "unblock":
         handleUnblock(); // You may need to adjust this part based on your logic for unblocking
         break;
-      case 'Challenge':
+      case "Challenge":
         sendChallenge();
         break;
       default:
@@ -76,8 +77,8 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
   };
 
   const sendToProfile = () => {
-	//redirect('profile/yaskour', 'push');
-	router.push(`/profile/${friendSelected.nickname}`);
+    //redirect('profile/yaskour', 'push');
+    router.push(`/profile/${friendSelected.nickname}`);
   };
 
   const handleBlock = () => {
@@ -93,8 +94,7 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         }
       );
       if (response.ok) {
-		setIsBlocked(true);
-        //console.log("error at handleShowFriendConversssation fetch");
+        setIsBlocked(true);
       }
     }
     block();
@@ -114,17 +114,18 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         }
       );
       if (response.ok) {
-		setIsBlocked(false);
+        setIsBlocked(false);
         //console.log("error at handleShowFriendConversssation fetch");
       }
     }
     block();
-  }
+  };
+
+  useEffect(() => {}, [friendSelected.isBlocked]);
 
   const sendChallenge = () => {
     console.log("send challenge");
   };
-
 
   // Here we fetch the conversation with friend:
   useEffect(() => {
@@ -146,7 +147,7 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         //console.log("error at handleShowFriendConversssation fetch");
       }
       setDataConversation(await response.json());
-	  setIsBlocked(friendSelected.isBlocked);
+      setIsBlocked(friendSelected.isBlocked);
     }
     handlShowFriendConversation();
   }, [friendSelected]);
@@ -169,7 +170,7 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         return;
       }
       setDataConversation((dataConversation) => [...dataConversation, data]);
-	  setIsBlocked(friendSelected.isBlocked);
+      setIsBlocked(friendSelected.isBlocked);
       //console.log("hani hna --------------------------------------",test);
     });
 
@@ -212,29 +213,22 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
             </div>
             {/* setting optionss in bar info */}
             <div className="optionUserDiv">
-              <button >
+              <button>
                 <select
                   name="optionsChatUser"
                   id="optionsChatUser"
                   className="optionsUserSelect"
-					onChange={handleOptionChange}
+                  onChange={handleOptionChange}
                 >
-                  <option value="profile">
-                    Profile
-                  </option>
+                  <option value="chat">Chat</option>
+                  <option value="profile">Profile</option>
 
                   {isBlocked === false ? (
-                    <option value="block">
-                      Block
-                    </option>
+                    <option value="block">Block</option>
                   ) : (
-                    <option value="unblock">
-                      Unblock
-                    </option>
+                    <option value="unblock">Unblock</option>
                   )}
-                  <option value="Challenge">
-                    Challenge
-                  </option>
+                  <option value="Challenge">Challenge</option>
                 </select>
               </button>
             </div>
@@ -250,7 +244,7 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
                       <div className="send-msg">
                         <div className="message-details ">
                           <span className="infoTime">
-                            {moment(message.sended_at).format('lll')}
+                            {moment(message.sended_at).format("lll")}
                           </span>
                           <span className="infoName pl-4">You</span>
                         </div>
@@ -263,7 +257,7 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
                         <div className="message-details ">
                           <span className="infoName pr-4">{message.name}</span>
                           <span className="infoTime">
-                            {moment(message.sended_at).format('lll')}
+                            {moment(message.sended_at).format("lll")}
                           </span>
                         </div>
                         <div className="message-text-recieve">
@@ -302,7 +296,9 @@ const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
           </div>
         </div>
       )}
-      {!friendSelected && <div className="noConversation">Welcome to the chat with channels</div>}
+      {!friendSelected && (
+        <div className="noConversation">Welcome to the friends chat</div>
+      )}
     </>
   );
 }

@@ -202,7 +202,7 @@ export default function ChannelConversation({
 
   return (
     <>
-      {channelSelected && (
+      {channelSelected.isJoined ? (
         // channelSelected.isBlocked === false && (
         <>
           <div className="channelConv">
@@ -372,11 +372,6 @@ export default function ChannelConversation({
                           aboutMe.role === "admin" &&
                           aboutMe.nickname !== member.nickname && (
                             <div className="memberSee">
-                              <div className="selectOwnerOptions">
-                                <select name="" id="">
-                                  mok
-                                </select>
-                              </div>
                               <button
                                 className="Challenge-btn"
                                 onClick={handleChallenge}
@@ -452,12 +447,8 @@ export default function ChannelConversation({
                         {aboutMe &&
                           aboutMe.role === "owner" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="selectOwnerOptions">
-                              <select name="" id="">
-                                mok
-                                <option value="mok">mok</option>
-                                <option value="mok">bak</option>
-                              </select>
+                            <div className="dropDownOwnerPermissions">
+                              
                             </div>
                           )}
                       </div>
@@ -532,11 +523,8 @@ export default function ChannelConversation({
           </div>
           {/* end of right side of channel */}
         </>
-      )}
-      {!channelSelected && (
-        <div className="noConversation">
-          <p className="MessageDisplay"> Welcome to the chat with channels</p>
-        </div>
+      ) : (
+        <div className="noConversation">Join Your Channel</div>
       )}
     </>
   );
