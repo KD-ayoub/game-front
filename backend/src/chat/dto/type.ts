@@ -42,6 +42,7 @@ type room_msg = {
 	time : Date,
 	photo: string
 	mine: boolean
+	name: string
 }
 
 type leave_channel = {

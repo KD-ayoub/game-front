@@ -85,8 +85,7 @@ export default function ChannelConversation({
     const client = ioClient.getSocketClient();
     if (!channelSelected) return;
     client.on(channelSelected.id, (data) => {
-      console.log(client.id);
-      console.log("younes", data);
+      console.log("socket sended  : ", data);
       setDataConversation((dataConversation) => [...dataConversation, data]);
     });
     return () => {
@@ -109,7 +108,8 @@ export default function ChannelConversation({
       if (!getconv.ok) {
         throw new Error("Network response was not ok");
       }
-      const conv: DataChannelConversationType[] = await getconv.json();
+	  const conv = await getconv.json();
+      //const conv: DataChannelConversationType[] = await getconv.json();
       setDataConversation(conv);
     }
     fetcher();

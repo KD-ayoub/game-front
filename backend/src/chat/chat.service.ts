@@ -1030,7 +1030,8 @@ export class chatService {
 			content: "",
 			time: new Date(),
 			photo: "",
-			mine: false
+			mine: false,
+			name: ""
 		}
 
 		try {
@@ -1060,12 +1061,12 @@ export class chatService {
 				obj.photo = picture.profile.photo_path;
 				obj.senderid = senderid;
 				obj.time = new_msg.createdAt;
+				obj.name = picture.nickName;
 			}
 			return obj;
 		} catch (error) {
 			return obj;	
 		}
-		return obj;
 	}
 
 	async leave(userid: string, channel : leave_channel)
