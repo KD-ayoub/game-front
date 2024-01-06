@@ -47,7 +47,6 @@ export default function ChannelMessaged({
     console.log("younes---------------------------------------------");
   };
 
-  
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
     console.log("");
@@ -85,10 +84,25 @@ export default function ChannelMessaged({
     };
   }, []);
 
-  const joinPublicChannel = (channel_id: string) => {
-    
-};
+  const joinPublicChannel = async (channel_id: string) => {
+    const getChannel = await fetch(
+      `http://localhost:3001/chat/join_public/${channel_id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    if (!getChannel.ok) {
+      // throw new Error("Network response was not ok");
+    }
+    console.log(getChannel);
+  };
 
+  // useEffect(() => {
+  // }, [channelSelected, channel]);
 
   //  i need to list in sockets if i delete a channel or if i add a channel
 
@@ -148,40 +162,43 @@ export default function ChannelMessaged({
                       >
                         Join
                       </button>
-                      {channelSelected && channelSelected.type === "PUBLIC" && (<Modal
-                        show={openModal}
-                        size="md"
-                        onClose={() => setOpenModal(false)}
-                        popup
-                      >
-                        <Modal.Header />
-                        <Modal.Body>
-                          <div className="text-center">
-                            {/* <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" /> */}
-                            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                              Are you sure you want to join this channel?
-                            </h3>
-                            <div className="flex justify-center gap-4">
-                              <Button
-                                // color="failure"
-                                className="bg-[#E95A3A]"
-                                onClick={() => {
-                                  joinPublicChannel(channelSelected.id);
-                                  setOpenModal(false)
-                                }}
-                              >
-                                {"Yes, I'm sure"}
-                              </Button>
-                              <Button
-                                color="gray"
-                                onClick={() => setOpenModal(false)}
-                              >
-                                No, cancel
-                              </Button>
+                      {channelSelected && channelSelected.type === "PUBLIC" && (
+                        <Modal
+                          show={openModal}
+                          size="md"
+                          onClose={() => setOpenModal(false)}
+                          popup
+                        >
+                          <Modal.Header />
+                          <Modal.Body>
+                            <div className="text-center">
+                              {/* <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" /> */}
+                              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                Are you sure you want to join this channel?
+                              </h3>
+                              <div className="flex justify-center gap-4">
+                                <Button
+                                  // color="failure"
+                                  className="bg-[#E95A3A]"
+                                  onClick={() => {
+                                    joinPublicChannel(channelSelected.id);
+                                    onSelectChannel(channel);
+                                    setOpenModal(false);
+                                  }}
+                                >
+                                  {"Yes, I'm sure"}
+                                </Button>
+                                <Button
+                                  color="gray"
+                                  onClick={() => setOpenModal(false)}
+                                >
+                                  No, cancel
+                                </Button>
+                              </div>
                             </div>
-                          </div>
-                        </Modal.Body>
-                      </Modal>)}
+                          </Modal.Body>
+                        </Modal>
+                      )}
                     </>
                   ) : null}
                 </div>
