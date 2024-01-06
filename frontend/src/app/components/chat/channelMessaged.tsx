@@ -50,7 +50,6 @@ export default function ChannelMessaged({
   
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
-    console.log("");
     const client = ioClient.getSocketClient();
     async function fetcher() {
       const getChannel = await fetch(
@@ -85,9 +84,22 @@ export default function ChannelMessaged({
     };
   }, []);
 
-  const joinPublicChannel = (channel_id: string) => {
-    
-};
+  const joinPublicChannel = async (channel_id: string) => {
+      const getChannel = await fetch(
+        `http://localhost:3001/chat/join_public/${channel_id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      if (!getChannel.ok) {
+        throw new Error("Network response was not ok");
+      }
+	  console.log(getChannel);
+  };
 
 
   //  i need to list in sockets if i delete a channel or if i add a channel

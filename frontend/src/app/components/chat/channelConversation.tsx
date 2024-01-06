@@ -72,41 +72,8 @@ export default function ChannelConversation({
   };
 
   const handleLeaveChannel = () => {
-    // fetch(`http://localhost:3001/chat/${channelSelected.id}`, {
-    //   method: "DELETE",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   credentials: "include",
-    // });
   };
 
-  // Here we fetch the channel conversation :
-  //   useEffect(() => {
-  //     async function handlShowFriendConversation() {
-  //       if (!channelSelected) {
-  //         return;
-  //       }
-  //       const response = await fetch(
-  //         `http://localhost:3001/chat/history/${channelSelected.id}`,
-  //         {
-  //           method: "GET",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           credentials: "include",
-  //         }
-  //       );
-  //       if (!response.ok) {
-  //         console.log("error at handleShowFriendConversssation fetch");
-  //       }
-  //       setDataConversation(await response.json());
-  //     }
-  //     handlShowFriendConversation();
-  //   }, [channelSelected]);
-
-  //console.log("dataConversation-->", dataConversation);
-  //console.log("channelSelected-->", channelSelected);
   useEffect(() => {
     const historychatdiv = document.getElementById("scroll");
     if (historychatdiv) {

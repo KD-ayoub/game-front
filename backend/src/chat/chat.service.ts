@@ -855,7 +855,6 @@ export class chatService {
 						}
 					}
 				})
-				console.log("mute ended");
 			}, 1000 * 60);
 		} catch (error) {
 			return false;
@@ -1075,7 +1074,7 @@ export class chatService {
 			if (await this.is_admin(userid,channel.channel) || await this.is_member(userid,channel.channel))
 			{
 				try {
-					const room = this.prisma.room.update({
+					const room = await this.prisma.room.update({
 						where: {
 							id : channel.channel
 						},
@@ -1105,7 +1104,6 @@ export class chatService {
 			}
 			else if (await this.is_owner(userid,channel.channel))
 			{
-				console.log("owner");
 				try {
 					const roomMessages = await this.prisma.roomMessage.deleteMany({
 						where: {
@@ -1117,7 +1115,6 @@ export class chatService {
 							id : channel.channel
 						}
 					})
-					console.log("wtf : ",room);
 					if (!room)
 						return false;
 					this.appGateway.server.socketsLeave(channel.channel);
@@ -1126,7 +1123,6 @@ export class chatService {
 					this.appGateway.server.emit('members_refresh','refresh');
 					return true;
 				} catch (error) {
-					console.log(error);
 					return false;
 				}
 			}
@@ -1151,7 +1147,6 @@ export class chatService {
 					friendId: true
 				}
 			})
-			//console.log("friends : ",friends);
 			const messages = await this.prisma.roomMessage.findMany({
 				where: {
 					roomId : channel_id,
@@ -1270,7 +1265,6 @@ export class chatService {
 			{
 				let node : member = {id: members.owner.id,nickname: members.owner.nickName, photo: members.owner.profile.photo_path, role: "owner"};
 				list_members.push(node);
-				//console.log("owner");
 			}
 			members.admins.forEach((admin) => {
 				let node : member = {id: admin.id ,nickname: admin.nickName, photo: admin.profile.photo_path, role: "admin"};
