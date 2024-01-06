@@ -112,18 +112,16 @@ export class chatGateway implements OnGatewayConnection
 				const mssg : room_msg  = await this.chatService.create_room_msg(this.appGateway.get_id_by_socketId(client.id),data);
 				const client_msg: room_msg = {...mssg};
 				client_msg.mine = true;
-				//console.log(mssg);
 				if (mssg.content)
 				{
-					console.log(client.id);
-					this.appGateway.server.to(data.channel_id).except(client.id).emit(data.channel_id, mssg);
+					let blocked = await this.chatService.get_all_blocked_friends(this.appGateway.get_id_by_socketId(client.id));
+					blocked.push(client.id);
+
+					this.appGateway.server.to(data.channel_id).except(blocked).emit(data.channel_id, mssg);
 					this.appGateway.server.to(client.id).emit(data.channel_id, client_msg);
 				}
 			}
 
 		}
-		// check if channel exist
-		// check if user is in the channel
-		// then check if the user is muted
 	}
 }

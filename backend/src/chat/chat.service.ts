@@ -1329,4 +1329,33 @@ export class chatService {
 			return list;
 		}
 	}
+
+
+	async get_all_blocked_friends(userid: string)
+	{
+		const blocked = [];
+		try {
+			const friends = await this.prisma.friendship.findMany({
+				where: {
+					friendId: userid,
+					is_blocked: true
+				},
+				select: {
+					user: {
+						select: {
+							id: true
+						}
+					}
+				}
+
+			})
+			friends.forEach((friend) => {
+				let id = this.appGateway.get_socketID_by_id(friend.user.id);
+				blocked.push(id);
+			})
+			return blocked;
+		} catch (error) {
+			return blocked;
+		}
+	}
 }
