@@ -16,7 +16,8 @@ import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 // import Modal from "./modalJoin/modal";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Label, TextInput } from "flowbite-react";
+import { join_protected_channel} from "@/app/types/join_protected_channelType";
 
 // type friendT = { nickname: string; picture: string; unread: number };
 
@@ -32,6 +33,8 @@ export default function ChannelMessaged({
   const [searching, setSearching] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [channelSelected, setChannelSelected] = useState<ChannelChatType>();
+  const [join_protected_channel, setJoin_protected_channel] = useState<join_protected_channel>();
+  const [statuspwd, setStatuspwd] = useState<boolean>(false);
   // here we filterSearch the friends list:
   const filterSearch = () => {
     if (!searching) {
@@ -96,18 +99,41 @@ export default function ChannelMessaged({
       }
     );
     if (!getChannel.ok) {
-      // throw new Error("Network response was not ok");
+      setStatuspwd(false);
+    }
+    if (getChannel.ok) {
+      setStatuspwd(true);
     }
     console.log(getChannel);
   };
 
+
+  const checkPassword = async (channel_protected: join_protected_channel) => {
+    const getChannel = await fetch(
+      `http://localhost:3001/chat/join_protected`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ id : channel_protected.id, password: channel_protected.password }),
+      }
+    );
+    if (!getChannel.ok) {
+      // throw new Error("Network response was not ok");
+    }
+    console.log("check password ",getChannel);
+  }
+  
   // useEffect(() => {
   // }, [channelSelected, channel]);
 
   //  i need to list in sockets if i delete a channel or if i add a channel
 
   //console.log("Channel", channel);
-  console.log("channel li klikit 3lih", channelSelected);
+  // console.log("channel li klikit 3lih", channelSelected);
+  console.log("password li dkhalt", join_protected_channel?.password);
 
   return (
     <>
@@ -162,6 +188,7 @@ export default function ChannelMessaged({
                       >
                         Join
                       </button>
+                      {/* join public channel */}
                       {channelSelected && channelSelected.type === "PUBLIC" && (
                         <Modal
                           show={openModal}
@@ -199,6 +226,74 @@ export default function ChannelMessaged({
                           </Modal.Body>
                         </Modal>
                       )}
+                      {/* join protected channel */}
+                      {channelSelected &&
+                        channelSelected.type === "PROTECTED" && (
+                          <Modal
+                            show={openModal}
+                            size="md"
+                            onClose={() => setOpenModal(false)}
+                            popup
+                          >
+                            <Modal.Header />
+                            <Modal.Body>
+                              <div className="text-center">
+                                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                  This channel is protected, please enter the
+                                  password
+                                </h3>
+                                {/* <div className="flex flex-col justify-center gap-4"> */}
+                                <div>
+                                  <div className="mb-2 block">
+                                    <Label
+                                      htmlFor="password"
+                                      color="success"
+                                      value="Password"
+                                    />
+                                  </div>
+                                  <TextInput
+                                    id="password"
+                                    placeholder="password"
+                                    required
+                                    color="success"
+                                    onChange={(event) => setJoin_protected_channel({id: channelSelected.id, password: event.target.value})}
+                                    helperText={
+                                      <>
+                                        <span className="font-medium">
+                                          Alright!
+                                        </span>{" "}
+                                        Password available!
+                                      </>
+                                    }
+                                  />
+                                </div>
+                                <div>
+                                
+                                  <div className="checkPwd">
+                                    <Button
+                                      // color="failure"
+                                      className="bg-[#E95A3A] mr-4"
+                                      onClick={() => {
+                                        join_protected_channel && checkPassword(join_protected_channel);
+                                        onSelectChannel(channel);
+                                        // setOpenModal(false);
+                                      }}
+                                    >
+                                      {"Enter the password"}
+                                    </Button>
+                                    <Button
+                                      color="gray"
+                                      className="ml-4"
+                                      onClick={() => setOpenModal(false)}
+                                    >
+                                      cancel
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </Modal.Body>
+                          </Modal>
+                        )}
                     </>
                   ) : null}
                 </div>
