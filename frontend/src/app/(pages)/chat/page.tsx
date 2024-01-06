@@ -50,6 +50,7 @@ export default function Chat() {
   //   setMessageText("");
   // };
 
+
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
       <div
