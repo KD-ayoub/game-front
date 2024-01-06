@@ -28,8 +28,15 @@ export default function Chat() {
   const [messageText, setMessageText] = useState<string>("");
   const [showConv, setShowConv] = useState(false); // set initial value to false
   const [friend_Selected, setfriend_Selected] = useState<FriendsChatType>();
-  const [idOfChannelSelected, setIdOfChannelSelected] = useState<ChannelChatType>();
+  const [idOfChannelSelected, setIdOfChannelSelected] =
+    useState<ChannelChatType>();
   // const [friends, setFriends] = useState<FriendsChatType[]>([]);
+  const [online_rf, setOnline_rf] = useState<boolean>(false);
+  const [friends_rf, setFriends_rf] = useState<boolean>(false);
+  const [channel_rf, setChannel_rf] = useState<boolean>(false);
+  const [channelSelected_rf, setChannelSelected] = useState<boolean>(false);
+  const [members_rf, setmembers_ref] = useState<boolean>(false);
+  const [aboutMe_rf, setAboutMe_rf] = useState<boolean>(false);
 
   const hundlefriend_Selected = (infoUser: FriendsChatType) => {
     setfriend_Selected(infoUser);
@@ -37,7 +44,26 @@ export default function Chat() {
 
   const hundleIdOfChannelSelected = (infoChannel: ChannelChatType) => {
     setIdOfChannelSelected(infoChannel);
-  }
+  };
+
+  const hundleOnline_rf = () => {
+    setOnline_rf(!online_rf);
+  };
+  const hundleFriends_rf = () => {
+    setFriends_rf(!friends_rf);
+  };
+  const hundleChannel_rf = () => {
+    setChannel_rf(!channel_rf);
+  };
+  const hundleChannelSelected_rf = () => {
+    setChannelSelected(!channelSelected_rf);
+  };
+  const hundleMembers_rf = () => {
+    setmembers_ref(!members_rf);
+  };
+  const hundleAboutMe_rf = () => {
+    setAboutMe_rf(!aboutMe_rf);
+  };
 
   // useEffect(() => {
   //   socket.on("message", (message: string) => {
@@ -49,6 +75,10 @@ export default function Chat() {
   //   socket.emit("sendMessage", { text: messageText });
   //   setMessageText("");
   // };
+
+  useEffect(() => {
+      console.log(online_rf, friends_rf, channel_rf, channelSelected_rf, members_rf, aboutMe_rf);
+  }, [online_rf]);
 
 
   return (
@@ -69,7 +99,17 @@ export default function Chat() {
       >
         <div className={`chat ${NeuePlakFont.className}`}>
           <div className="chat-left-side">
-            {!showConv && <OnlineNow />} {/* only render if !showConv */}
+            {!showConv && (
+              <OnlineNow
+                online_rf={hundleOnline_rf}
+                friends_rf={hundleFriends_rf}
+                channel_rf={hundleChannel_rf}
+                channelSelected_rf={hundleChannelSelected_rf}
+                members_rf={hundleMembers_rf}
+                aboutMe_rf={hundleAboutMe_rf}
+              />
+            )}{" "}
+            {/* only render if !showConv */}
             {!showConv && (
               <div className="msgSelect">
                 <select
@@ -86,22 +126,50 @@ export default function Chat() {
             {option === "Friends" && !showConv && (
               <FriendsMessaged
                 onSelectFriend={hundlefriend_Selected}
+                online_rf={hundleOnline_rf}
+                friends_rf={hundleFriends_rf}
+                channel_rf={hundleChannel_rf}
+                channelSelected_rf={hundleChannelSelected_rf}
+                members_rf={hundleMembers_rf}
+                aboutMe_rf={hundleAboutMe_rf}
                 // onChange={(value: boolean) => setShowConv(value)}
               />
             )}
             {option === "Channels" && !showConv && (
               <ChannelMessaged
                 onSelectChannel={hundleIdOfChannelSelected}
+                online_rf={hundleOnline_rf}
+                friends_rf={hundleFriends_rf}
+                channel_rf={hundleChannel_rf}
+                channelSelected_rf={hundleChannelSelected_rf}
+                members_rf={hundleMembers_rf}
+                aboutMe_rf={hundleAboutMe_rf}
                 // onChange={(value: boolean) => setShowConv(value)}
               />
             )}
           </div>
           {/* {showConv && <FriendConversation />} only render if showConv */}
-          {option === "Friends" &&  friend_Selected &&(
-            <FriendConversation friendSelected={friend_Selected} />
+          {option === "Friends" && friend_Selected && (
+            <FriendConversation
+              friendSelected={friend_Selected}
+              online_rf={hundleOnline_rf}
+              friends_rf={hundleFriends_rf}
+              channel_rf={hundleChannel_rf}
+              channelSelected_rf={hundleChannelSelected_rf}
+              members_rf={hundleMembers_rf}
+              aboutMe_rf={hundleAboutMe_rf}
+            />
           )}
-          {option === "Channels" &&  idOfChannelSelected && (
-            <ChannelConversation channelSelected={idOfChannelSelected} />
+          {option === "Channels" && idOfChannelSelected && (
+            <ChannelConversation
+              channelSelected={idOfChannelSelected}
+              online_rf={hundleOnline_rf}
+              friends_rf={hundleFriends_rf}
+              channel_rf={hundleChannel_rf}
+              channelSelected_rf={hundleChannelSelected_rf}
+              members_rf={hundleMembers_rf}
+              aboutMe_rf={hundleAboutMe_rf}
+            />
           )}
         </div>
       </div>

@@ -21,8 +21,20 @@ import { ioClient } from "@/app/api/instance";
 
 export default function ChannelConversation({
   channelSelected,
+  online_rf,
+  friends_rf,
+  channel_rf,
+  channelSelected_rf,
+  members_rf,
+  aboutMe_rf,
 }: {
   channelSelected: ChannelChatType;
+  online_rf: () => void;
+  friends_rf: () => void;
+  channel_rf: () => void;
+  channelSelected_rf: () => void;
+  members_rf: () => void;
+  aboutMe_rf: () => void;
 }) {
   // const { channelSelected } = friend;
   // information about the channel conversation

@@ -17,15 +17,27 @@ import "reactjs-popup/dist/index.css";
 // import Modal from "./modalJoin/modal";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Button, Modal, Label, TextInput } from "flowbite-react";
-import { join_protected_channel} from "@/app/types/join_protected_channelType";
+import { join_protected_channel } from "@/app/types/join_protected_channelType";
 
 // type friendT = { nickname: string; picture: string; unread: number };
 
 export default function ChannelMessaged({
   onSelectChannel,
+  online_rf,
+  friends_rf,
+  channel_rf,
+  channelSelected_rf,
+  members_rf,
+  aboutMe_rf,
 }: //returnfromChannel,
 {
   onSelectChannel: (id: ChannelChatType) => void;
+  online_rf: () => void;
+  friends_rf: () => void;
+  channel_rf: () => void;
+  channelSelected_rf: () => void;
+  members_rf: () => void;
+  aboutMe_rf: () => void;
   //returnfromChannel: ()
 }) {
   const [channel, setChannel] = useState<ChannelChatType[]>([]);
@@ -33,7 +45,8 @@ export default function ChannelMessaged({
   const [searching, setSearching] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [channelSelected, setChannelSelected] = useState<ChannelChatType>();
-  const [join_protected_channel, setJoin_protected_channel] = useState<join_protected_channel>();
+  const [join_protected_channel, setJoin_protected_channel] =
+    useState<join_protected_channel>();
   const [statuspwd, setStatuspwd] = useState<boolean>(false);
   // here we filterSearch the friends list:
   const filterSearch = () => {
@@ -106,7 +119,6 @@ export default function ChannelMessaged({
     console.log(getChannel);
   };
 
-
   const checkPassword = async (channel_protected: join_protected_channel) => {
     const getChannel = await fetch(
       `http://localhost:3001/chat/join_protected`,
@@ -116,15 +128,18 @@ export default function ChannelMessaged({
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ id : channel_protected.id, password: channel_protected.password }),
+        body: JSON.stringify({
+          id: channel_protected.id,
+          password: channel_protected.password,
+        }),
       }
     );
     if (!getChannel.ok) {
       // throw new Error("Network response was not ok");
     }
-    console.log("check password ",getChannel);
-  }
-  
+    console.log("check password ", getChannel);
+  };
+
   // useEffect(() => {
   // }, [channelSelected, channel]);
 
@@ -255,7 +270,12 @@ export default function ChannelMessaged({
                                     placeholder="password"
                                     required
                                     color="success"
-                                    onChange={(event) => setJoin_protected_channel({id: channelSelected.id, password: event.target.value})}
+                                    onChange={(event) =>
+                                      setJoin_protected_channel({
+                                        id: channelSelected.id,
+                                        password: event.target.value,
+                                      })
+                                    }
                                     helperText={
                                       <>
                                         <span className="font-medium">
@@ -267,13 +287,13 @@ export default function ChannelMessaged({
                                   />
                                 </div>
                                 <div>
-                                
                                   <div className="checkPwd">
                                     <Button
                                       // color="failure"
                                       className="bg-[#E95A3A] mr-4"
                                       onClick={() => {
-                                        join_protected_channel && checkPassword(join_protected_channel);
+                                        join_protected_channel &&
+                                          checkPassword(join_protected_channel);
                                         onSelectChannel(channel);
                                         // setOpenModal(false);
                                       }}
