@@ -9,17 +9,75 @@ import TableBlue from "@/app/assets/svg/game/TableBlue.svg";
 import BTableGreen from "@/app/assets/svg/game/BTableGreen.svg";
 import BTableBlue from "@/app/assets/svg/game/BTableBlue.svg";
 import BTableOrange from "@/app/assets/svg/game/BTableOrange.svg";
+import { ioClient, SocketClient } from "@/app/api/instance";
+import { useRouter } from "next/navigation";
 
 export default function ModalMapsComponent({
+  mapOrange,
+  mapBlue,
+  mapGreen,
   onClick,
   openModal,
 }: {
+  mapOrange: () => void;
+  mapBlue: () => void;
+  mapGreen: () => void;
   onClick: () => void;
   openModal: boolean;
 }) {
   const [srcOrange, setSrcOrange] = useState(false);
   const [srcGreen, setSrcGreen] = useState(false);
   const [srcBlue, setSrcBlue] = useState(false);
+  const router = useRouter();
+
+  function playRandom() {
+    console.log("hmmmmmmmm");
+    ioClient.playRandom();
+    const SocketClient = ioClient.getSocketClient();
+    SocketClient.on("redirectToGame", (data: { room: string }) => {
+      ioClient.room = data.room;
+      console.log("****** ", ioClient.room);
+      let color = "";
+      let colorbg = "";
+      if (srcBlue) {
+        color = "4181A9";
+        colorbg = "6A9CBB";
+      }
+      if (srcGreen) {
+        color = "60C58D";
+        colorbg = "80CEA3";
+      }
+      if (srcOrange) {
+        color = "E95A3A";
+        colorbg = "F07559";
+      }
+      console.log('colooooor', color, colorbg);
+      router.push(`/game/user?color=${color}&colorbg=${colorbg}`);
+      //window.history.pushState("", "", "/game/user");
+      //window.location.href = "/game/user";
+    });
+  }
+  function handlClickMap() {
+    console.log("orange true");
+    if (srcOrange) {
+      console.log("orange true");
+      mapOrange();
+      playRandom();
+      onClick();
+    }
+    if (srcBlue) {
+      console.log("orange true");
+      mapBlue();
+      playRandom();
+      onClick();
+    }
+    if (srcGreen) {
+      console.log("orange true");
+      mapGreen();
+      playRandom();
+      onClick();
+    }
+  }
   return (
     <Modal className="bg-gray-600" show={openModal} onClose={onClick}>
       <Modal.Header className="bg-[#383546]">
@@ -83,10 +141,10 @@ export default function ModalMapsComponent({
               draggable={false}
             />
           </div>
-          <button disabled={(srcBlue || srcGreen || srcOrange) ? false : true}>
+          <button disabled={srcBlue || srcGreen || srcOrange ? false : true}>
             <div
               className="w-20 h-8 md:w-24 md:h-9 lg:w-28 lg:h-10 xl:w-36 xl:h-12 2xl:w-44 2xl:h-16 bg-[#E95A3A] rounded-[20px] xl:rounded-[24px] 2xl:rounded-[28px] flex justify-center items-center cursor-pointer"
-              onClick={() => console.log("clicked div", srcOrange, srcGreen, srcBlue)}
+              onClick={() => handlClickMap()}
             >
               <p
                 className={`${NeuePlakFont.className} text-white md:text-[20px] lg:text-[25px] xl:text-[30px] 2xl:text-[36px]`}

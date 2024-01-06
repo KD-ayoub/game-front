@@ -1,0 +1,16 @@
+*********ERROR
+[Nest] 89117  - 01/05/2024, 8:44:51 AM     LOG [HTTP] GET /settings 304 undefined - Mozilla/5.0 (Macintosh; 
+Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 ::1
+[Nest] 89117  - 01/05/2024, 8:44:51 AM   ERROR [ExceptionsHandler] Cannot read properties of undefined (read
+ing 'photo_path')
+TypeError: Cannot read properties of undefined (reading 'photo_path')
+    at /goinfre/hkaddour/transcendence/backend/src/profile/profile.service.ts:140:73
+    at Array.forEach (<anonymous>)
+    at ProfileService.getAllUsersData (/goinfre/hkaddour/transcendence/backend/src/profile/profile.service.t
+s:139:17)
+    at /goinfre/hkaddour/transcendence/backend/node_modules/@nestjs/core/router/router-execution-context.js:
+46:28
+    at /goinfre/hkaddour/transcendence/backend/node_modules/@nestjs/core/router/router-proxy.js:9:17
+
+****** HERE fix full_name in settings didn't get send
+****** full_name in a dto not the same for all

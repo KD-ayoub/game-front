@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { BadRequestException, HttpException, HttpStatus, Injectable, Param } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
 import { Room, RoomMessage, RoomType } from "@prisma/client";
 import { errorMonitor } from "events";
@@ -6,10 +6,11 @@ import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
 import { add_admin, channels, create_channel, join_private_channel } from "src/utils/types";
 import * as bcrypt from  'bcrypt'
+import { CloudinaryService } from "src/cloudinary/cloudinary.service";
 
 @Injectable()
 export class chatService {
-	constructor(private prisma : PrismaService,private appGateway : AppGateway){}
+	constructor(private prisma : PrismaService,private appGateway : AppGateway, private cloudinaryService: CloudinaryService){}
 
 	async get_picture_name(id: string)
 	{
@@ -234,6 +235,28 @@ export class chatService {
 		}
 	}
 
+
+	async upload_channel_img(file: Express.Multer.File,id : string,userid: string)
+	{
+			try {
+      			const upload = await this.cloudinaryService.uploadFile(file);
+				const room = await this.prisma.room.update({
+					where: {
+						id,
+						ownerId: userid
+					},
+					data: {
+						photo: upload.url
+					}
+				})
+				if (!room)
+					return false;
+			} catch (error) {
+					return false;
+			}
+			return true;
+	}
+
 	// type : [private | public | protected]
 	// password if private : 
 	// name 
@@ -317,6 +340,7 @@ export class chatService {
 				b.isJoined = true;
 				b.nameOfChannel = private_room.name;
 				b.type = private_room.type;
+				b.photo = private_room.photo;
 			}
 			return b;
 		}
@@ -345,7 +369,8 @@ export class chatService {
 						select: {
 							id : true
 						}
-					}
+					},
+					photo: true
 
 				}
 			});
@@ -354,6 +379,7 @@ export class chatService {
 				b.id = rooms.id;
 				b.nameOfChannel = rooms.name;
 				b.type = rooms.type;
+				b.photo = rooms.photo;
 				if (rooms.owner.id == userid)
 				{
 					b.isJoined = true;
@@ -450,7 +476,6 @@ export class chatService {
 			const node : channels = await this.create_channel_obj(channels[i],userid);
 			if (node.id)
 				result.push(node);
-			//console.log(node);
 		}
 		return result;
 	}
@@ -501,6 +526,7 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
+		this.appGateway.server.emit('members_refresh','refresh');
 		return true;
 	}
 
@@ -558,6 +584,7 @@ export class chatService {
 						}
 					}
 				})
+				this.appGateway.server.emit('members_refresh','refresh');
 				return 3;
 			}
 		} catch (error) {
@@ -609,6 +636,7 @@ export class chatService {
 		} catch (error) {
 			return 2;
 		}
+		this.appGateway.server.emit('members_refresh','refresh');
 	}
 
 	async check_privileges(userid: string, member_id : string, channelid: string)
@@ -687,6 +715,7 @@ export class chatService {
 			} catch (error) {
 				return false;
 			}
+			this.appGateway.server.emit('members_refresh','refresh');
 			return true;
 		}
 		return false;
@@ -799,7 +828,7 @@ export class chatService {
 				return false;
 			if (await this.is_admin(userid,channel.channel_id) && await this.is_admin(channel.member_id,channel.channel_id))
 				return false;
-			const mute_member = await this.prisma.room.update({
+			await this.prisma.room.update({
 				where: {
 					id : channel.channel_id
 				},
@@ -811,6 +840,23 @@ export class chatService {
 					}
 				}
 			})
+
+			setTimeout(async () => {
+
+				await this.prisma.room.update({
+					where: {
+						id : channel.channel_id
+					},
+					data: {
+						muted: {
+							disconnect: {
+								id : channel.member_id
+							}
+						}
+					}
+				})
+				console.log("mute ended");
+			}, 1000 * 60);
 		} catch (error) {
 			return false;
 		}
@@ -890,6 +936,8 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
+		// i need to send a different event to refresh and to set the selected channel id to nothing
+		this.appGateway.server.emit('members_refresh','refresh');
 		return true;
 	}
 
@@ -971,6 +1019,8 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
+		// i need to send a different event to refresh and to set the selected channel id to nothing
+		this.appGateway.server.emit('members_refresh','refresh');
 		return true;
 	}
 
@@ -1047,6 +1097,7 @@ export class chatService {
 					const sockets = await this.appGateway.server.in(this.appGateway.get_socketID_by_id(userid)).fetchSockets();
 					const socket = sockets.find(socket => socket.id.toString() === this.appGateway.get_socketID_by_id(userid));
 					socket.leave(channel.channel);
+					this.appGateway.server.emit('members_refresh','refresh');
 					return true;
 				} catch (error) {
 					return false;
@@ -1070,7 +1121,9 @@ export class chatService {
 					if (!room)
 						return false;
 					this.appGateway.server.socketsLeave(channel.channel);
-					// emit a message that the room is deleted and delete the room  to all the members
+
+					// i need to send a different event to refresh and to set the selected channel id to nothing
+					this.appGateway.server.emit('members_refresh','refresh');
 					return true;
 				} catch (error) {
 					console.log(error);
@@ -1231,5 +1284,49 @@ export class chatService {
 			return list_members;
 		}
 		return list_members;
+	}
+
+	async friends_states(userid: string)
+	{
+		const list = [];
+		try {
+			const friends = await this.prisma.friendship.findMany({
+				where: {
+					userId: userid,
+					NOT: [
+						{
+							friend: {
+								is_active: "offline"
+							}
+						}
+					]
+				},
+				select: {
+					friend: {
+						select: {
+							profile: {
+								select: {
+									photo_path: true
+								}
+							},
+							nickName: true,
+							is_active: true,
+							id: true
+						}
+					}
+				}
+			})
+			friends.forEach((friend) => {
+				const b = { id: "" , photo_path: "", is_active: "", nickName: ""};
+				b.id = friend.friend.id;
+				b.nickName = friend.friend.nickName;
+				b.is_active = friend.friend.is_active;
+				b.photo_path = friend.friend.profile.photo_path;
+				list.push(b);
+			})
+			return list;
+		} catch (error) {
+			return list;
+		}
 	}
 }

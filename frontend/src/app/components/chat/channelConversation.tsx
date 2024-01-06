@@ -29,6 +29,7 @@ export default function ChannelConversation({
   const [dataConversation, setDataConversation] = useState<
     DataChannelConversationType[]
   >([]);
+  const [members_ref, setmembers_ref] = useState<boolean>(false);
   // information about the channel selected
   // const [channelSelected, setChannelSelected] = useState<ChannelChatType>({
   //   nameOfChannel: "Mimoo",
@@ -37,8 +38,6 @@ export default function ChannelConversation({
   //   isJoined: true,
   //   type: "private",
   // });
-
-  console.log("id dyal channel", channelSelected.id);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // information about members of channel
@@ -60,7 +59,6 @@ export default function ChannelConversation({
 
   // handle send message
   const handleSendMessage = () => {
-    console.log("test");
     const client = ioClient.getSocketClient();
     client.emit("room", {
       channel_id: channelSelected.id,
@@ -127,16 +125,6 @@ export default function ChannelConversation({
     return () => {
       client.off(channelSelected.id);
     };
-  });
-
-  useEffect(() => {
-    const client = ioClient.getSocketClient();
-    if (!channelSelected) return;
-    client.on(channelSelected.id, (data) => {
-      console.log(client.id);
-      console.log("younes", data);
-      setDataConversation((dataConversation) => [...dataConversation, data]);
-    });
   }, [channelSelected]);
 
   useEffect(() => {
@@ -159,8 +147,17 @@ export default function ChannelConversation({
     }
     fetcher();
 
-    // console.log("id dyal channel", channelSelected.id);
   }, [channelSelected]);
+
+  useEffect( () => {
+    const client = ioClient.getSocketClient();
+    client.on("members_refresh", (data) => {
+      setmembers_ref(!members_ref);
+    });
+    return () => {
+      client.off("members_refresh");
+    };
+  }, [])
 
   useEffect(() => {
     async function fetcher() {
@@ -180,7 +177,7 @@ export default function ChannelConversation({
       setMemberList(await getconv.json());
     }
     fetcher();
-  }, [channelSelected]);
+  }, [channelSelected,members_ref]);
 
   useEffect(() => {
     async function fetcher() {
@@ -200,9 +197,8 @@ export default function ChannelConversation({
       setAboutMe(await getconv.json());
     }
     fetcher();
-  }, [channelSelected]);
+  }, [channelSelected,members_ref]);
 
-  console.log("about me", aboutMe);
 
   return (
     <>

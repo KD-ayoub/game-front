@@ -154,8 +154,10 @@
 }
 
 .isJoined:hover {
-  background-color: #252134;
+  background-color: #E95A3A;
 }
+
+
 
 .unread {
   background: #E95A3A;
