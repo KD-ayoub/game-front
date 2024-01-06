@@ -63,6 +63,7 @@ export default function OnlineNow({
                 className="onlineUser text-[10px] text-center p-1 "
                 key={friend.id}
               >
+				 <span> {friend.is_active} </span>
 			 	 {friend.photo_path !== "default_img" ? (
 			 	 <Image
 			 	 src={friend.photo_path}
