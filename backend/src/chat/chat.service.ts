@@ -4,7 +4,7 @@ import { Room, RoomMessage, RoomType } from "@prisma/client";
 import { errorMonitor } from "events";
 import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
-import { add_admin, channels, create_channel, join_private_channel } from "src/utils/types";
+import { add_admin, channels, create_channel, join_protected_channel } from "src/utils/types";
 import * as bcrypt from  'bcrypt'
 import { CloudinaryService } from "src/cloudinary/cloudinary.service";
 
@@ -530,7 +530,7 @@ export class chatService {
 		return true;
 	}
 
-	async join_protected(channel : join_private_channel, userid: string)
+	async join_protected(channel : join_protected_channel, userid: string)
 	{
 		try {
 			const protected_room = await this.prisma.room.findUnique({

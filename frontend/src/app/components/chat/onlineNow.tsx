@@ -8,27 +8,30 @@ import Image from "next/image";
 import { isOnlineType } from "@/app/types/isOnlineType";
 
 export default function OnlineNow() {
-  const [friends, setFriends] = useState<isOnlineType[]>([]);
+  const [friends, setFriends] = useState<isOnlineType[]>([
+]);
 
-  // useEffect( () => {
-  //   	async function fetcher() {
-  //   	  const getconv = await fetch(
-  //   	    `http://localhost:3001/chat/friends_state/`,
-  //   	    {
-  //   	      method: "GET",
-  //   	      headers: {
-  //   	        "Content-Type": "application/json",
-  //   	      },
-  //   	      credentials: "include",
-  //   	    }
-  //   	  );
-  //   	  if (!getconv.ok) {
-  //   	    // throw new Error("Network response was not ok");
-  //   	  }
-  //   	  setFriends(await getconv.json());
-  //   	}
-  //   	fetcher();
-  // }, []);
+   useEffect( () => {
+     	async function fetcher() {
+     	  const getconv = await fetch(
+     	    `http://localhost:3001/chat/friends_state/`,
+     	    {
+     	      method: "GET",
+     	      headers: {
+     	        "Content-Type": "application/json",
+     	      },
+     	      credentials: "include",
+     	    }
+     	  );
+     	  if (!getconv.ok) {
+     	    // throw new Error("Network response was not ok");
+     	  }
+		  const data = await getconv.json();
+
+     	  setFriends(data);
+     	}
+     	fetcher();
+   }, []);
 
   const onlineFriends = (friends.filter(
     (friend) => friend.is_active !== "offline") 
@@ -45,14 +48,24 @@ export default function OnlineNow() {
                 className="onlineUser text-[10px] text-center p-1 "
                 key={friend.id}
               >
-                <Image
-                  src={friend.photo_path}
-                  alt={friend.nickName}
-                  width={50}
-                  height={50}
-                  className="w-[50px] rounded-full"
-                />
-                <span>{friend.nickName}</span>
+			 	 {friend.photo_path !== "default_img" ? (
+			 	 <Image
+			 	 src={friend.photo_path}
+			 	 alt={friend.nickName}
+			 	 width={50}
+			 	 height={50}
+			 	 className="w-[50px] rounded-full"
+			 	 />
+			 	 ) : (
+			 	 <Image
+			 	 src={fakeAvatar.src}
+			 	 alt={friend.nickName}
+			 	 width={50}
+			 	 height={50}
+			 	 className="w-[50px] rounded-full"
+			 	 />
+			 	 )}
+				 <span> {friend.nickName} </span>
               </div>
             </button>
           ))

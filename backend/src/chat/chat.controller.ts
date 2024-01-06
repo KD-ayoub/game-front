@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Session, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { chatService } from "./chat.service";
 import { Record } from "@prisma/client/runtime/library";
-import { add_admin, create_channel, join_private_channel } from "src/utils/types";
+import { add_admin, create_channel, join_protected_channel } from "src/utils/types";
 import { RoomType } from "@prisma/client";
 import { session } from "passport";
 import { AuthenticatedGuard} from "src/auth/guards";
@@ -122,7 +122,7 @@ export class ChatController{
 	// join protected channels
 	@UseGuards(AuthenticatedGuard)
 	@Post('join_protected')
-	async join_protected(@Body() body: join_private_channel, @Session() session :Record<string,any>)
+	async join_protected(@Body() body: join_protected_channel, @Session() session :Record<string,any>)
 	{
 		if (!body.id || !body.password)
 			throw new HttpException("request is not valid", HttpStatus.BAD_REQUEST);
