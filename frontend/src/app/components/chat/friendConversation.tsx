@@ -13,6 +13,7 @@ import Image from "next/image";
 // import ioClient from "../../api/instance";
 import moment from "moment";
 import tilijo from "../../assets/svg/chat/tilijo.svg";
+import { Dropdown } from "flowbite-react";
 import { ioClient } from "@/app/api/instance";
 import { useRouter } from "next/navigation";
 
@@ -213,24 +214,15 @@ export default function FriendConversation({
             </div>
             {/* setting optionss in bar info */}
             <div className="optionUserDiv">
-              <button>
-                <select
-                  name="optionsChatUser"
-                  id="optionsChatUser"
-                  className="optionsUserSelect"
-                  onChange={handleOptionChange}
-                >
-                  <option value="chat">Chat</option>
-                  <option value="profile">Profile</option>
-
-                  {isBlocked === false ? (
-                    <option value="block">Block</option>
-                  ) : (
-                    <option value="unblock">Unblock</option>
-                  )}
-                  <option value="Challenge">Challenge</option>
-                </select>
-              </button>
+              <Dropdown label="Options" dismissOnClick={false} color="">
+                <Dropdown.Item onClick={sendToProfile}>Profile</Dropdown.Item>
+                {isBlocked === false ? (
+                  <Dropdown.Item onClick={handleBlock}>Block</Dropdown.Item>
+                ) : (
+                  <Dropdown.Item onClick={handleUnblock}>Unblock</Dropdown.Item>
+                )}
+                <Dropdown.Item onClick={sendChallenge}>Challenge</Dropdown.Item>
+              </Dropdown>
             </div>
             {/* end of setting options in bar info */}
           </div>

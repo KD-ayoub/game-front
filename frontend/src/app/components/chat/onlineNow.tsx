@@ -8,15 +8,7 @@ import Image from "next/image";
 import { isOnlineType } from "@/app/types/isOnlineType";
 
 export default function OnlineNow() {
-  const [friends, setFriends] = useState<isOnlineType[]>([
-    {
-      nickName: "mouha",
-      photo_path: fakeAvatar.src,
-      is_active: "online",
-      id: "1",
-      // full_name: "zbi",
-    },
-  ]);
+  const [friends, setFriends] = useState<isOnlineType[]>([]);
 
   // useEffect( () => {
   //   	async function fetcher() {
