@@ -340,6 +340,7 @@ export class chatService {
 				b.isJoined = true;
 				b.nameOfChannel = private_room.name;
 				b.type = private_room.type;
+				b.photo = private_room.photo;
 			}
 			return b;
 		}
@@ -368,7 +369,8 @@ export class chatService {
 						select: {
 							id : true
 						}
-					}
+					},
+					photo: true
 
 				}
 			});
@@ -377,6 +379,7 @@ export class chatService {
 				b.id = rooms.id;
 				b.nameOfChannel = rooms.name;
 				b.type = rooms.type;
+				b.photo = rooms.photo;
 				if (rooms.owner.id == userid)
 				{
 					b.isJoined = true;
@@ -473,7 +476,6 @@ export class chatService {
 			const node : channels = await this.create_channel_obj(channels[i],userid);
 			if (node.id)
 				result.push(node);
-			//console.log(node);
 		}
 		return result;
 	}
@@ -524,6 +526,7 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
+		this.appGateway.server.emit('members_refresh','refresh');
 		return true;
 	}
 
@@ -581,6 +584,7 @@ export class chatService {
 						}
 					}
 				})
+				this.appGateway.server.emit('members_refresh','refresh');
 				return 3;
 			}
 		} catch (error) {
@@ -632,6 +636,7 @@ export class chatService {
 		} catch (error) {
 			return 2;
 		}
+		this.appGateway.server.emit('members_refresh','refresh');
 	}
 
 	async check_privileges(userid: string, member_id : string, channelid: string)
@@ -710,6 +715,7 @@ export class chatService {
 			} catch (error) {
 				return false;
 			}
+			this.appGateway.server.emit('members_refresh','refresh');
 			return true;
 		}
 		return false;
@@ -822,7 +828,7 @@ export class chatService {
 				return false;
 			if (await this.is_admin(userid,channel.channel_id) && await this.is_admin(channel.member_id,channel.channel_id))
 				return false;
-			const mute_member = await this.prisma.room.update({
+			await this.prisma.room.update({
 				where: {
 					id : channel.channel_id
 				},
@@ -834,6 +840,23 @@ export class chatService {
 					}
 				}
 			})
+
+			setTimeout(async () => {
+
+				await this.prisma.room.update({
+					where: {
+						id : channel.channel_id
+					},
+					data: {
+						muted: {
+							disconnect: {
+								id : channel.member_id
+							}
+						}
+					}
+				})
+				console.log("mute ended");
+			}, 1000 * 60);
 		} catch (error) {
 			return false;
 		}
@@ -913,6 +936,8 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
+		// i need to send a different event to refresh and to set the selected channel id to nothing
+		this.appGateway.server.emit('members_refresh','refresh');
 		return true;
 	}
 
@@ -994,6 +1019,8 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
+		// i need to send a different event to refresh and to set the selected channel id to nothing
+		this.appGateway.server.emit('members_refresh','refresh');
 		return true;
 	}
 
@@ -1070,6 +1097,7 @@ export class chatService {
 					const sockets = await this.appGateway.server.in(this.appGateway.get_socketID_by_id(userid)).fetchSockets();
 					const socket = sockets.find(socket => socket.id.toString() === this.appGateway.get_socketID_by_id(userid));
 					socket.leave(channel.channel);
+					this.appGateway.server.emit('members_refresh','refresh');
 					return true;
 				} catch (error) {
 					return false;
@@ -1093,7 +1121,9 @@ export class chatService {
 					if (!room)
 						return false;
 					this.appGateway.server.socketsLeave(channel.channel);
-					// emit a message that the room is deleted and delete the room  to all the members
+
+					// i need to send a different event to refresh and to set the selected channel id to nothing
+					this.appGateway.server.emit('members_refresh','refresh');
 					return true;
 				} catch (error) {
 					console.log(error);
