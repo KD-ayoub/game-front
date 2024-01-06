@@ -12,7 +12,7 @@ export default function OnlineNow() {
     {
       nickName: "mouha",
       photo_path: fakeAvatar.src,
-      is_active: "online",
+      is_active: "offline",
       id: "1",
       // full_name: "zbi",
     },

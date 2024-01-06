@@ -16,8 +16,17 @@ import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 // import Modal from "./modalJoin/modal";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { Button, Modal, Label, TextInput } from "flowbite-react";
-import { join_protected_channel} from "@/app/types/join_protected_channelType";
+import {
+  Button,
+  Modal,
+  Label,
+  TextInput,
+  Spinner,
+  FloatingLabel,
+  FileInput,
+  Select,
+} from "flowbite-react";
+import { join_protected_channel } from "@/app/types/join_protected_channelType";
 
 // type friendT = { nickname: string; picture: string; unread: number };
 
@@ -33,8 +42,11 @@ export default function ChannelMessaged({
   const [searching, setSearching] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [channelSelected, setChannelSelected] = useState<ChannelChatType>();
-  const [join_protected_channel, setJoin_protected_channel] = useState<join_protected_channel>();
+  const [join_protected_channel, setJoin_protected_channel] =
+    useState<join_protected_channel>();
   const [statuspwd, setStatuspwd] = useState<boolean>(false);
+  const [newChannel, setNewChannel] = useState<ChannelChatType>();
+  
   // here we filterSearch the friends list:
   const filterSearch = () => {
     if (!searching) {
@@ -107,7 +119,6 @@ export default function ChannelMessaged({
     console.log(getChannel);
   };
 
-
   const checkPassword = async (channel_protected: join_protected_channel) => {
     const getChannel = await fetch(
       `http://localhost:3001/chat/join_protected`,
@@ -117,15 +128,18 @@ export default function ChannelMessaged({
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ id : channel_protected.id, password: channel_protected.password }),
+        body: JSON.stringify({
+          id: channel_protected.id,
+          password: channel_protected.password,
+        }),
       }
     );
     if (!getChannel.ok) {
       // throw new Error("Network response was not ok");
     }
-    console.log("check password ",getChannel);
-  }
-  
+    console.log("check password ", getChannel);
+  };
+
   // useEffect(() => {
   // }, [channelSelected, channel]);
 
@@ -137,7 +151,7 @@ export default function ChannelMessaged({
 
   return (
     <>
-      <div className="friendsMessaged">
+      <div className="channelMessaged">
         <div className="searchBar ">
           <input
             type="text"
@@ -256,7 +270,12 @@ export default function ChannelMessaged({
                                     placeholder="password"
                                     required
                                     color="success"
-                                    onChange={(event) => setJoin_protected_channel({id: channelSelected.id, password: event.target.value})}
+                                    onChange={(event) =>
+                                      setJoin_protected_channel({
+                                        id: channelSelected.id,
+                                        password: event.target.value,
+                                      })
+                                    }
                                     helperText={
                                       <>
                                         <span className="font-medium">
@@ -268,13 +287,13 @@ export default function ChannelMessaged({
                                   />
                                 </div>
                                 <div>
-                                
                                   <div className="checkPwd">
                                     <Button
                                       // color="failure"
                                       className="bg-[#E95A3A] mr-4"
                                       onClick={() => {
-                                        join_protected_channel && checkPassword(join_protected_channel);
+                                        join_protected_channel &&
+                                          checkPassword(join_protected_channel);
                                         onSelectChannel(channel);
                                         // setOpenModal(false);
                                       }}
@@ -301,19 +320,55 @@ export default function ChannelMessaged({
             </li>
           ))}
         </ul>
-        <Popup
-          trigger={
-            <button className="bg-[#E95A3A] rounded-lg">
-              {" "}
-              Create a channel
-            </button>
-          }
-          position="right center"
+      </div>
+      <div className="createChannel">
+        <Button onClick={() => setOpenModal(true)}>Toggle modal</Button>
+        <Modal
+          show={openModal}
+          size="4xl"
+          onClose={() => setOpenModal(false)}
+          popup
         >
-          <div className="text-red-400">
-            <h1>hello</h1>
-          </div>
-        </Popup>
+          <Modal.Header />
+          <Modal.Body>
+            <div className="text-center">
+              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                Complete the form to create your channel
+              </h3>
+              <div className="grid grid-flow-col justify-stretch space-x-4">
+                <FloatingLabel
+                  variant="outlined"
+                  label="Name of channel"
+                  color="error"
+                />
+
+                <div>
+                  <FileInput
+                    id="file-upload-helper-text"
+                    helperText="SVG, PNG, JPG or GIF (MAX. 800x400px)."
+                  />
+                </div>
+
+              </div>
+              <div className="max-w-md">
+                <div className="mb-2 block">
+                  <Label htmlFor="countries" value="Select type of channel" />
+                </div>
+                <Select id="countries" required>
+                  <option>Public</option>
+                  <option>Private</option>
+                  <option>Protected</option>
+                </Select>
+              </div>
+              <div className="flex justify-center gap-10 mt-5">
+                <Button className="bg-[#E95A3A]">{"Create"}</Button>
+                <Button color="gray" onClick={() => setOpenModal(false)}>
+                  No, cancel
+                </Button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
       </div>
     </>
   );
