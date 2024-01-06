@@ -149,6 +149,7 @@ export default function RandomMatch() {
           allowOutsideClick: false,
         }).then(res => {
           SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+          console.log('then');
           router.push('/game')
         });
         return () => {
@@ -194,6 +195,13 @@ export default function RandomMatch() {
       }
     }
     document.addEventListener("keydown", handlKeyDown);
+    //window.onbeforeunload = () => {
+    //  console.log('ggggggggggg');
+    //  alert('page freshed');
+    //  SocketClient.emit("ana");
+    //  return true;
+    //}
+
     //document.addEventListener("beforeunload", () => {
     //  console.log('ggggggggggg');
     //  alert('page freshed');
@@ -202,9 +210,9 @@ export default function RandomMatch() {
     return () => {
       document.removeEventListener("keydown", handlKeyDown);
       window.cancelAnimationFrame(animationFrameRef.current);
+      //window.onbeforeunload = null;
       //window.removeEventListener("beforeunload", alertUser);
     };
-
   }, []);
   useEffect(() => {
     async function fetcher() {

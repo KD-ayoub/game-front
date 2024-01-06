@@ -28,3 +28,6 @@ TypeError: Cannot read properties of undefined (reading '0')
     at GameService.<anonymous> (/goinfre/hkaddour/transcendence/backend/node_modules/@nestjs/websockets/context
 /ws-proxy.js:12:32)
     at WebSocketsController.pickResult (/goinfre/hkaddour/transcendence/backend/node_modules/@nestjs/websockets
+******* player offline
+******* Search bar error
+******* json.parse error

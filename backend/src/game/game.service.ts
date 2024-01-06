@@ -47,14 +47,20 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			return ;
 
 		console.log('***********lenght gameRoom = ', this.gameRoom.size);
+		//console.log('before = ', this.gameRoom);
 		this.gameRoom.forEach((value, key) => {
 			if (key.search(userId) > 0) {
-				const i: number = (value[0].socketId === userId) ? 0 : 1;
+				//const i: number = (value[0].socketId === userId) ? 0 : 1;
+				const i: number = (value[0].playerId === userId) ? 0 : 1;
 				//console.log('key = ', value[i].key, ' value = ', value[i].value);
+				value[i].socket.leave(key);
+				value[i].socket = client;
 				value[i].socketId = client.id;
+				client.join(key);
 				//console.log('key = ', value[i].key, ' value = ', value[i].value);
 			}
 		})
+		//console.log('after = ', this.gameRoom);
 	}
 
 	handleDisconnect(client: Socket) {
@@ -69,7 +75,9 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 		//here check the map too to  take off the player and end the game
 	}
 
-	playWithFriend(opponentId: string) {
+	@SubscribeMessage('playWithFriend')
+	playWithFriend(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+		//first check if the user is connected
 	}
 
 	//makeRoomName(playerOne, playerTwo) {
@@ -201,6 +209,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 	//***************
 	@SubscribeMessage('movePaddle')
 	movePaddle(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+		console.log('id = ', client.id);
 		let thatRoomGame = this.gameRoom.get(payload.room);
 		let i = thatRoomGame[0].socketId === client.id ? 0 : 1;
 		if (payload.move === "right" && !thatRoomGame[i].paddle.checkRightWall())
@@ -297,6 +306,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('moveBall')
 	moveBall(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+		//console.log('moveBall');
 		let thatRoomGame = this.gameRoom.get(payload.room);
 		let i = thatRoomGame[0].socketId === client.id ? 0 : 1;
 		const data = {
