@@ -93,13 +93,15 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('fireTheGameUp')
-	ana(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+	async fireTheGameUP(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
 		let thatRoomGame = this.gameRoom.get(payload.room);
 		let i = thatRoomGame[0].socketId === client.id ? 0 : 1;
 		thatRoomGame[i].emit = true;
 		if (thatRoomGame[0].emit && thatRoomGame[1].emit) {
 			thatRoomGame[0].emit = false;
 			thatRoomGame[1].emit = false;
+			for (let i: number = 0; i != 2; i++)
+				await this.switchPlayerStatus(thatRoomGame[i].playerId, "at game");
 			//console.log('play all');
 			this.ws.to(payload.room).emit('playNow');
 		}
@@ -218,6 +220,81 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 		this.hitWall = false;
 	}
 
+	//async addGameHistory(fstPlayer: string, secPlayer: string): Promise<void> {
+	async addGameHistory(players: [string, string], whoWin: number): Promise<void> {
+		//xp add it in the level too
+    const commingData = await this.prisma.games_history.createMany({
+      data: [
+        {
+					player_id: players[0],
+					opponent_id: players[1],
+					xp_level: (!whoWin) ? 20 : 0,
+					date: new Date(),
+					result: (!whoWin) ? true : false
+        },
+        {
+					player_id: players[1],
+					opponent_id: players[0],
+					xp_level: (whoWin) ? 20 : 0,
+					date: new Date(),
+					result: (whoWin) ? true : false
+        }
+      ]
+    });
+	}
+
+	async addPlayerLevelXp(playerId: string) {
+		const profile = await this.prisma.profile.update({
+			where: {
+				userID: playerId,
+			},
+			data: {
+				level: {
+					increment: 0.20,
+				}
+			}
+		});
+	}
+
+	async switchPlayerStatus(playerId: string, status: string) {
+		const profile = await this.prisma.user.update({
+			where: {
+				id: playerId
+			},
+			data: {
+				is_active: status
+			}
+		});
+	}
+
+	@SubscribeMessage('ana')
+	ana(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+		console.log('****** reload ******');
+	}
+
+	@SubscribeMessage('cleanRoomGame')
+	async cleanRoomGame(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+		let thatRoomGame = this.gameRoom.get(payload.room);
+		let i = thatRoomGame[0].socketId === client.id ? 0 : 1;
+
+		thatRoomGame[i].emit = true;
+		if (thatRoomGame[0].emit && thatRoomGame[1].emit) {
+			console.log('done with the game');
+			await this.addGameHistory([thatRoomGame[0].playerId, thatRoomGame[1].playerId],
+				(thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes) ? 0 : 1);
+			await this.addPlayerLevelXp((thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes)
+				? thatRoomGame[0].playerId
+				: thatRoomGame[1].playerId);
+			for (let i: number = 0; i != 2; i++) {
+				await this.switchPlayerStatus(thatRoomGame[i].playerId, "online");
+				await thatRoomGame[i].socket.leave(payload.room);
+			}
+			//for (let i: number = 0; i != 2; i++)
+			this.gameRoom.delete(payload.room);
+			console.log('hadi map = ', this.gameRoom);
+		}
+	}
+
 	@SubscribeMessage('moveBall')
 	moveBall(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
 		let thatRoomGame = this.gameRoom.get(payload.room);
@@ -249,7 +326,19 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 				this.resetGameData(thatRoomGame);
 				if ((thatRoomGame[0].paddle.winTimes + thatRoomGame[1].paddle.winTimes) === 5) {
 					console.log('finish game');
-					//this.ws.to(payload.room).emit("finishGame")
+					//******here i will send the data of the winnign and losing players
+					this.ws.to(payload.room).emit("finishGame");
+					//await this.addGameHistory([thatRoomGame[0].playerId, thatRoomGame[1].playerId],
+					//	(thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes) ? 0 : 1);
+					//await this.addPlayerLevelXp((thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes)
+					//	? thatRoomGame[0].playerId
+					//	: thatRoomGame[1].playerId);
+					//for (let i: number = 0; i != 2; i++)
+					//	await this.switchPlayerStatus(thatRoomGame[i].playerId, "online");
+
+					//this.gameRoom.delete(payload.room);
+					//console.log(this.gameRoom);
+        	//here take off the that room in map
 				}
 			}
 			this.ws.to(payload.room).emit("drawGameAssets",

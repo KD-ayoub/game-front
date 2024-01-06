@@ -14,3 +14,17 @@ s:139:17)
 
 ****** HERE fix full_name in settings didn't get send
 ****** full_name in a dto not the same for all
+****** logging firstTime should log twice
+****** take off queries in bot game
+****** adding friend change in friend_number
+****** add achievement to users
+[Nest] 13443  - 01/06/2024, 8:12:25 AM   ERROR [WsExceptionsHandler] Cannot read properties of undefined (readi
+ng '0')
+TypeError: Cannot read properties of undefined (reading '0')
+    at GameService.moveBall (/goinfre/hkaddour/transcendence/backend/src/game/game.service.ts:296:23)
+    at /goinfre/hkaddour/transcendence/backend/node_modules/@nestjs/websockets/context/ws-context-creator.js:43
+:33
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at GameService.<anonymous> (/goinfre/hkaddour/transcendence/backend/node_modules/@nestjs/websockets/context
+/ws-proxy.js:12:32)
+    at WebSocketsController.pickResult (/goinfre/hkaddour/transcendence/backend/node_modules/@nestjs/websockets
