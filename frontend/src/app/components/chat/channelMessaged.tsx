@@ -12,7 +12,8 @@ import { ChannelChatType } from "@/app/types/ChannelChatType";
 import { GetChatConverssationType } from "@/app/types/getChatConverssation";
 import lwaghch from "../../assets/svg/chat/lwaghch.svg";
 import { ioClient } from "@/app/api/instance";
-
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
 // type friendT = { nickname: string; picture: string; unread: number };
 
 export default function ChannelMessaged({
@@ -37,8 +38,8 @@ export default function ChannelMessaged({
 
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
-  	console.log("zbi");
-	const client = ioClient.getSocketClient();
+    console.log("zbi");
+    const client = ioClient.getSocketClient();
     async function fetcher() {
       const getChannel = await fetch(
         "http://localhost:3001/chat/list_channels",
@@ -54,16 +55,14 @@ export default function ChannelMessaged({
         //console.log("error fetcher");
         throw new Error("Network response was not ok");
       }
-	  const channels: ChannelChatType[] = await getChannel.json();
-	  channels.forEach((channel) => {
-	  	if (channel.isJoined)
-	  		client.emit('join',{"channel_id": channel.id});
-	  })
+      const channels: ChannelChatType[] = await getChannel.json();
+      channels.forEach((channel) => {
+        if (channel.isJoined) client.emit("join", { channel_id: channel.id });
+      });
       setChannel(channels);
     }
     fetcher();
   }, []);
-
 
   //  i need to list in sockets if i delete a channel or if i add a channel
 
@@ -112,13 +111,25 @@ export default function ChannelMessaged({
                     </span>
                   ) : null}{" "} */}
                   {channel.isJoined === false ? (
-                    <button className="isJoined" onClick={() => {console.log("join btn clicked!")}}>Join</button>
+                    <button
+                      className="isJoined"
+                      onClick={() => {
+                        console.log("join btn clicked!");
+                      }}
+                    >
+                      Join
+                    </button>
                   ) : null}
                 </div>
               </button>
             </li>
           ))}
         </ul>
+        <Popup trigger={<button className="bg-[#E95A3A]"> Create a channel</button>} position="right center">
+          <div className="text-red-400">
+            <h1>hello</h1>
+          </div>
+        </Popup>  
       </div>
     </>
   );

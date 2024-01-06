@@ -10,9 +10,9 @@ import { isOnlineType } from "@/app/types/isOnlineType";
 export default function OnlineNow() {
   const [friends, setFriends] = useState<isOnlineType[]>([
     {
-      nickName: "zbi",
+      nickName: "mouha",
       photo_path: fakeAvatar.src,
-      is_active: "offline",
+      is_active: "online",
       id: "1",
       full_name: "zbi",
     },

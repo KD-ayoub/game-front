@@ -133,6 +133,11 @@
 
 }
 
+.listFriends img {
+  height: 45px;
+  width: 45px;
+}
+
 .isJoined {
   background-color: #E95A3A;
   width: 30px;
@@ -581,6 +586,8 @@
 
 .memberPhoto {
   border-radius: 9999px;
+  width: 30px;
+  height: 30px;
 }
 
 .ownerBox {
@@ -636,8 +643,8 @@
 }
 
 .memberName {
-  padding-left: 4px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 40px;
 }
 
 .infoMembersOfChannel .boxMember {
