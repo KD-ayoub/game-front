@@ -1285,4 +1285,48 @@ export class chatService {
 		}
 		return list_members;
 	}
+
+	async friends_states(userid: string)
+	{
+		const list = [];
+		try {
+			const friends = await this.prisma.friendship.findMany({
+				where: {
+					userId: userid,
+					NOT: [
+						{
+							friend: {
+								is_active: "offline"
+							}
+						}
+					]
+				},
+				select: {
+					friend: {
+						select: {
+							profile: {
+								select: {
+									photo_path: true
+								}
+							},
+							nickName: true,
+							is_active: true,
+							id: true
+						}
+					}
+				}
+			})
+			friends.forEach((friend) => {
+				const b = { id: "" , photo_path: "", is_active: "", nickName: ""};
+				b.id = friend.friend.id;
+				b.nickName = friend.friend.nickName;
+				b.is_active = friend.friend.is_active;
+				b.photo_path = friend.friend.profile.photo_path;
+				list.push(b);
+			})
+			return list;
+		} catch (error) {
+			return list;
+		}
+	}
 }

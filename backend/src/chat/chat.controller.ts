@@ -244,6 +244,13 @@ export class ChatController{
 		return await this.chatService.room_messages(session.passport.user.id,channel_id);
 	}
 
+	@UseGuards(AuthenticatedGuard)
+	@Get('friends_state')
+	async friends_states(@Session() session: Record<string, any>)
+	{
+		return await this.chatService.friends_states(session.passport.user.id);
+	}
+
 	// remove and change password from a channel
 
 }

@@ -9,27 +9,27 @@ import { isOnlineType } from "@/app/types/isOnlineType";
 
 export default function OnlineNow() {
   const [friends, setFriends] = useState<isOnlineType[]>([
-    {
-      nickName: "zbi",
-      photo_path: fakeAvatar.src,
-      is_active: "offline",
-      id: "1",
-      full_name: "zbi",
-    },
   ]);
 
-  // useEffect(() => {
-  //   // Assuming you have an API endpoint that returns a list of friends with their online status, pictures, and names
-  //   fetch("http://localhost:3001/profile/friends", {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     credentials: "include",
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => setFriends(data));
-  // }, []);
+	useEffect( () => {
+    	async function fetcher() {
+    	  const getconv = await fetch(
+    	    `http://localhost:3001/chat/friends_state/`,
+    	    {
+    	      method: "GET",
+    	      headers: {
+    	        "Content-Type": "application/json",
+    	      },
+    	      credentials: "include",
+    	    }
+    	  );
+    	  if (!getconv.ok) {
+    	    throw new Error("Network response was not ok");
+    	  }
+    	  setFriends(await getconv.json());
+    	}
+    	fetcher();
+	}, []);
 
   const onlineFriends = friends.filter(
     (friend) => friend.is_active !== "offline"
