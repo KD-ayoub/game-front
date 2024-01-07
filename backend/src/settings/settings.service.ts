@@ -170,7 +170,7 @@ export class SettingsService {
           id: userId,
         },
         data: {
-          full_name: data.name,
+          full_name: data.full_name,
           nickName: data.nickName,
           fac_auth: data.fac_auth
         },

@@ -21,7 +21,8 @@ export default function ProfileInfo({
   dataprofile: MainProfileType;
 }) {
   const [Follow, setFollow] = useState(false);
-  const pathname = usePathname() === "/profile";
+  const urlname = usePathname();
+  const pathname = urlname === '/profile';
   console.log("pathname; ", pathname);
 
   function handlFollowClick() {
@@ -31,6 +32,10 @@ export default function ProfileInfo({
   function handlUnfollowClick() {
     // send unfollow request
     setFollow(false);
+  }
+  function hanChalllenge() {
+    console.log('challenge', urlname);
+    /// challenge logic
   }
   if (Isloaded) {
     return (
@@ -155,7 +160,7 @@ export default function ProfileInfo({
               </div>
             )}
             {!pathname && (
-              <div className="w-9 h-9 rounded-full bg-[#E95A3A] relative">
+              <div className="w-9 h-9 rounded-full bg-[#E95A3A] relative" onClick={hanChalllenge}>
                 <Image
                   draggable={false}
                   className="absolute top-[5px] left-[6px]"
@@ -257,6 +262,7 @@ export default function ProfileInfo({
                 {!pathname && (
                   <button
                     className={`hidden 2xl:block xl:w-28 xl:h-8 2xl:w-40 2xl:h-10 md:bg-[#E95A3A] md:rounded-3xl ${NeuePlakFont.className} text-white xl:text-[18px] 2xl:text-[24px]`}
+                    onClick={hanChalllenge}
                   >
                     Challenge
                   </button>
@@ -306,7 +312,7 @@ export default function ProfileInfo({
                   </div>
                 )}
                 {!pathname && (
-                  <div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#E95A3A] relative">
+                  <div className="w-9 h-9 xl:w-10 xl:h-10 2xl:hidden rounded-full bg-[#E95A3A] relative" onClick={hanChalllenge}>
                     <Image
                       draggable={false}
                       className="absolute top-[5px] left-[6px] xl:left-1 xl:top-2 xl:w-8 xl:h-6"

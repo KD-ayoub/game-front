@@ -10,6 +10,7 @@ import { useUserContext } from "./useUserContext";
 import { AllUsersType } from "../types/alluserstype";
 import getAllUsers from "../api/Profile/getAllUsers";
 import { useRouter } from "next/navigation";
+import ProfileImg from "@/app/assets/svg/profileimg.svg";
 
 export default function SearchBar() {
   const [inputValue, setInputValue] = useState("");
@@ -82,7 +83,7 @@ export default function SearchBar() {
                 <Image
                   draggable={false}
                   className="sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
-                  src={user.photo_path}
+                  src={user.photo_path === 'default_img' ? `${ProfileImg.src}` : user.photo_path}
                   width={22}
                   height={22}
                   alt="profile pic"

@@ -9,9 +9,10 @@ import { useUserContext } from "@/app/components/useUserContext";
 import { AllUsersType } from "@/app/types/alluserstype";
 import getAllUsers from "@/app/api/Profile/getAllUsers";
 import { useRouter } from "next/navigation";
+import ProfileImg from "@/app/assets/svg/profileimg.svg";
 
 
-export default function LittleSearchBar({ onClick }: { onClick: () => void }) {
+export default function LittleSearchBar({ onClick }: { onClick: (data: string) => void }) {
   const [openMapModal, setOpenMapMoadl] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [dataAllUsers, setdataAllUsers] = useState<Array<AllUsersType>>([]);
@@ -61,12 +62,13 @@ export default function LittleSearchBar({ onClick }: { onClick: () => void }) {
             <div
               key={index}
               className="flex p-3 lg:p-4 xl:p-6 2xl:p-8 gap-1 md:gap-2 hover:bg-slate-500 cursor-pointer"
-              onClick={() => onClick()}
+              //onClick={(user.id) => onClick(user.id)}
+              onClick={() => onClick(user.id)}
             >
               <Image
                 draggable={false}
                 className="sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full"
-                src={user.photo_path}
+                src={user.photo_path === 'default_img' ? `${ProfileImg.src}` : user.photo_path}
                 width={22}
                 height={22}
                 alt="profile pic"

@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Header, SideBar, ModalGameComponent } from "@/app/components";
+import WithRandom from "@/app/assets/svg/game/withRandom.svg";
 import { useRef } from "react";
 import Ball from "./botcode/Ball";
 import Paddle from "./botcode/Paddle";
@@ -88,7 +89,10 @@ export default function RandomMatch() {
               win: boolean;
             }
           ],
-          win: { socket: string; win: boolean }
+          win: {
+            socket: string;
+            win: boolean;
+          }
         ) => {
           let i = ball[0].socket === SocketClient.id ? 0 : 1;
           ballElem?.style.setProperty("--y", ball[i].ypos.toString());
@@ -122,23 +126,42 @@ export default function RandomMatch() {
           }
           //if (paddle[0].win || paddle[1].win)
           //here gotta show it
+          //I don't know why this func get called two times
+          i = (paddle[0].socket === SocketClient.id) ? 0 : 1;
           if (paddle[0].win) {
-            //playerScore++;
-            //playerRef.current!.innerHTML = (parseInt(playerRef.current!.innerHTML) + 1).toString();
-            playerRef.current!.innerHTML = (++playerScore).toString();
-            //playerRef.current!.innerHTML = (
-            //  parseInt(playerRef.current!.innerHTML) + 1
-            //).toString();
+            (i === 0)
+              ? playerRef.current!.innerHTML = (++playerScore).toString()
+              : oponnentRef.current!.innerHTML = (++opponentScore).toString();
           }
           else if (paddle[1].win) {
-            //opponentScore++;
-            oponnentRef.current!.innerHTML = (++opponentScore).toString();
-            //oponnentRef.current!.innerHTML = (
-            //  parseInt(oponnentRef.current!.innerHTML) + 1
-            //).toString();
+            (i === 1)
+              ? playerRef.current!.innerHTML = (++playerScore).toString()
+              : oponnentRef.current!.innerHTML = (++opponentScore).toString();
           }
         }
       );
+      //SocketClient.on("finishGame", () => {
+      //  console.log("GAME ** OVER");
+      //  //here take off the that room in map
+      //  Swal.fire({
+      //    title: "You have lost",
+      //    text: "",
+      //    imageUrl: `${WithRandom.src}`,
+      //    imageWidth: 400,
+      //    imageHeight: 200,
+      //    imageAlt: "Custom image",
+      //    allowOutsideClick: false,
+      //  }).then(res => {
+      //    //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+      //    console.log('then = ', res);
+      //    router.push('/game')
+      //  });
+      //  return () => {
+      //    document.removeEventListener("keydown", handlKeyDown);
+      //    window.cancelAnimationFrame(animationFrameRef.current);
+      //  };
+      //});
+      let chkWin = false;
       function update(time: number) {
         if (lastTime) {
           const delta = time - lastTime;
@@ -148,6 +171,32 @@ export default function RandomMatch() {
             firstTime,
           });
           firstTime = false;
+          if (playerScore + opponentScore === 4) {
+            console.log("We have a winner");
+            chkWin = true;
+            //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+            Swal.fire({
+              title: "You have lost",
+              text: "",
+              //imageUrl: `${ProfileImg.src}`,
+              imageUrl: `${WithRandom.src}`,
+              //imageUrl: `${dataSettings.photo_path}`,
+              imageWidth: 400,
+              imageHeight: 200,
+              imageAlt: "Custom image",
+              allowOutsideClick: false,
+            }).then(res => {
+              //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+              console.log('then = ', res);
+              if (!res.isDismissed)
+                router.push('/game');
+            });
+            //return ;
+            return () => {
+              document.removeEventListener("keydown", handlKeyDown);
+              window.cancelAnimationFrame(animationFrameRef.current);
+            };
+          }
           //if (ball.checkLoss(data))
           //resetAll();
         }
@@ -157,6 +206,27 @@ export default function RandomMatch() {
         }
         // window.requestAnimationFrame(update);
       }
+      //if (chkWin) {
+      //  console.log('5erji *******');
+      //      //Swal.fire({
+      //      //  title: "You have lost",
+      //      //  text: "",
+      //      //  imageUrl: `${ProfileImg.src}`,
+      //      //  imageWidth: 400,
+      //      //  imageHeight: 200,
+      //      //  imageAlt: "Custom image",
+      //      //  allowOutsideClick: false,
+      //      //}).then(res => {
+      //      //  //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+      //      //  console.log('then = ', res);
+      //      //  router.push('/game')
+      //      //});
+      //  return () => {
+      //    document.removeEventListener("keydown", handlKeyDown);
+      //    window.cancelAnimationFrame(animationFrameRef.current);
+      //  };
+      //}
+
       //  window.requestAnimationFrame(update);
       animationFrameRef.current = window.requestAnimationFrame(update);
     });
@@ -177,94 +247,25 @@ export default function RandomMatch() {
       }
     }
     document.addEventListener("keydown", handlKeyDown);
-    // function handlresize() {
-    //  ballObj.reset();
-    // }
-    // window.addEventListener("resize", handlresize);
-    // return () => {
-    //  window.removeEventListener("resize", handlresize);
-    //  document.removeEventListener("keydown", handlKeyDown);
-    //  window.cancelAnimationFrame(animationFrameRef.current);
-    //  resetAll();
-    // };
-    //let lastTime: number;
-    //function update(time: number) {
-    //  if (lastTime) {
-    //    const delta = time - lastTime;
-    //    const data = {
-    //      //xDown: downPaddle.x,
-    //      //yDown: downPaddle.y,
-    //      //xUp: upPaddle.x,
-    //      //yUp: upPaddle.y,
-    //      width: paddleWidth,
-    //      height: paddleHeight,
-    //    };
-    //    //if (ball.checkLoss(data)) {
-    //    //  resetAll();
-    //    //  playerRef.current!.innerHTML = (
-    //    //    parseInt(playerRef.current!.innerHTML) + 1
-    //    //  ).toString();
-    //    //  if (playerRef.current!.innerHTML === "7") {
-    //    //    //show modal
-    //    //    // redirect to profile
-    //    //    Swal.fire({
-    //    //      title: "You have lost",
-    //    //      text: "",
-    //    //      imageUrl: `${ProfileImg.src}`,
-    //    //      imageWidth: 400,
-    //    //      imageHeight: 200,
-    //    //      imageAlt: "Custom image",
-    //    //      allowOutsideClick: false,
-    //    //    }).then(res => {
-    //    //      router.push('/game')
-    //    //    });
-    //    //    return () => {
-    //    //      window.removeEventListener("resize", handlresize);
-    //    //      document.removeEventListener("keydown", handlKeyDown);
-    //    //      window.cancelAnimationFrame(animationFrameRef.current);
-    //    //      resetAll();
-    //    //    }
-    //    //  }
-    //    //}
-    //    //ball.updateBall(delta, data);
-    //    //downPaddle.updatePaddle();
-    //    //upPaddle.updateBotPaddle(ball.x);
-    //  }
-    //  lastTime = time;
-    //  if (!unmounted.current) {
-    //    animationFrameRef.current = window.requestAnimationFrame(update);
-    //  }
+    //window.onbeforeunload = () => {
+    //  console.log('ggggggggggg');
+    //  alert('page freshed');
+    //  SocketClient.emit("ana");
+    //  return true;
     //}
-    //animationFrameRef.current = window.requestAnimationFrame(update);
+
+    //document.addEventListener("beforeunload", () => {
+    //  console.log('ggggggggggg');
+    //  alert('page freshed');
+    //  SocketClient.emit("ana");
+    //});
+    return () => {
+      document.removeEventListener("keydown", handlKeyDown);
+      window.cancelAnimationFrame(animationFrameRef.current);
+      //window.onbeforeunload = null;
+      //window.removeEventListener("beforeunload", alertUser);
+    };
   }, []);
-  // useEffect(() => {
-  //   //const ballElem = document.getElementById('ball');
-  //   //const paddleElem = document.getElementById('paddle-top');
-  //   //const tableElem = document.getElementById('table');
-  //   //document.addEventListener('keydown', (e) => {
-  //   //  if (e.code === 'ArrowLeft') {
-  //   //    // 16 -> 700 left right 83
-  //   //    // x -> 200
-  //   //    paddleElem?.style.setProperty("--position", "16");
-  //   //    ballElem?.style.setProperty("--y", "16");
-  //   //    ballElem?.style.setProperty("--x", "20");
-  //   //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-  //   //  }
-  //   //  if (e.code === 'ArrowRight') {
-  //   //    paddleElem?.style.setProperty("--position", "83");
-  //   //    console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-  //   //  }
-  //   //  console.log(e.code)
-  //   //})
-  //   //console.log('window inner', tableElem?.offsetHeight);
-  //   //console.log('paddle position ', getComputedStyle(paddleElem!).getPropertyValue('--position'));
-  //   const timer = setTimeout(() => {
-  //     setOpenMoadl(false);
-  //   }, 5000);
-  //   return () => {
-  //     clearTimeout(timer);
-  //   };
-  // }, [openModal]);
   useEffect(() => {
     async function fetcher() {
       setDataSettings(await getSettings());

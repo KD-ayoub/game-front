@@ -22,7 +22,7 @@ export default function ModalMapsComponent({
   mapOrange: () => void;
   mapBlue: () => void;
   mapGreen: () => void;
-  onClick: () => void;
+  onClick: (data: string) => void;
   openModal: boolean;
 }) {
   const [srcOrange, setSrcOrange] = useState(false);
@@ -57,29 +57,38 @@ export default function ModalMapsComponent({
       //window.location.href = "/game/user";
     });
   }
+
+  //just test take off later
+  function playFriendTst() {
+    const SocketClient = ioClient.getSocketClient();
+    SocketClient.emit("play", "40310425-c880-4890-9052-29fb2637dae7");
+    SocketClient.on("popup", () => {
+      console.log('zabiiiiiiiiiiiiiii');
+    })
+  }
   function handlClickMap() {
     console.log("orange true");
     if (srcOrange) {
       console.log("orange true");
       mapOrange();
       playRandom();
-      onClick();
+      onClick('');
     }
     if (srcBlue) {
       console.log("orange true");
       mapBlue();
       playRandom();
-      onClick();
+      onClick('');
     }
     if (srcGreen) {
       console.log("orange true");
       mapGreen();
       playRandom();
-      onClick();
+      onClick('');
     }
   }
   return (
-    <Modal className="bg-gray-600" show={openModal} onClose={onClick}>
+    <Modal className="bg-gray-600" show={openModal} onClose={() => onClick}>
       <Modal.Header className="bg-[#383546]">
         <p className={`${NeuePlakFontBold.className} text-white`}>
           Rules of the game

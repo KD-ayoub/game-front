@@ -20,7 +20,8 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server: Server;
 
-	private socketUser;
+	//private socketUser;
+	public socketUser;
 
 	//private i: number;
 	constructor(private prisma: PrismaService) {
@@ -49,11 +50,17 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const parse = Cookies.parse(cookie);
 		const sid = cookiesParser.signedCookie(parse['connect.sid'], process.env.SESSION_SECRET);
 		console.log(`sid = ${sid}`);
-		const sessionDb = await this.prisma.session.findUnique({
-			where: {
-				sid,
-			}
-		});
+		let sessionDb;
+		try {
+			sessionDb = await this.prisma.session.findUnique({
+				where: {
+					sid,
+				}
+			});
+		}
+		catch (err) {
+			return null;
+		}
 		if (!sessionDb) {
 			console.log("no session");
 			return null;
