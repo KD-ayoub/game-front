@@ -64,6 +64,8 @@ export default function RandomMatch() {
     let opponentScore = 0;
     SocketClient.on("playNow", () => {
       console.log("f play now");
+      //router.push('/game');
+      //return ;
       let lastTime: number;
       let firstTime: boolean = true;
       SocketClient.on(
@@ -161,23 +163,69 @@ export default function RandomMatch() {
       //    window.cancelAnimationFrame(animationFrameRef.current);
       //  };
       //});
-      let chkWin = false;
+      SocketClient.on("incrementScore", (
+        paddle: [
+          {
+            socket: string;
+            pos: number;
+            sight: string;
+            speed: number;
+            win: boolean;
+          },
+          {
+            socket: string;
+            pos: number;
+            sight: string;
+            speed: number;
+            win: boolean;
+          }
+        ]
+      ) => {
+        let i = (paddle[0].socket === SocketClient.id) ? 0 : 1;
+        if (paddle[0].win) {
+          (i === 0)
+            ? playerRef.current!.innerHTML = (++playerScore).toString()
+            : oponnentRef.current!.innerHTML = (++opponentScore).toString();
+        }
+        else if (paddle[1].win) {
+          (i === 1)
+            ? playerRef.current!.innerHTML = (++playerScore).toString()
+            : oponnentRef.current!.innerHTML = (++opponentScore).toString();
+        }
+        console.log('ply = ', playerScore);
+        console.log('opp = ', opponentScore);
+      })
+
+      let i = 0;
       function update(time: number) {
         if (lastTime) {
           const delta = time - lastTime;
-          SocketClient.emit("moveBall", {
-            delta,
-            room: ioClient.room,
-            firstTime,
-          });
-          firstTime = false;
-          if (playerScore + opponentScore === 4) {
-            console.log("We have a winner");
-            chkWin = true;
+          if (playerScore + opponentScore !== 5) {
+            SocketClient.emit("moveBall", {
+              delta,
+              room: ioClient.room,
+              firstTime,
+            });
+            //****** this one work just fine
+            //if (i === 10) {
+            //window.cancelAnimationFrame(animationFrameRef.current);
+            //document.removeEventListener("keydown", handlKeyDown);
             //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+            //  router.push('/game');
+            //  return ;
+            //}
+            firstTime = false;
+            //i++;
+          }
+          else if (playerScore + opponentScore === 5) {
+            console.log("We have a winner");
+            window.cancelAnimationFrame(animationFrameRef.current);
+            document.removeEventListener("keydown", handlKeyDown);
+            SocketClient.emit("cleanRoomGame", {room: ioClient.room});
             Swal.fire({
-              title: "You have lost",
-              text: "",
+              //title: "You have lost",
+              title: (playerScore > opponentScore) ? "You've Won" : "You've Lost",
+              text: (playerScore > opponentScore) ? "+20xp" : "0xp",
               //imageUrl: `${ProfileImg.src}`,
               imageUrl: `${WithRandom.src}`,
               //imageUrl: `${dataSettings.photo_path}`,
@@ -186,19 +234,18 @@ export default function RandomMatch() {
               imageAlt: "Custom image",
               allowOutsideClick: false,
             }).then(res => {
-              //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
               console.log('then = ', res);
-              if (!res.isDismissed)
+              if (!res.isDismissed) {
+                //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
                 router.push('/game');
+              }
             });
-            //return ;
-            return () => {
-              document.removeEventListener("keydown", handlKeyDown);
-              window.cancelAnimationFrame(animationFrameRef.current);
-            };
+            return ;
+            //return () => {
+            //  document.removeEventListener("keydown", handlKeyDown);
+            //  window.cancelAnimationFrame(animationFrameRef.current);
+            //};
           }
-          //if (ball.checkLoss(data))
-          //resetAll();
         }
         lastTime = time;
         if (!unmounted.current) {
@@ -206,27 +253,6 @@ export default function RandomMatch() {
         }
         // window.requestAnimationFrame(update);
       }
-      //if (chkWin) {
-      //  console.log('5erji *******');
-      //      //Swal.fire({
-      //      //  title: "You have lost",
-      //      //  text: "",
-      //      //  imageUrl: `${ProfileImg.src}`,
-      //      //  imageWidth: 400,
-      //      //  imageHeight: 200,
-      //      //  imageAlt: "Custom image",
-      //      //  allowOutsideClick: false,
-      //      //}).then(res => {
-      //      //  //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
-      //      //  console.log('then = ', res);
-      //      //  router.push('/game')
-      //      //});
-      //  return () => {
-      //    document.removeEventListener("keydown", handlKeyDown);
-      //    window.cancelAnimationFrame(animationFrameRef.current);
-      //  };
-      //}
-
       //  window.requestAnimationFrame(update);
       animationFrameRef.current = window.requestAnimationFrame(update);
     });
@@ -260,6 +286,7 @@ export default function RandomMatch() {
     //  SocketClient.emit("ana");
     //});
     return () => {
+      //hado 5erjhom
       document.removeEventListener("keydown", handlKeyDown);
       window.cancelAnimationFrame(animationFrameRef.current);
       //window.onbeforeunload = null;

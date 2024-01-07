@@ -21,7 +21,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	server: Server;
 
 	//private socketUser;
-	public socketUser;
+	public socketUser: Map<string, Socket>;
 
 	//private i: number;
 	constructor(private prisma: PrismaService) {
@@ -42,14 +42,14 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async getIdFromCookie(client: Socket): Promise<string | null> {
 		const clientSocket = this.server.sockets.sockets.get(client.id);
 		const cookie = client.request.headers.cookie;
-		console.log('cookie = ', cookie);
+		//console.log('cookie = ', cookie);
 		if (!cookie) {
 			console.log("no cookie");
 			return null;
 		}
 		const parse = Cookies.parse(cookie);
 		const sid = cookiesParser.signedCookie(parse['connect.sid'], process.env.SESSION_SECRET);
-		console.log(`sid = ${sid}`);
+		//console.log(`sid = ${sid}`);
 		let sessionDb;
 		try {
 			sessionDb = await this.prisma.session.findUnique({
@@ -75,7 +75,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async handleConnection(client: Socket, ...args: any[]) {
 		//console.log(`${client.id} is connect size = ${this.socketUser.size}`);
 		//error in disconnect
-		console.log('hey ', client.id);
+		console.log('hey AppGateway', client.id);
 		//const clientSocket = this.server.sockets.sockets.get(client.id);
 		////this.socketUser.set(this.i.toString(), client.id);
 		////this.i++;
@@ -123,7 +123,8 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return ;
 		}
 		//this.socketUser.set(db.user.id, client.id);
-		this.socketUser.set(id, client.id);
+		//this.socketUser.set(id, client.id);
+		this.socketUser.set(id, client);
 		console.log('add a socket to the map');
 	}
 
@@ -137,7 +138,8 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//	this.socketUser.delete(findValue.key);
 
 		//here when login out should take off that id
-		console.log('bye = ', this.socketUser);
+		console.log('bye in AppGateway', client.id);
+		//console.log('bye = ', this.socketUser);
 	}
 
 	getKeyByValue(map: Map<any,any>,searchValue: any) {
@@ -148,9 +150,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	//just for now
-	findSocketMap(socketId: string): {key: string, value: string} {
+	findSocketMap(socketId: string): {key: string, value: Socket} {
 		for (const [key, value] of this.socketUser.entries()) {
-			if (value === socketId)
+			if (value.id === socketId)
 				return { key, value };
 		}
 	}
