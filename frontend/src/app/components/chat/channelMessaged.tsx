@@ -25,11 +25,11 @@ import {
   FloatingLabel,
   FileInput,
   Select,
+  Dropdown,
 } from "flowbite-react";
 import { join_protected_channel } from "@/app/types/join_protected_channelType";
 import { create_channel } from "@/app/types/createChannelType";
 import toast, { Toaster } from "react-hot-toast";
-
 
 // type friendT = { nickname: string; picture: string; unread: number };
 
@@ -84,6 +84,10 @@ export default function ChannelMessaged({
     );
   };
 
+  useEffect(() => {
+    console.log(openModalProtected);
+  }, ["mok protcd", openModalProtected]);
+
   const filter_Search = filterSearch();
 
   // Here we fetch channels from server and set them to state:
@@ -112,7 +116,6 @@ export default function ChannelMessaged({
     fetcher();
   }, [channel_rf]);
 
-
   const joinPublicChannel = async (channel_id: string) => {
     const getChannel = await fetch(
       `http://localhost:3001/chat/join_public/${channel_id}`,
@@ -130,7 +133,7 @@ export default function ChannelMessaged({
     if (getChannel.ok) {
       setStatuspwd(true);
     }
-	//setChannelSelected(channel_id);
+    //setChannelSelected(channel_id);
   };
 
   const checkPassword = async (channel_protected: join_protected_channel) => {
@@ -170,8 +173,15 @@ export default function ChannelMessaged({
       setStatusCreateChannel(false);
     }
     if (getChannel.ok) {
+      setNew_passwordChannel("");
+      setNew_typeChannel("");
+      setNew_photoChannel("");
+      setNew_nameChannel("");
+      setNewChannel({ name: "", password: "", type: "" });
+      setOpenModalCreacteChannel(false);
       setStatusCreateChannel(true);
     }
+    console.log(newChannel);
     console.log("Create Channel", getChannel);
   };
 
@@ -219,6 +229,10 @@ export default function ChannelMessaged({
     return await response.json();
   }
 
+  const handleNewChannel = (newchnl: create_channel) => {
+    setNewChannel(newchnl);
+  };
+
   // useEffect(() => {
   // }, [channelSelected, channel]);
 
@@ -252,7 +266,7 @@ export default function ChannelMessaged({
               <div
                 className="selectFriend w-[100%]"
                 onClick={() => {
-                  setChannelSelected(channel);
+                  // setChannelSelected(channel);
                   onSelectChannel(channel);
                   // props.onChange(false);
                 }}
@@ -279,23 +293,22 @@ export default function ChannelMessaged({
                   ) : null}{" "} */}
                   {channel.isJoined === false ? (
                     <>
+                      {/* join public channel */}
                       <button
                         className="isJoined"
                         onClick={() => {
                           {
-                            channel.type === "PUBLIC" &&
+                            if (channel.type === "PUBLIC")
                               setOpenModalPublic(true);
-                          }
-                          {
-                            channel.type === "PROTECTED" &&
+                            else if (channel.type === "PROTECTED")
                               setOpenModalProtected(true);
                           }
+                          onSelectChannel(channel);
                         }}
                       >
                         Join
                       </button>
-                      {/* join public channel */}
-                      {channelSelected && channelSelected.type === "PUBLIC" && (
+                      {channel && channel.type === "PUBLIC" && (
                         <Modal
                           show={openModalPublic}
                           size="md"
@@ -314,9 +327,10 @@ export default function ChannelMessaged({
                                   // color="failure"
                                   className="bg-[#E95A3A]"
                                   onClick={() => {
-                                    joinPublicChannel(channelSelected.id);
-                                    onSelectChannel(channel);
+                                    joinPublicChannel(channel.id);
                                     setOpenModalPublic(false);
+                                    onSelectChannel(channel);
+                                    // onSelectChannel(channel);
                                   }}
                                 >
                                   {"Yes, I'm sure"}
@@ -333,80 +347,76 @@ export default function ChannelMessaged({
                         </Modal>
                       )}
                       {/* join protected channel */}
-                      {channelSelected &&
-                        channelSelected.type === "PROTECTED" && (
-                          <Modal
-                            show={openModalProtected}
-                            size="md"
-                            onClose={() => setOpenModalProtected(false)}
-                            popup
-                          >
-                            <Modal.Header />
-                            <Modal.Body>
-                              <div className="text-center">
-                                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                                  This channel is protected, please enter the
-                                  password
-                                </h3>
-                                {/* <div className="flex flex-col justify-center gap-4"> */}
-                                <div>
-                                  <div className="mb-2 block">
-                                    <Label
-                                      htmlFor="password"
-                                      color="default"
-                                      value="Password"
-                                    />
-                                  </div>
-                                  <TextInput
-                                    id="password"
-                                    placeholder="password"
-                                    required
+                      {channel && channel.type === "PROTECTED" && (
+                        <Modal
+                          show={openModalProtected}
+                          size="md"
+                          onClose={() => setOpenModalProtected(false)}
+                          popup
+                        >
+                          <Modal.Header />
+                          <Modal.Body>
+                            <div className="text-center">
+                              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                This channel is protected, please enter the
+                                password
+                              </h3>
+                              {/* <div className="flex flex-col justify-center gap-4"> */}
+                              <div>
+                                <div className="mb-2 block">
+                                  <Label
+                                    htmlFor="password"
                                     color="default"
-                                    onChange={(event) =>
-                                      setJoin_protected_channel({
-                                        id: channelSelected.id,
-                                        password: event.target.value,
-                                      })
-                                    }
-                                    // helperText={
-                                    //   <>
-                                    //     <span className="font-medium">
-                                    //       Alright!
-                                    //     </span>{" "}
-                                    //     Password available!
-                                    //   </>
-                                    // }
+                                    value="Password"
                                   />
                                 </div>
-                                <div>
-                                  <div className="checkPwd">
-                                    <Button
-                                      // color="failure"
-                                      className="bg-[#E95A3A] mr-4"
-                                      onClick={() => {
-                                        join_protected_channel &&
-                                          checkPassword(join_protected_channel);
-                                        onSelectChannel(channel);
-                                        // setOpenModal(false);
-                                      }}
-                                    >
-                                      {"Validate"}
-                                    </Button>
-                                    <Button
-                                      color="gray"
-                                      className="ml-4"
-                                      onClick={() =>
-                                        setOpenModalProtected(false)
-                                      }
-                                    >
-                                      cancel
-                                    </Button>
-                                  </div>
+                                <TextInput
+                                  id="password"
+                                  placeholder="password"
+                                  required
+                                  color="default"
+                                  onChange={(event) =>
+                                    setJoin_protected_channel({
+                                      id: channel.id,
+                                      password: event.target.value,
+                                    })
+                                  }
+                                  // helperText={
+                                  //   <>
+                                  //     <span className="font-medium">
+                                  //       Alright!
+                                  //     </span>{" "}
+                                  //     Password available!
+                                  //   </>
+                                  // }
+                                />
+                              </div>
+                              <div>
+                                <div className="checkPwd">
+                                  <Button
+                                    // color="failure"
+                                    className="bg-[#E95A3A] mr-4"
+                                    onClick={() => {
+                                      join_protected_channel &&
+                                        checkPassword(join_protected_channel);
+                                      // setOpenModal(false);
+                                    }}
+                                  >
+                                    {"Validate"}
+                                  </Button>
+                                  <Button
+                                    color="gray"
+                                    className="ml-4"
+                                    onClick={() => setOpenModalProtected(false)}
+                                  >
+                                    cancel
+                                  </Button>
                                 </div>
                               </div>
-                            </Modal.Body>
-                          </Modal>
-                        )}
+                            </div>
+                          </Modal.Body>
+                        </Modal>
+                      )}
                     </>
                   ) : null}
                 </div>
@@ -441,6 +451,11 @@ export default function ChannelMessaged({
                   color="default"
                   onChange={(event) => {
                     setNew_nameChannel(event.target.value);
+                    handleNewChannel({
+                      name: new_nameChannel,
+                      password: new_passwordChannel,
+                      type: new_typeChannel,
+                    });
                   }}
                 />
 
@@ -466,33 +481,70 @@ export default function ChannelMessaged({
                         }
                       }
                     }}
-
                   />
                 </div>
               </div>
-              <div className="max-w-md ">
-                <div className="mb-2 block">
-                  <Label htmlFor="TypeChannel" value="Select type of channel" />
-                </div>
-                <Select
-                  id="typeChannel"
-                  required
-                  onChange={(e) => {
-                    setNew_typeChannel(e.target.value.toUpperCase());
-                  }}
+              <div className="max-w-md lastInput ">
+                {/* <Label htmlFor="TypeChannel" value="Select type of channel" /> */}
+                <Dropdown
+                  className=""
+                  label={`Type of Channel: ${new_typeChannel}`}
+                  dismissOnClick={false}
                 >
-                  <option>Public</option>
-                  <option>Private</option>
-                  <option>Protected</option>
-                </Select>
+                  <Dropdown.Item
+                    className="typeChannelSelect"
+                    onClick={() => {
+                      setNew_typeChannel("PUBLIC");
+                      handleNewChannel({
+                        name: new_nameChannel,
+                        password: new_passwordChannel,
+                        type: "PUBLIC",
+                      });
+                    }}
+                  >
+                    Public
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className="typeChannelSelect"
+                    onClick={() => {
+                      setNew_typeChannel("PRIVATE");
+                      handleNewChannel({
+                        name: new_nameChannel,
+                        password: new_passwordChannel,
+                        type: "PRIVATE",
+                      });
+                    }}
+                  >
+                    Private
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className="typeChannelSelect"
+                    onClick={() => {
+                      setNew_typeChannel("PROTECTED");
+                      handleNewChannel({
+                        name: new_nameChannel,
+                        password: new_passwordChannel,
+                        type: "PROTECTED",
+                      });
+                    }}
+                  >
+                    Protected
+                  </Dropdown.Item>
+                </Dropdown>
                 {new_typeChannel && new_typeChannel === "PROTECTED" && (
                   <div className="mb-2 mt-2">
                     <FloatingLabel
+                      className="pswdInput"
                       variant="outlined"
                       label="Password"
                       color="default"
                       onChange={(event) => {
                         setNew_passwordChannel(event.target.value);
+                        handleNewChannel({
+                          name: new_nameChannel,
+                          password: new_passwordChannel,
+                          type: new_typeChannel,
+                        });
                       }}
                     />
                   </div>
@@ -502,17 +554,13 @@ export default function ChannelMessaged({
                 <Button
                   className="bg-[#E95A3A]"
                   onClick={() => {
-                    console.log("newChannel", newChannel);
-                    setNewChannel({
-                      name: new_nameChannel,
-                      password: new_passwordChannel,
-                      type: new_typeChannel,
-                    });
-                    handleCreateChannel(newChannel);
+                    // console.log("newChannel", newChannel);
                     handlImageChange();
-                    // handlePhotoChannel(new_photoChannel);
+                    handleCreateChannel(newChannel);
+                    
                   }}
                 >
+                  
                   {"Create"}
                 </Button>
                 <Button
