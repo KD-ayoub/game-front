@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Session, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { chatService } from "./chat.service";
 import { Record } from "@prisma/client/runtime/library";
-import { add_admin, create_channel, join_private_channel } from "src/utils/types";
+import { add_admin, create_channel, join_protected_channel } from "src/utils/types";
 import { RoomType } from "@prisma/client";
 import { session } from "passport";
 import { AuthenticatedGuard} from "src/auth/guards";
@@ -75,10 +75,10 @@ export class ChatController{
 	////////////////////////////// channels endpoints //////////////////////////////////////
 	@UseGuards(AuthenticatedGuard)
   	@UseInterceptors(FileInterceptor('file'))
-	@Get('channel_photo/:id')
-	async channel_photo(@UploadedFile() file: Express.Multer.File,@Param('id') id: string,@Session() session: Record<string,any>)
+	@Post('channel_photo/:name')
+	async channel_photo(@UploadedFile() file: Express.Multer.File,@Param('name') name: string,@Session() session: Record<string,any>)
 	{
-		if (!(await this.chatService.upload_channel_img(file,id,session.passport.user.id)))
+		if (!(await this.chatService.upload_channel_img(file,name,session.passport.user.id)))
 			throw new HttpException("id is not right or you don't have permission",HttpStatus.FORBIDDEN);
 	}
 
@@ -122,7 +122,7 @@ export class ChatController{
 	// join protected channels
 	@UseGuards(AuthenticatedGuard)
 	@Post('join_protected')
-	async join_protected(@Body() body: join_private_channel, @Session() session :Record<string,any>)
+	async join_protected(@Body() body: join_protected_channel, @Session() session :Record<string,any>)
 	{
 		if (!body.id || !body.password)
 			throw new HttpException("request is not valid", HttpStatus.BAD_REQUEST);

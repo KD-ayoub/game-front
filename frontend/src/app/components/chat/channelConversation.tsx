@@ -21,8 +21,20 @@ import { ioClient } from "@/app/api/instance";
 
 export default function ChannelConversation({
   channelSelected,
+  online_rf,
+  friends_rf,
+  channel_rf,
+  channelSelected_rf,
+  members_rf,
+  aboutMe_rf,
 }: {
   channelSelected: ChannelChatType;
+  online_rf: () => void;
+  friends_rf: () => void;
+  channel_rf: () => void;
+  channelSelected_rf: () => void;
+  members_rf: () => void;
+  aboutMe_rf: () => void;
 }) {
   // const { channelSelected } = friend;
   // information about the channel conversation
@@ -72,41 +84,8 @@ export default function ChannelConversation({
   };
 
   const handleLeaveChannel = () => {
-    // fetch(`http://localhost:3001/chat/${channelSelected.id}`, {
-    //   method: "DELETE",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   credentials: "include",
-    // });
   };
 
-  // Here we fetch the channel conversation :
-  //   useEffect(() => {
-  //     async function handlShowFriendConversation() {
-  //       if (!channelSelected) {
-  //         return;
-  //       }
-  //       const response = await fetch(
-  //         `http://localhost:3001/chat/history/${channelSelected.id}`,
-  //         {
-  //           method: "GET",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           credentials: "include",
-  //         }
-  //       );
-  //       if (!response.ok) {
-  //         console.log("error at handleShowFriendConversssation fetch");
-  //       }
-  //       setDataConversation(await response.json());
-  //     }
-  //     handlShowFriendConversation();
-  //   }, [channelSelected]);
-
-  //console.log("dataConversation-->", dataConversation);
-  //console.log("channelSelected-->", channelSelected);
   useEffect(() => {
     const historychatdiv = document.getElementById("scroll");
     if (historychatdiv) {
@@ -118,8 +97,7 @@ export default function ChannelConversation({
     const client = ioClient.getSocketClient();
     if (!channelSelected) return;
     client.on(channelSelected.id, (data) => {
-      console.log(client.id);
-      console.log("younes", data);
+      console.log("socket sended  : ", data);
       setDataConversation((dataConversation) => [...dataConversation, data]);
     });
     return () => {
@@ -142,7 +120,8 @@ export default function ChannelConversation({
       if (!getconv.ok) {
         throw new Error("Network response was not ok");
       }
-      const conv: DataChannelConversationType[] = await getconv.json();
+	  const conv = await getconv.json();
+      //const conv: DataChannelConversationType[] = await getconv.json();
       setDataConversation(conv);
     }
     fetcher();

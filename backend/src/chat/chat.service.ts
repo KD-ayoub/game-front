@@ -4,7 +4,7 @@ import { Room, RoomMessage, RoomType } from "@prisma/client";
 import { errorMonitor } from "events";
 import { PrismaService } from "prisma/prisma.service";
 import { AppGateway } from "src/app.gateway";
-import { add_admin, channels, create_channel, join_private_channel } from "src/utils/types";
+import { add_admin, channels, create_channel, join_protected_channel } from "src/utils/types";
 import * as bcrypt from  'bcrypt'
 import { CloudinaryService } from "src/cloudinary/cloudinary.service";
 
@@ -236,13 +236,13 @@ export class chatService {
 	}
 
 
-	async upload_channel_img(file: Express.Multer.File,id : string,userid: string)
+	async upload_channel_img(file: Express.Multer.File,name : string,userid: string)
 	{
 			try {
       			const upload = await this.cloudinaryService.uploadFile(file);
 				const room = await this.prisma.room.update({
 					where: {
-						id,
+						name,
 						ownerId: userid
 					},
 					data: {
@@ -526,11 +526,14 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
-		this.appGateway.server.emit('members_refresh','refresh');
+		// list channels
+		this.appGateway.server.emit('channels_ref','');
+		// list members -> except joiner
+		this.appGateway.server.except(this.appGateway.get_socketID_by_id(userid)).emit('members_ref','');
 		return true;
 	}
 
-	async join_protected(channel : join_private_channel, userid: string)
+	async join_protected(channel : join_protected_channel, userid: string)
 	{
 		try {
 			const protected_room = await this.prisma.room.findUnique({
@@ -584,7 +587,9 @@ export class chatService {
 						}
 					}
 				})
-				this.appGateway.server.emit('members_refresh','refresh');
+				this.appGateway.server.emit('channels_ref','');
+				// list members -> except joiner
+				this.appGateway.server.except(this.appGateway.get_socketID_by_id(userid)).emit('members_ref','');
 				return 3;
 			}
 		} catch (error) {
@@ -855,7 +860,6 @@ export class chatService {
 						}
 					}
 				})
-				console.log("mute ended");
 			}, 1000 * 60);
 		} catch (error) {
 			return false;
@@ -1031,7 +1035,8 @@ export class chatService {
 			content: "",
 			time: new Date(),
 			photo: "",
-			mine: false
+			mine: false,
+			name: ""
 		}
 
 		try {
@@ -1061,12 +1066,12 @@ export class chatService {
 				obj.photo = picture.profile.photo_path;
 				obj.senderid = senderid;
 				obj.time = new_msg.createdAt;
+				obj.name = picture.nickName;
 			}
 			return obj;
 		} catch (error) {
 			return obj;	
 		}
-		return obj;
 	}
 
 	async leave(userid: string, channel : leave_channel)
@@ -1075,7 +1080,7 @@ export class chatService {
 			if (await this.is_admin(userid,channel.channel) || await this.is_member(userid,channel.channel))
 			{
 				try {
-					const room = this.prisma.room.update({
+					const room = await this.prisma.room.update({
 						where: {
 							id : channel.channel
 						},
@@ -1105,7 +1110,6 @@ export class chatService {
 			}
 			else if (await this.is_owner(userid,channel.channel))
 			{
-				console.log("owner");
 				try {
 					const roomMessages = await this.prisma.roomMessage.deleteMany({
 						where: {
@@ -1117,7 +1121,6 @@ export class chatService {
 							id : channel.channel
 						}
 					})
-					console.log("wtf : ",room);
 					if (!room)
 						return false;
 					this.appGateway.server.socketsLeave(channel.channel);
@@ -1126,7 +1129,6 @@ export class chatService {
 					this.appGateway.server.emit('members_refresh','refresh');
 					return true;
 				} catch (error) {
-					console.log(error);
 					return false;
 				}
 			}
@@ -1151,7 +1153,6 @@ export class chatService {
 					friendId: true
 				}
 			})
-			//console.log("friends : ",friends);
 			const messages = await this.prisma.roomMessage.findMany({
 				where: {
 					roomId : channel_id,
@@ -1270,7 +1271,6 @@ export class chatService {
 			{
 				let node : member = {id: members.owner.id,nickname: members.owner.nickName, photo: members.owner.profile.photo_path, role: "owner"};
 				list_members.push(node);
-				//console.log("owner");
 			}
 			members.admins.forEach((admin) => {
 				let node : member = {id: admin.id ,nickname: admin.nickName, photo: admin.profile.photo_path, role: "admin"};
@@ -1327,6 +1327,35 @@ export class chatService {
 			return list;
 		} catch (error) {
 			return list;
+		}
+	}
+
+
+	async get_all_blocked_friends(userid: string)
+	{
+		const blocked = [];
+		try {
+			const friends = await this.prisma.friendship.findMany({
+				where: {
+					friendId: userid,
+					is_blocked: true
+				},
+				select: {
+					user: {
+						select: {
+							id: true
+						}
+					}
+				}
+
+			})
+			friends.forEach((friend) => {
+				let id = this.appGateway.get_socketID_by_id(friend.user.id);
+				blocked.push(id);
+			})
+			return blocked;
+		} catch (error) {
+			return blocked;
 		}
 	}
 }

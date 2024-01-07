@@ -35,13 +35,24 @@ import toast, { Toaster } from "react-hot-toast";
 
 export default function ChannelMessaged({
   onSelectChannel,
+  online_rf,
+  friends_rf,
+  channel_rf,
+  channelSelected_rf,
+  members_rf,
+  aboutMe_rf,
 }: //returnfromChannel,
 {
   onSelectChannel: (id: ChannelChatType) => void;
+  online_rf: () => void;
+  friends_rf: () => void;
+  channel_rf: () => void;
+  channelSelected_rf: () => void;
+  members_rf: () => void;
+  aboutMe_rf: () => void;
   //returnfromChannel: ()
 }) {
   const [channel, setChannel] = useState<ChannelChatType[]>([]);
-  const [members_ref, setmembers_ref] = useState<boolean>(false);
   const [searching, setSearching] = useState("");
   const [openModalPublic, setOpenModalPublic] = useState(false);
   const [openModalProtected, setOpenModalProtected] = useState(false);
@@ -74,13 +85,9 @@ export default function ChannelMessaged({
   };
 
   const filter_Search = filterSearch();
-  const younes = () => {
-    console.log("younes---------------------------------------------");
-  };
 
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
-    console.log("");
     const client = ioClient.getSocketClient();
     async function fetcher() {
       const getChannel = await fetch(
@@ -103,17 +110,8 @@ export default function ChannelMessaged({
       setChannel(channels);
     }
     fetcher();
-  }, [members_ref]);
+  }, [channel_rf]);
 
-  useEffect(() => {
-    const client = ioClient.getSocketClient();
-    client.on("members_refresh", (data) => {
-      setmembers_ref(!members_ref);
-    });
-    return () => {
-      client.off("members_refresh");
-    };
-  }, []);
 
   const joinPublicChannel = async (channel_id: string) => {
     const getChannel = await fetch(
@@ -132,7 +130,7 @@ export default function ChannelMessaged({
     if (getChannel.ok) {
       setStatuspwd(true);
     }
-    console.log(getChannel);
+	//setChannelSelected(channel_id);
   };
 
   const checkPassword = async (channel_protected: join_protected_channel) => {
@@ -208,7 +206,7 @@ export default function ChannelMessaged({
     const response = await fetch(
       `http://localhost:3001/chat/channel_photo/${new_nameChannel}}`,
       {
-        method: "GET",
+        method: "POST",
         body: formData,
         credentials: "include",
       }
@@ -254,7 +252,6 @@ export default function ChannelMessaged({
               <div
                 className="selectFriend w-[100%]"
                 onClick={() => {
-                  //console.log("channel.id", channel.id);
                   setChannelSelected(channel);
                   onSelectChannel(channel);
                   // props.onChange(false);
