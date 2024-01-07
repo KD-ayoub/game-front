@@ -236,13 +236,13 @@ export class chatService {
 	}
 
 
-	async upload_channel_img(file: Express.Multer.File,id : string,userid: string)
+	async upload_channel_img(file: Express.Multer.File,name : string,userid: string)
 	{
 			try {
       			const upload = await this.cloudinaryService.uploadFile(file);
 				const room = await this.prisma.room.update({
 					where: {
-						id,
+						name,
 						ownerId: userid
 					},
 					data: {
@@ -526,7 +526,10 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
-		this.appGateway.server.emit('members_refresh','refresh');
+		// list channels
+		this.appGateway.server.emit('channels_ref','');
+		// list members -> except joiner
+		this.appGateway.server.except(this.appGateway.get_socketID_by_id(userid)).emit('members_ref','');
 		return true;
 	}
 
@@ -584,7 +587,9 @@ export class chatService {
 						}
 					}
 				})
-				this.appGateway.server.emit('members_refresh','refresh');
+				this.appGateway.server.emit('channels_ref','');
+				// list members -> except joiner
+				this.appGateway.server.except(this.appGateway.get_socketID_by_id(userid)).emit('members_ref','');
 				return 3;
 			}
 		} catch (error) {

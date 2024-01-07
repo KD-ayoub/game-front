@@ -41,7 +41,6 @@ export default function ChannelMessaged({
   //returnfromChannel: ()
 }) {
   const [channel, setChannel] = useState<ChannelChatType[]>([]);
-  const [members_ref, setmembers_ref] = useState<boolean>(false);
   const [searching, setSearching] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [channelSelected, setChannelSelected] = useState<ChannelChatType>();
@@ -59,9 +58,6 @@ export default function ChannelMessaged({
   };
 
   const filter_Search = filterSearch();
-  const younes = () => {
-    console.log("younes---------------------------------------------");
-  };
 
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
@@ -87,17 +83,8 @@ export default function ChannelMessaged({
       setChannel(channels);
     }
     fetcher();
-  }, [members_ref]);
+  }, [channel_rf]);
 
-  useEffect(() => {
-    const client = ioClient.getSocketClient();
-    client.on("members_refresh", (data) => {
-      setmembers_ref(!members_ref);
-    });
-    return () => {
-      client.off("members_refresh");
-    };
-  }, []);
 
   const joinPublicChannel = async (channel_id: string) => {
     const getChannel = await fetch(
@@ -116,7 +103,7 @@ export default function ChannelMessaged({
     if (getChannel.ok) {
       setStatuspwd(true);
     }
-    console.log(getChannel);
+	//setChannelSelected(channel_id);
   };
 
   const checkPassword = async (channel_protected: join_protected_channel) => {
@@ -137,7 +124,6 @@ export default function ChannelMessaged({
     if (!getChannel.ok) {
       // throw new Error("Network response was not ok");
     }
-    console.log("check password ", getChannel);
   };
 
   // useEffect(() => {
@@ -145,9 +131,6 @@ export default function ChannelMessaged({
 
   //  i need to list in sockets if i delete a channel or if i add a channel
 
-  //console.log("Channel", channel);
-  // console.log("channel li klikit 3lih", channelSelected);
-  console.log("password li dkhalt", join_protected_channel?.password);
 
   return (
     <>
@@ -166,7 +149,6 @@ export default function ChannelMessaged({
               <button
                 className="selectFriend w-[100%]"
                 onClick={() => {
-                  //console.log("channel.id", channel.id);
                   setChannelSelected(channel);
                   onSelectChannel(channel);
                   // props.onChange(false);

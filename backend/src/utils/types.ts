@@ -26,7 +26,6 @@ export type _2fa = {
 // channels
 export type create_channel = {
 	name : string,
-	photo: string,
 	password: string,
 	type : RoomType
 }
