@@ -73,7 +73,7 @@ export default function ChannelMessaged({
   const [new_nameChannel, setNew_nameChannel] = useState<string>("");
   const [new_passwordChannel, setNew_passwordChannel] = useState<string>("");
   const [new_typeChannel, setNew_typeChannel] = useState<string>("");
-  const [new_photoChannel, setNew_photoChannel] = useState<string>("");
+  // const [new_photoChannel, setNew_photoChannel] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<File>();
 
   // here we filterSearch the friends list:
@@ -190,7 +190,8 @@ export default function ChannelMessaged({
     if (getChannel.ok) {
       setNew_passwordChannel("");
       setNew_typeChannel("");
-      setNew_photoChannel("");
+      // setNew_photoChannel("");
+      setSelectedImage(undefined);
       setNew_nameChannel("");
       setNewChannel({ name: "", password: "", type: "" });
       setOpenModalCreacteChannel(false);
@@ -261,7 +262,7 @@ export default function ChannelMessaged({
     new_nameChannel,
     new_passwordChannel,
     new_typeChannel,
-    new_photoChannel
+    selectedImage,
   );
 
   return (
@@ -583,7 +584,8 @@ export default function ChannelMessaged({
                     setOpenModalCreacteChannel(false);
                     setNew_passwordChannel("");
                     setNew_typeChannel("");
-                    setNew_photoChannel("");
+                    // setNew_photoChannel("");
+                    setSelectedImage(undefined);
                     setNewChannel({ name: "", password: "", type: "" });
                     setNew_nameChannel("");
                   }}
