@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { ioClient } from "@/app/api/instance";
 import {
   Header,
   SideBar,
@@ -22,45 +23,69 @@ import { ChannelChatType } from "@/app/types/ChannelChatType";
 
 export default function Chat() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
+
   const marginbody = isHumburgClicked ? "ml-6" : "";
+
   const [option, setOption] = useState("Friends");
+
   const [messages, setMessages] = useState<string[]>([]);
+
   const [messageText, setMessageText] = useState<string>("");
+
   const [showConv, setShowConv] = useState(false); // set initial value to false
+
   const [friend_Selected, setfriend_Selected] = useState<FriendsChatType>();
+
   const [idOfChannelSelected, setIdOfChannelSelected] =
     useState<ChannelChatType>();
-  // const [friends, setFriends] = useState<FriendsChatType[]>([]);
+
+
+
+// states to refresh
   const [online_rf, setOnline_rf] = useState<boolean>(false);
-  const [friends_rf, setFriends_rf] = useState<boolean>(false);
   const [channel_rf, setChannel_rf] = useState<boolean>(false);
   const [channelSelected_rf, setChannelSelected] = useState<boolean>(false);
   const [members_rf, setmembers_ref] = useState<boolean>(false);
   const [aboutMe_rf, setAboutMe_rf] = useState<boolean>(false);
+  const [friends_rf, setFriends_rf] = useState<boolean>(false);
 
+//////////////// friends /////////////////////////////
+	// friends list
+  const hundleFriends_rf = () => {
+    setFriends_rf(!friends_rf);
+  };
+	// friend selected
   const hundlefriend_Selected = (infoUser: FriendsChatType) => {
     setfriend_Selected(infoUser);
   };
 
+//////////////// channels /////////////////////////////
+	// channels list
+  const hundleChannel_rf = () => {
+    setChannel_rf(!channel_rf);
+  };
+	// channel selected
   const hundleIdOfChannelSelected = (infoChannel: ChannelChatType) => {
     setIdOfChannelSelected(infoChannel);
   };
 
+
+	// online list
   const hundleOnline_rf = () => {
     setOnline_rf(!online_rf);
   };
-  const hundleFriends_rf = () => {
-    setFriends_rf(!friends_rf);
-  };
-  const hundleChannel_rf = () => {
-    setChannel_rf(!channel_rf);
-  };
+
+	// channels selected  -----    i guess this one  doesn't have any purpose
   const hundleChannelSelected_rf = () => {
     setChannelSelected(!channelSelected_rf);
   };
+
+	// members list
   const hundleMembers_rf = () => {
     setmembers_ref(!members_rf);
   };
+
+	// about me  
   const hundleAboutMe_rf = () => {
     setAboutMe_rf(!aboutMe_rf);
   };
@@ -77,8 +102,35 @@ export default function Chat() {
   // };
 
   useEffect(() => {
-      console.log(online_rf, friends_rf, channel_rf, channelSelected_rf, members_rf, aboutMe_rf);
-  }, [online_rf]);
+  // online list	
+  }, []);
+
+  useEffect(() => {
+  // channels list	
+  	const client = ioClient.getSocketClient();
+	client.on("channels_ref",()=>{
+		hundleChannel_rf();
+	})
+	return () => {
+	client.off("channels_ref");
+	}
+  }, []);
+
+  useEffect(() => {
+  	const client = ioClient.getSocketClient();
+	client.on("members_ref",()=>{
+		hundleMembers_rf();
+	})
+	return () => {
+	client.off("members_ref");
+	}
+
+  // members list	
+  }, []);
+
+  useEffect(() => {
+  // channel selected	
+  }, []);
 
 
   return (

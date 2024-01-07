@@ -61,7 +61,9 @@ export default function ChannelMessaged({
 
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
+  console.log("------------------- list all channels ---------------------------");
     const client = ioClient.getSocketClient();
+	console.log("refresh channel : ",channel_rf);
     async function fetcher() {
       const getChannel = await fetch(
         "http://localhost:3001/chat/list_channels",

@@ -80,7 +80,6 @@ export default function ChannelConversation({
   };
 
   const handleChallenge = () => {
-    //console.log("challenge");
   };
 
   const handleLeaveChannel = () => {
@@ -97,7 +96,6 @@ export default function ChannelConversation({
     const client = ioClient.getSocketClient();
     if (!channelSelected) return;
     client.on(channelSelected.id, (data) => {
-      console.log("socket sended  : ", data);
       setDataConversation((dataConversation) => [...dataConversation, data]);
     });
     return () => {
@@ -107,74 +105,74 @@ export default function ChannelConversation({
 
   useEffect(() => {
     async function fetcher() {
-      const getconv = await fetch(
-        `http://localhost:3001/chat/list_room_messsages/${channelSelected.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      if (!getconv.ok) {
-        throw new Error("Network response was not ok");
-      }
-	  const conv = await getconv.json();
-      //const conv: DataChannelConversationType[] = await getconv.json();
-      setDataConversation(conv);
+		if (channelSelected.isJoined)
+		{
+
+    	  const getconv = await fetch(
+    	    `http://localhost:3001/chat/list_room_messsages/${channelSelected.id}`,
+    	    {
+    	      method: "GET",
+    	      headers: {
+    	        "Content-Type": "application/json",
+    	      },
+    	      credentials: "include",
+    	    }
+    	  );
+    	  if (!getconv.ok) {
+    	    throw new Error("Network response was not ok");
+    	  }
+		  const conv = await getconv.json();
+    	  setDataConversation(conv);
+		}
     }
     fetcher();
-
   }, [channelSelected]);
 
-  useEffect( () => {
-    const client = ioClient.getSocketClient();
-    client.on("members_refresh", (data) => {
-      setmembers_ref(!members_ref);
-    });
-    return () => {
-      client.off("members_refresh");
-    };
-  }, [])
 
   useEffect(() => {
     async function fetcher() {
-      const getconv = await fetch(
-        `http://localhost:3001/chat/members/${channelSelected.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      if (!getconv.ok) {
-        throw new Error("Network response was not ok");
-      }
-      setMemberList(await getconv.json());
+		if (channelSelected.isJoined)
+		{
+			console.log("----------------------------- fetching members ------------------------");
+    	  	const getconv = await fetch(
+    	    `http://localhost:3001/chat/members/${channelSelected.id}`,
+    	    {
+    	      method: "GET",
+    	      headers: {
+    	        "Content-Type": "application/json",
+    	      },
+    	      credentials: "include",
+    	    }
+    	  );
+    	  if (!getconv.ok) {
+    	    throw new Error("Network response was not ok");
+    	  }
+		  console.log("fetching members was done")
+    	  setMemberList(await getconv.json());
+		}
     }
     fetcher();
-  }, [channelSelected,members_ref]);
+  }, [channelSelected,members_rf]);
 
   useEffect(() => {
     async function fetcher() {
-      const getconv = await fetch(
-        `http://localhost:3001/chat/role/${channelSelected.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      // if (!getconv.ok) {
-      //   throw new Error("Network response was not ok");
-      // }
-      setAboutMe(await getconv.json());
-    }
+		if (channelSelected.isJoined)
+		{
+    	  const getconv = await fetch(
+    	    `http://localhost:3001/chat/role/${channelSelected.id}`,
+    	    {
+    	      method: "GET",
+    	      headers: {
+    	        "Content-Type": "application/json",
+    	      },
+    	      credentials: "include",
+    	    }
+    	  );
+    	   if (getconv.ok) {
+    	  		setAboutMe(await getconv.json());
+    	   }
+    	}
+	}
     fetcher();
   }, [channelSelected,members_ref]);
 

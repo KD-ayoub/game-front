@@ -128,7 +128,6 @@ export default function FriendConversation({
       );
       if (response.ok) {
         setIsBlocked(false);
-        //console.log("error at handleShowFriendConversssation fetch");
       }
     }
     block();
@@ -137,7 +136,6 @@ export default function FriendConversation({
   useEffect(() => {}, [friendSelected.isBlocked]);
 
   const sendChallenge = () => {
-    console.log("send challenge");
   };
 
   // Here we fetch the conversation with friend:
@@ -157,7 +155,6 @@ export default function FriendConversation({
         }
       );
       if (!response.ok) {
-        //console.log("error at handleShowFriendConversssation fetch");
       }
       setDataConversation(await response.json());
       setIsBlocked(friendSelected.isBlocked);
@@ -174,17 +171,14 @@ export default function FriendConversation({
 
   useEffect(() => {
     const client = ioClient.getSocketClient();
-    console.log("wa khdm azzbi:  ");
 
     client.on("chat", (data) => {
       console.log("data: ", data);
       if (!friendSelected) {
-        // here increment the unread
         return;
       }
       setDataConversation((dataConversation) => [...dataConversation, data]);
       setIsBlocked(friendSelected.isBlocked);
-      //console.log("hani hna --------------------------------------",test);
     });
 
     return () => {
@@ -192,13 +186,10 @@ export default function FriendConversation({
     };
   }, [friendSelected]);
 
-  //console.log("dataConversation-->", dataConversation);
-  //console.log("friendSelected-->", friendSelected);
 
   return (
     <>
       {friendSelected && (
-        // friendSelected.isBlocked === false && (
         <div className="friendConv">
           <div className="barInfo">
             <button className="btn-back">
@@ -280,16 +271,15 @@ export default function FriendConversation({
                 placeholder="Type here..."
                 required
                 ref={textareaRef}
-                // onKeyUp={handleTextareaChange}
                 maxLength={250}
               ></textarea>
             </div>
             <button
               type="button"
               className=" submitMsg"
-              onClick={() => {
-                handleSendMessage;
-              }}
+              onClick={
+                handleSendMessage
+              }
             >
               <Image
                 src={submitBtn.src}

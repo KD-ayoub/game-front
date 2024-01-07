@@ -75,7 +75,7 @@ export class ChatController{
 	////////////////////////////// channels endpoints //////////////////////////////////////
 	@UseGuards(AuthenticatedGuard)
   	@UseInterceptors(FileInterceptor('file'))
-	@Get('channel_photo/:name')
+	@Post('channel_photo/:name')
 	async channel_photo(@UploadedFile() file: Express.Multer.File,@Param('name') name: string,@Session() session: Record<string,any>)
 	{
 		if (!(await this.chatService.upload_channel_img(file,name,session.passport.user.id)))
