@@ -44,12 +44,12 @@ export default function ChannelMessaged({
 }: //returnfromChannel,
 {
   onSelectChannel: (id: ChannelChatType) => void;
-  online_rf: () => void;
-  friends_rf: () => void;
-  channel_rf: () => void;
-  channelSelected_rf: () => void;
-  members_rf: () => void;
-  aboutMe_rf: () => void;
+  online_rf: boolean;
+  friends_rf: boolean;
+  channel_rf: boolean;
+  channelSelected_rf: boolean;
+  members_rf: boolean;
+  aboutMe_rf: boolean;
   //returnfromChannel: ()
 }) {
   const [channel, setChannel] = useState<ChannelChatType[]>([]);
@@ -88,7 +88,6 @@ export default function ChannelMessaged({
 
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
-  console.log("------------------- list all channels ---------------------------");
     const client = ioClient.getSocketClient();
 	console.log("refresh channel : ",channel_rf);
     async function fetcher() {
@@ -153,7 +152,6 @@ export default function ChannelMessaged({
     if (!getChannel.ok) {
       // throw new Error("Network response was not ok");
     }
-    console.log("check password ", getChannel);
   };
 
   const handleCreateChannel = async (newChannel: create_channel) => {
@@ -174,7 +172,6 @@ export default function ChannelMessaged({
     if (getChannel.ok) {
       setStatusCreateChannel(true);
     }
-    console.log("Create Channel", getChannel);
   };
 
   async function handlImageChange() {
@@ -182,7 +179,6 @@ export default function ChannelMessaged({
     let checkItem: string = "";
     formData.append("file", selectedImage ?? "https://placehold.co/400");
     formData.forEach((item) => (checkItem = item.toString()));
-    console.log("checkItem", checkItem);
     if (selectedImage) {
       console.log("shoul not enter");
       const toastId = toast.loading("Saving changes", {
@@ -226,16 +222,6 @@ export default function ChannelMessaged({
 
   //  i need to list in sockets if i delete a channel or if i add a channel
 
-  //console.log("Channel", channel);
-  // console.log("channel li klikit 3lih", channelSelected);
-  // console.log("password li dkhalt", join_protected_channel?.password);
-  // console.log(channelSelected?.isJoined);
-  console.log(
-    new_nameChannel,
-    new_passwordChannel,
-    new_typeChannel,
-    new_photoChannel
-  );
 
   return (
     <>
@@ -448,22 +434,13 @@ export default function ChannelMessaged({
 
                 <div>
                   <FileInput
-                    // className="hidden"
-                    // type="file"
                     accept="image/png, image/jpeg, image/jpg"
                     id="profile-img"
-                    // ref={fileinputRef}
                     onChange={(e) => {
                       e.preventDefault();
                       if (e.target.files) {
                         const file = e.target.files[0];
                         if (e.target.files.length > 0) {
-                          // setCreateObjectURL(URL.createObjectURL(file));
-                          // setDataSettings({
-                          //   ...dataSettings,
-                          //   photo_path: ${ProfileImg.src},
-                          // });
-                          // console.log("imagechange:", createObjectURL);
                           setSelectedImage(file);
                         }
                       }

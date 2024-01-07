@@ -29,12 +29,12 @@ export default function FriendConversation({
   aboutMe_rf,
 }: {
   friendSelected: FriendsChatType;
-  online_rf: () => void;
-  friends_rf: () => void;
-  channel_rf: () => void;
-  channelSelected_rf: () => void;
-  members_rf: () => void;
-  aboutMe_rf: () => void;
+  online_rf:	boolean;
+  friends_rf:	boolean;
+  channel_rf:	boolean;
+  channelSelected_rf: boolean;
+  members_rf: boolean;
+  aboutMe_rf: boolean;
 }) {
   // const { friendSelected } = friend;
   const router = useRouter();
