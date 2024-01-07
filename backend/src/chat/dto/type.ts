@@ -64,3 +64,9 @@ type member = {
 	role: string
 	id: string,
 }
+
+type update_password = {
+	password: string,
+	channel_id: string
+	type: string
+}

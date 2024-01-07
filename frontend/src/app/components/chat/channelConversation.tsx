@@ -16,6 +16,18 @@ import { DataChannelConversationType } from "@/app/types/dataChannelConversation
 import lwaghch from "../../assets/svg/chat/lwaghch.svg";
 import { MemberListChannel, aboutMe } from "../../types/memberListChannel";
 import { ioClient } from "@/app/api/instance";
+import {
+  Button,
+  Modal,
+  Label,
+  TextInput,
+  Spinner,
+  FloatingLabel,
+  FileInput,
+  Select,
+  Dropdown,
+} from "flowbite-react";
+import { UpdateChannelType } from "@/app/types/updateChannelType";
 
 // const socket = io("");
 
@@ -56,6 +68,16 @@ export default function ChannelConversation({
   const [memberList, setMemberList] = useState<MemberListChannel[]>([]);
   // information about me if im an owner or admin or member
   const [aboutMe, setAboutMe] = useState<aboutMe>();
+  const [openModalEditChannel, setOpenModalEditChannel] = useState(false);
+  const [UpdateChannelType, setUpdateChannelType] = useState<UpdateChannelType>(
+    {
+      password: "",
+      type: channelSelected.type,
+      channel_id: channelSelected.id,
+    }
+  );
+  const [new_passwordChannel, setNew_passwordChannel] = useState<string>("");
+  const [new_typeChannel, setNew_typeChannel] = useState<string>("");
 
   const handleTextareaChange = () => {
     if (textareaRef.current) {
@@ -82,7 +104,167 @@ export default function ChannelConversation({
   const handleChallenge = () => {
   };
 
+  const handleBan = (idMember: string) => {
+    const banMember = async () => {
+      const response = await fetch(`http://localhost:3001/chat/ban`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel_id: channelSelected.id,
+          member_id: idMember,
+        }),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Ban member not ok");
+      } else {
+        console.log("Ban member ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    };
+    banMember();
+  };
+
+  const handleKick = (idMember: string) => {
+    const kickMember = async () => {
+      const response = await fetch(`http://localhost:3001/chat/kick`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel_id: channelSelected.id,
+          member_id: idMember,
+        }),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Kick member not ok");
+      } else {
+        console.log("Kick member ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    };
+    kickMember();
+  };
+
+  const handleMute = (idMember: string) => {
+    const muteMember = async () => {
+      const response = await fetch(`http://localhost:3001/chat/mute`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel_id: channelSelected.id,
+          member_id: idMember,
+        }),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Mute member not ok");
+      } else {
+        console.log("Mute member ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    };
+    muteMember();
+  };
+
+  const handleSettingAdmin = (idMember: string) => {
+    const setAdminMember = async () => {
+      const response = await fetch(`http://localhost:3001/chat/add_admin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel_id: channelSelected.id,
+          member_id: idMember,
+        }),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Set admin member not ok");
+      } else {
+        console.log("Set admin member ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    };
+    setAdminMember();
+  };
+
+  const handleEditChannel = (newChannel: UpdateChannelType) => {
+    const editChannel = async () => {
+      const response = await fetch(`http://localhost:3001/chat/channel_password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newChannel),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Edit channel not ok");
+      } else {
+        console.log("Edit channel ok");
+        setOpenModalEditChannel(false);
+        setNew_passwordChannel("");
+        setNew_typeChannel("");
+      }
+      const data = await response.json();
+      console.log(data);
+      console.log("newChannel", newChannel);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    };
+    editChannel();
+  };
+
   const handleLeaveChannel = () => {
+    const leaveChannel = async () => {
+      const response = await fetch(`http://localhost:3001/chat/leave`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel: channelSelected.id,
+        }),
+
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Loeave channel not ok");
+      } else {
+        console.log("Loeave channel ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    };
+    leaveChannel();
   };
 
   useEffect(() => {
@@ -128,6 +310,15 @@ export default function ChannelConversation({
     fetcher();
   }, [channelSelected]);
 
+  useEffect(() => {
+    const client = ioClient.getSocketClient();
+    client.on("members_refresh", (data) => {
+      setmembers_ref(!members_ref);
+    });
+    return () => {
+      client.off("members_refresh");
+    };
+  }, []);
 
   useEffect(() => {
     async function fetcher() {
@@ -174,8 +365,7 @@ export default function ChannelConversation({
     	}
 	}
     fetcher();
-  }, [channelSelected,members_ref]);
-
+  }, [channelSelected, members_ref]);
 
   return (
     <>
@@ -298,7 +488,7 @@ export default function ChannelConversation({
               <Image
                 src={
                   channelSelected.photo === "defautl_img"
-                    ? lwaghch.src
+                    ? fakeAvatar.src
                     : channelSelected.photo
                 }
                 alt="Channel overview"
@@ -309,6 +499,103 @@ export default function ChannelConversation({
               <p className="channelName">{channelSelected.nameOfChannel}</p>
               {/* hna 5asni n3ref wessh ana admin wla owner bach n affichi select options wla bach n affichi ghi p "channel private or public or protected" */}
               <p className="channelType">Channel {channelSelected.type}</p>
+              {aboutMe && aboutMe.role === "owner" && (
+                <>
+                  <Button
+                    onClick={() => setOpenModalEditChannel(true)}
+                    className="bg-[#E95A3A] mt-2"
+                  >
+                    Edit channel
+                  </Button>
+                  <Modal
+                    show={openModalEditChannel}
+                    size="2xl"
+                    onClose={() => setOpenModalEditChannel(false)}
+                    popup
+                  >
+                    <Modal.Header />
+                    <Modal.Body>
+                      <div className="text-center">
+                        <h3 className="mb-5 text-lg font-normal text-[#E95A3A] dark:text-gray-400 ">
+                          Edit your channel!
+                        </h3>
+                        <div className="max-w-md lastInput ">
+                          {/* <Label htmlFor="TypeChannel" value="Select type of channel" /> */}
+                          <Dropdown
+                            className=""
+                            label={`Type of Channel: ${new_typeChannel}`}
+                            dismissOnClick={true}
+                          >
+                            <Dropdown.Item
+                              className="typeChannelSelect"
+                              onClick={() => {
+                                setNew_typeChannel("PUBLIC");
+                                setUpdateChannelType({channel_id:channelSelected.id, password:new_passwordChannel, type:"PUBLIC"});
+                              }}
+                            >
+                              Public
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              className="typeChannelSelect"
+                              onClick={() => {
+                                setNew_typeChannel("PROTECTED");
+                                setUpdateChannelType({channel_id:channelSelected.id, password:new_passwordChannel, type:"PROTECTED"});
+                              }}
+                            >
+                              Protected
+                            </Dropdown.Item>
+                          </Dropdown>
+                          {new_typeChannel &&
+                            new_typeChannel === "PROTECTED" && (
+                              <div className="mb-2 mt-2">
+                                <FloatingLabel
+                                  className="pswdInput"
+                                  variant="outlined"
+                                  label="Set or change password"
+                                  color="default"
+                                  onChange={(pwd) => {
+                                    setNew_passwordChannel(pwd.target.value);
+                                    setUpdateChannelType({channel_id:channelSelected.id, password:pwd.target.value, type:new_typeChannel});
+                                  }}
+                                />
+                              </div>
+                            )}
+                        </div>
+                        <div className="flex justify-center gap-10 mt-5">
+                          <Button
+                            className="bg-[#E95A3A]"
+                            onClick={() => {
+                              setUpdateChannelType({channel_id:channelSelected.id, password:new_passwordChannel, type:new_typeChannel});
+                              handleEditChannel(UpdateChannelType);
+                              setNew_passwordChannel("");
+                              setNew_typeChannel("");
+                              setUpdateChannelType({channel_id:channelSelected.id, password:"", type: channelSelected.type});
+                              // console.log("newChannel", newChannel);
+                              // handleCreateChannel({name: new_nameChannel, password:new_passwordChannel, type:new_typeChannel});
+                              // handlImageChange();
+                            }}
+                          >
+                            {"Create"}
+                          </Button>
+                          <Button
+                            color="gray"
+                            onClick={() => {
+                              setOpenModalEditChannel(false);
+                              // setNew_passwordChannel("");
+                              // setNew_typeChannel("");
+                              // setNew_photoChannel("");
+                              // setNewChannel({ name: "", password: "", type: "" });
+                              // setNew_nameChannel("");
+                            }}
+                          >
+                            No, cancel
+                          </Button>
+                        </div>
+                      </div>
+                    </Modal.Body>
+                  </Modal>
+                </>
+              )}
             </div>
             {/* start list members of channel with their roles */}
             <div className="infoMembersOfChannel">
@@ -414,18 +701,44 @@ export default function ChannelConversation({
                         {aboutMe &&
                           aboutMe.role === "admin" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="selectOwnerOptions">
-                              <select name="" id="">
-                                mok
-                              </select>
+                            <div className="memberSee">
+                              <button className="Challenge-btn">
+                                <i className="ri-ping-pong-line">Challenge</i>
+                              </button>
                             </div>
                           )}
                         {/* if im an owner i can see this select option */}
                         {aboutMe &&
                           aboutMe.role === "owner" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="dropDownOwnerPermissions">
-                              
+                            <div className="memberSee">
+                              <Dropdown label="Dropdown" inline>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleChallenge}
+                                >
+                                  Challenge
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleMute(member.id)}
+                                >
+                                  Mute
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleKick(member.id)}
+                                >
+                                  Kick
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleBan(member.id)}
+                                >
+                                  Ban
+                                </Dropdown.Item>
+                                {/* <Dropdown.Item className="text-[12px]">Set Admin</Dropdown.Item> */}
+                              </Dropdown>
                             </div>
                           )}
                       </div>
@@ -467,22 +780,72 @@ export default function ChannelConversation({
                         {aboutMe &&
                           aboutMe.role === "admin" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="selectOwnerOptions">
-                              <select name="" id="">
-                                mok
-                              </select>
+                            <div className="memberSee">
+                              <Dropdown label="Dropdown" inline>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleChallenge}
+                                >
+                                  Challenge
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleMute(member.id)}
+                                >
+                                  Mute
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleKick(member.id)}
+                                >
+                                  Kick
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleBan(member.id)}
+                                >
+                                  Ban
+                                </Dropdown.Item>
+                              </Dropdown>
                             </div>
                           )}
                         {/* if im an owner i can see this select option */}
                         {aboutMe &&
                           aboutMe.role === "owner" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="selectOwnerOptions">
-                              <select name="" id="">
-                                mok
-                                <option value="mok">mok</option>
-                                <option value="mok">bak</option>
-                              </select>
+                            <div className="memberSee">
+                              <Dropdown label="Dropdown" inline>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleChallenge}
+                                >
+                                  Challenge
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleSettingAdmin(member.id)}
+                                >
+                                  Set Admin
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleMute(member.id)}
+                                >
+                                  Mute
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleKick(member.id)}
+                                >
+                                  Kick
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  className="text-[12px]"
+                                  onClick={() => handleBan(member.id)}
+                                >
+                                  Ban
+                                </Dropdown.Item>
+                              </Dropdown>
                             </div>
                           )}
                       </div>

@@ -544,7 +544,10 @@
 }
 
 .channelOverview {
-  border-radius: 9999px;
+  border-radius: 99999px;
+  width: 150px;
+  height: 150px;
+
 }
 
 .infoChannel .channelName {
@@ -771,6 +774,19 @@
   /* background: #717273; */
   
 }
+
+/* .typeChannelSelect:active {
+  background-color: #717273;
+} */
+.lastInput {
+  display: flex;
+  min-width: 100%;
+  /* justify-content: center; */
+  align-items: center;
+  /* background: #717273; */
+  gap: 22%
+}
+
 
 /* end channel styles  */
 /* end conv */
