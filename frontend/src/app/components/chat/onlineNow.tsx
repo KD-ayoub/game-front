@@ -24,29 +24,50 @@ export default function OnlineNow({
   aboutMe_rf: () => void;
 }) {
   const [friends, setFriends] = useState<isOnlineType[]>([
-]);
+    {
+      nickName: "mouha",
+      photo_path: fakeAvatar.src,
+      is_active: "offline",
+      id: "1",
+      // full_name: "zbi",
+    },
+    {
+      nickName: "mouha",
+      photo_path: fakeAvatar.src,
+      is_active: "online",
+      id: "1",
+      // full_name: "zbi",
+    },
+    {
+      nickName: "mouha",
+      photo_path: fakeAvatar.src,
+      is_active: "in-game",
+      id: "1",
+      // full_name: "zbi",
+    },
+  ]);
 
-   useEffect( () => {
-     	async function fetcher() {
-     	  const getconv = await fetch(
-     	    `http://localhost:3001/chat/friends_state/`,
-     	    {
-     	      method: "GET",
-     	      headers: {
-     	        "Content-Type": "application/json",
-     	      },
-     	      credentials: "include",
-     	    }
-     	  );
-     	  if (!getconv.ok) {
-     	    // throw new Error("Network response was not ok");
-     	  }
-		  const data = await getconv.json();
+  //  useEffect( () => {
+  //    	async function fetcher() {
+  //    	  const getconv = await fetch(
+  //    	    `http://localhost:3001/chat/friends_state/`,
+  //    	    {
+  //    	      method: "GET",
+  //    	      headers: {
+  //    	        "Content-Type": "application/json",
+  //    	      },
+  //    	      credentials: "include",
+  //    	    }
+  //    	  );
+  //    	  if (!getconv.ok) {
+  //    	    // throw new Error("Network response was not ok");
+  //    	  }
+	// 	  const data = await getconv.json();
 
-     	  setFriends(data);
-     	}
-     	fetcher();
-   }, []);
+  //    	  setFriends(data);
+  //    	}
+  //    	fetcher();
+  //  }, []);
 
   const onlineFriends = (friends.filter(
     (friend) => friend.is_active !== "offline") 
@@ -63,7 +84,8 @@ export default function OnlineNow({
                 className="onlineUser text-[10px] text-center p-1 "
                 key={friend.id}
               >
-				 <span> {friend.is_active} </span>
+				 {friend.is_active==="online" && <span className="text-teal-500"> {friend.is_active} </span>}
+				 {friend.is_active==="in-game" && <span className="text-teal-300"> {friend.is_active} </span>}
 			 	 {friend.photo_path !== "default_img" ? (
 			 	 <Image
 			 	 src={friend.photo_path}

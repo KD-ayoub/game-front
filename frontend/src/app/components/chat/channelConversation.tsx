@@ -316,7 +316,7 @@ export default function ChannelConversation({
               {/* start owner of channel */}
               <div className="ownerBox">
                 {memberList.map((member, index) => (
-                  <div className="">
+                  <div className="" key={index}>
                     {member.role === "owner" && (
                       <div className="boxMember" key={index}>
                         <Image
@@ -385,7 +385,7 @@ export default function ChannelConversation({
               {/* start admins of channel */}
               <div className="listMembersOfChannel">
                 {memberList.map((member, index) => (
-                  <div className="">
+                  <div className="" key={index}>
                     {member.role === "admin" && (
                       <div className="boxMember" key={index}>
                         <Image
@@ -438,7 +438,7 @@ export default function ChannelConversation({
               {/* start members of channel */}
               <div className="listMembersOfChannel">
                 {memberList.map((member, index) => (
-                  <div className="">
+                  <div className="" key={index}>
                     {member.role === "member" && (
                       <div className="boxMember" key={index}>
                         <Image
