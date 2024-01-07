@@ -14,11 +14,14 @@ import { type Socket, io } from "socket.io-client";
 import { Manager } from "socket.io-client/debug";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import {useEffect} from "react";
 
 //test redirect
 //import { useRouter } from 'next/router';
 import { useRouter, useSearchParams } from "next/navigation";
 import ModalMapsComponent from "@/app/components/game/ModalMapsComponent";
+
+import { ioClient, SocketClient } from "@/app/api/instance";
 
 export default function Game() {
   const [openMapModal, setOpenMapMoadl] = useState(false);
@@ -53,9 +56,38 @@ export default function Game() {
     setBotCard(true);
   }
 
-  function handlUserClick() {
-    setOpenMapMoadl(!openMapModal);
+  function handlUserClick(id: string) {
+    console.log('id bb = ', id);
+    const SocketClient = ioClient.getSocketClient();
+    //SocketClient.emit("play", "40310425-c880-4890-9052-29fb2637dae7");
+    SocketClient.emit("play", id);
+    //SocketClient.on("popup", () => {
+    //  console.log('zabiiiiiiiiiiiiiii');
+    //})
+
+    //playFriendTst();
+    //setOpenMapMoadl(!openMapModal);
   }
+
+  //useEffect(() => {
+  //  const SocketClient = ioClient.getSocketClient();
+  //  SocketClient.on("popup", () => {
+  //    console.log('zabiiiiiiiiiiiiiii');
+  //          Swal.fire({
+  //            title: "You have lost",
+  //            text: "",
+  //            imageUrl: `${Profilepic.src}`,
+  //            imageWidth: 400,
+  //            imageHeight: 200,
+  //            imageAlt: "Custom image",
+  //            allowOutsideClick: false,
+  //          }).then(res => {
+  //            console.log('then = ', res);
+  //            //router.push('/game')
+  //          });
+  //  })
+
+  //}, []);
   
   console.log("div color", orange, blue, green);
   return (
@@ -79,7 +111,7 @@ export default function Game() {
             mapOrange={() => setOrange(true)}
             mapBlue={() => setBlue(true)}
             mapGreen={() => setGreen(true)}
-            onClick={handlUserClick}
+            onClick={(data: string) => handlUserClick(data)}
             openModal={openMapModal}
           />
         )}
@@ -98,7 +130,7 @@ export default function Game() {
                       Search for a friend
                     </p>
                   </div>
-                  <LittleSearchBar onClick={handlUserClick} />
+                  <LittleSearchBar onClick={(data: string) => handlUserClick(data)} />
                 </div>
               )}
             </div>

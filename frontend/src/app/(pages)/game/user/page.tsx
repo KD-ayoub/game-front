@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Header, SideBar, ModalGameComponent } from "@/app/components";
+import WithRandom from "@/app/assets/svg/game/withRandom.svg";
 import { useRef } from "react";
 import Ball from "./botcode/Ball";
 import Paddle from "./botcode/Paddle";
@@ -88,7 +89,10 @@ export default function RandomMatch() {
               win: boolean;
             }
           ],
-          win: { socket: string; win: boolean }
+          win: {
+            socket: string;
+            win: boolean;
+          }
         ) => {
           let i = ball[0].socket === SocketClient.id ? 0 : 1;
           ballElem?.style.setProperty("--y", ball[i].ypos.toString());
@@ -136,27 +140,28 @@ export default function RandomMatch() {
           }
         }
       );
-      SocketClient.on("finishGame", () => {
-        console.log("GAME ** OVER");
-        //here take off the that room in map
-        Swal.fire({
-          title: "You have lost",
-          text: "",
-          imageUrl: `${ProfileImg.src}`,
-          imageWidth: 400,
-          imageHeight: 200,
-          imageAlt: "Custom image",
-          allowOutsideClick: false,
-        }).then(res => {
-          SocketClient.emit("cleanRoomGame", {room: ioClient.room});
-          console.log('then');
-          router.push('/game')
-        });
-        return () => {
-          document.removeEventListener("keydown", handlKeyDown);
-          window.cancelAnimationFrame(animationFrameRef.current);
-        };
-      });
+      //SocketClient.on("finishGame", () => {
+      //  console.log("GAME ** OVER");
+      //  //here take off the that room in map
+      //  Swal.fire({
+      //    title: "You have lost",
+      //    text: "",
+      //    imageUrl: `${WithRandom.src}`,
+      //    imageWidth: 400,
+      //    imageHeight: 200,
+      //    imageAlt: "Custom image",
+      //    allowOutsideClick: false,
+      //  }).then(res => {
+      //    //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+      //    console.log('then = ', res);
+      //    router.push('/game')
+      //  });
+      //  return () => {
+      //    document.removeEventListener("keydown", handlKeyDown);
+      //    window.cancelAnimationFrame(animationFrameRef.current);
+      //  };
+      //});
+      let chkWin = false;
       function update(time: number) {
         if (lastTime) {
           const delta = time - lastTime;
@@ -166,6 +171,32 @@ export default function RandomMatch() {
             firstTime,
           });
           firstTime = false;
+          if (playerScore + opponentScore === 4) {
+            console.log("We have a winner");
+            chkWin = true;
+            //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+            Swal.fire({
+              title: "You have lost",
+              text: "",
+              //imageUrl: `${ProfileImg.src}`,
+              imageUrl: `${WithRandom.src}`,
+              //imageUrl: `${dataSettings.photo_path}`,
+              imageWidth: 400,
+              imageHeight: 200,
+              imageAlt: "Custom image",
+              allowOutsideClick: false,
+            }).then(res => {
+              //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+              console.log('then = ', res);
+              if (!res.isDismissed)
+                router.push('/game');
+            });
+            //return ;
+            return () => {
+              document.removeEventListener("keydown", handlKeyDown);
+              window.cancelAnimationFrame(animationFrameRef.current);
+            };
+          }
           //if (ball.checkLoss(data))
           //resetAll();
         }
@@ -175,6 +206,27 @@ export default function RandomMatch() {
         }
         // window.requestAnimationFrame(update);
       }
+      //if (chkWin) {
+      //  console.log('5erji *******');
+      //      //Swal.fire({
+      //      //  title: "You have lost",
+      //      //  text: "",
+      //      //  imageUrl: `${ProfileImg.src}`,
+      //      //  imageWidth: 400,
+      //      //  imageHeight: 200,
+      //      //  imageAlt: "Custom image",
+      //      //  allowOutsideClick: false,
+      //      //}).then(res => {
+      //      //  //SocketClient.emit("cleanRoomGame", {room: ioClient.room});
+      //      //  console.log('then = ', res);
+      //      //  router.push('/game')
+      //      //});
+      //  return () => {
+      //    document.removeEventListener("keydown", handlKeyDown);
+      //    window.cancelAnimationFrame(animationFrameRef.current);
+      //  };
+      //}
+
       //  window.requestAnimationFrame(update);
       animationFrameRef.current = window.requestAnimationFrame(update);
     });

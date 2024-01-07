@@ -27,17 +27,52 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 	private pendingPlayer: PlayerData;
 	private gameRoom: Map<string, PlayerData>;
 	private check: number;
+	//tst
+	private cli: Array<Socket>;
+	private a: number;
 
 	private hitWall: boolean;
 	constructor(private Gateway: AppGateway, private prisma: PrismaService) {
 		this.pendingPlayer = new Array();
 		this.gameRoom = new Map();
+		//tst
+		this.cli = new Array();
+		this.a = 0;
+
 		this.check = 0;
 		this.hitWall = false;
 	}
 
 	@WebSocketServer()
 	ws: Server;
+
+
+
+	//just test
+	@SubscribeMessage('play')
+	play(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+		//this.Gateway.socketUser
+		//this.cli.push(client);
+		//this.a++;
+		//if (this.a === 2) {
+		//	this.cli[0].join('ana');
+		//	this.cli[1].join('ana');
+		//	this.ws.to('ana').emit('popup');
+		//}
+
+		//const player: {key: string, value: string} = this.Gateway.findSocketMap(payload);
+		const player = this.Gateway.socketUser.get(payload);
+		if (!player)
+			return ;
+		console.log('play = ', player.value);
+		//this.ws.to(player.value).to(client.id).emit('popup');
+		//this.ws.to(player).to(client.id).emit('popup');
+		this.ws.to(player).emit('popup');
+		//this.ws.to(client.id).emit('popup');
+	}
+
+
+
 
 	async handleConnection(client: Socket, ...args: any[]) {
 		console.log('allez ', client.id);
@@ -106,10 +141,12 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 		let i = thatRoomGame[0].socketId === client.id ? 0 : 1;
 		thatRoomGame[i].emit = true;
 		if (thatRoomGame[0].emit && thatRoomGame[1].emit) {
-			thatRoomGame[0].emit = false;
-			thatRoomGame[1].emit = false;
-			for (let i: number = 0; i != 2; i++)
+			//thatRoomGame[0].emit = false;
+			//thatRoomGame[1].emit = false;
+			for (let i: number = 0; i != 2; i++) {
 				await this.switchPlayerStatus(thatRoomGame[i].playerId, "at game");
+				thatRoomGame[i].emit = false;
+			}
 			//console.log('play all');
 			this.ws.to(payload.room).emit('playNow');
 		}
@@ -306,7 +343,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('moveBall')
 	moveBall(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
-		//console.log('moveBall');
+		console.log('moveBall');
 		let thatRoomGame = this.gameRoom.get(payload.room);
 		let i = thatRoomGame[0].socketId === client.id ? 0 : 1;
 		const data = {
@@ -334,10 +371,17 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			//hitwall add to the player
 			if (thatRoomGame[0].paddle.win || thatRoomGame[1].paddle.win) {
 				this.resetGameData(thatRoomGame);
+				//if ((thatRoomGame[0].paddle.winTimes === 5) || (thatRoomGame[1].paddle.winTimes === 5)) {
 				if ((thatRoomGame[0].paddle.winTimes + thatRoomGame[1].paddle.winTimes) === 5) {
 					console.log('finish game');
 					//******here i will send the data of the winnign and losing players
-					this.ws.to(payload.room).emit("finishGame");
+					//this.ws.to(payload.room).emit("finishGame");
+					for (let i: number = 0; i != 2; i++) {
+						thatRoomGame[i].emit = false;
+						thatRoomGame[i].paddle.win = false;
+					}
+					return ;
+
 					//await this.addGameHistory([thatRoomGame[0].playerId, thatRoomGame[1].playerId],
 					//	(thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes) ? 0 : 1);
 					//await this.addPlayerLevelXp((thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes)

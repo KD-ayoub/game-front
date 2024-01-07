@@ -126,6 +126,7 @@ export default function Bot() {
               imageAlt: "Custom image",
               allowOutsideClick: false,
             }).then(res => {
+              console.log('then = ', res);
               router.push('/game')
             });
             return () => {
