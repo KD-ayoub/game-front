@@ -251,6 +251,16 @@ export class ChatController{
 		return await this.chatService.friends_states(session.passport.user.id);
 	}
 
+
+	@UseGuards(AuthenticatedGuard)
+	@Post('channel_password')
+	async channel_password(@Session() session: Record<string,any>,@Body() data : update_password)
+	{
+		if (!data.channel_id || !data.password || !data.type)
+			throw new HttpException("error",HttpStatus.FORBIDDEN);
+		if (await this.chatService.channel_password(data))
+			throw new HttpException("error",HttpStatus.FORBIDDEN);
+	}
 	// remove and change password from a channel
 
 }

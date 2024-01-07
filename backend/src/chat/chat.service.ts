@@ -1359,4 +1359,43 @@ export class chatService {
 			return blocked;
 		}
 	}
+
+	async  channel_password(data: update_password)
+	{
+		try {
+			if (data.type == RoomType.PUBLIC)
+			{
+				const room = await this.prisma.room.update({
+					where: {
+						id: data.channel_id
+					},
+					data: {
+						password: null,
+						type: RoomType.PUBLIC
+					}
+				})
+				if (!room)
+					return false;
+				return true;
+			}
+			else if (data.type == RoomType.PROTECTED)
+			{
+				const room = await this.prisma.room.update({
+					where: {
+						id: data.channel_id
+					},
+					data: {
+						password: await this.hash_password(data.password),
+						type: RoomType.PROTECTED
+					}
+				})
+				if (!room)
+					return false;
+				return true;
+			}
+		} catch (error) {
+			return false;
+		}
+		return false;
+	}
 }
