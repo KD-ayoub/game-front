@@ -593,6 +593,7 @@ export class chatService {
 				return 3;
 			}
 		} catch (error) {
+			console.log(error);
 			return 2;
 		}
 		return 2;

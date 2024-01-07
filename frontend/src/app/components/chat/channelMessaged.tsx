@@ -30,6 +30,8 @@ import {
 import { join_protected_channel } from "@/app/types/join_protected_channelType";
 import { create_channel } from "@/app/types/createChannelType";
 import toast, { Toaster } from "react-hot-toast";
+import { on } from "events";
+import { error } from "console";
 
 // type friendT = { nickname: string; picture: string; unread: number };
 
@@ -152,8 +154,20 @@ export default function ChannelMessaged({
       }
     );
     if (!getChannel.ok) {
+      console.log(getChannel.status);
+      console.log(channel_protected.password);
       // throw new Error("Network response was not ok");
     }
+    if (getChannel.ok) {
+      setStatuspwd(true);
+      setJoin_protected_channel({
+        id: "",
+        password: "",
+      });
+      setOpenModalProtected(false);
+      setOpenModalProtected(false);
+    }
+
     console.log("check password ", getChannel);
   };
 
@@ -374,7 +388,7 @@ export default function ChannelMessaged({
                                   id="password"
                                   placeholder="password"
                                   required
-                                  color="default"
+                                  className="text-[#000]"
                                   onChange={(event) =>
                                     setJoin_protected_channel({
                                       id: channel.id,
