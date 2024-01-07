@@ -16,6 +16,7 @@ import { DataChannelConversationType } from "@/app/types/dataChannelConversation
 import lwaghch from "../../assets/svg/chat/lwaghch.svg";
 import { MemberListChannel, aboutMe } from "../../types/memberListChannel";
 import { ioClient } from "@/app/api/instance";
+import { Dropdown } from "flowbite-react";
 
 // const socket = io("");
 
@@ -83,7 +84,139 @@ export default function ChannelConversation({
     //console.log("challenge");
   };
 
+  const handleBan = (idMember: string) => {
+    const banMember = async () => {
+      const response = await fetch(`http://localhost:3001/chat/ban`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel_id: channelSelected.id,
+          member_id: idMember,
+        }),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Ban member not ok");
+      } else {
+        console.log("Ban member ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    }
+    banMember();
+  };
+
+  const handleKick = (idMember: string) => {
+    const kickMember = async () => {
+      const response = await fetch(`http://localhost:3001/chat/kick`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel_id: channelSelected.id,
+          member_id: idMember,
+        }),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Kick member not ok");
+      } else {
+        console.log("Kick member ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    }
+    kickMember();
+  }
+
+  const handleMute = (idMember: string) => {
+    const muteMember = async () => {
+      const response = await fetch(`http://localhost:3001/chat/mute`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel_id: channelSelected.id,
+          member_id: idMember,
+        }),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Mute member not ok");
+      } else {
+        console.log("Mute member ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    }
+    muteMember();
+  }
+
+  const handleSettingAdmin = (idMember: string) => {
+    const setAdminMember = async () => {
+      const response = await fetch(`http://localhost:3001/chat/add_admin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel_id: channelSelected.id,
+          member_id: idMember,
+        }),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Set admin member not ok");
+      } else {
+        console.log("Set admin member ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    }
+    setAdminMember();
+  }
+
   const handleLeaveChannel = () => {
+    const leaveChannel = async () => {
+      const response = await fetch(`http://localhost:3001/chat/leave`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channel: channelSelected.id,
+        }),
+
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Loeave channel not ok");
+      } else {
+        console.log("Loeave channel ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // channelSelected_rf();
+      // members_rf();
+      // aboutMe_rf();
+    };
+    leaveChannel();
   };
 
   useEffect(() => {
@@ -120,15 +253,14 @@ export default function ChannelConversation({
       if (!getconv.ok) {
         throw new Error("Network response was not ok");
       }
-	  const conv = await getconv.json();
+      const conv = await getconv.json();
       //const conv: DataChannelConversationType[] = await getconv.json();
       setDataConversation(conv);
     }
     fetcher();
-
   }, [channelSelected]);
 
-  useEffect( () => {
+  useEffect(() => {
     const client = ioClient.getSocketClient();
     client.on("members_refresh", (data) => {
       setmembers_ref(!members_ref);
@@ -136,7 +268,7 @@ export default function ChannelConversation({
     return () => {
       client.off("members_refresh");
     };
-  }, [])
+  }, []);
 
   useEffect(() => {
     async function fetcher() {
@@ -156,7 +288,7 @@ export default function ChannelConversation({
       setMemberList(await getconv.json());
     }
     fetcher();
-  }, [channelSelected,members_ref]);
+  }, [channelSelected, members_ref]);
 
   useEffect(() => {
     async function fetcher() {
@@ -176,8 +308,7 @@ export default function ChannelConversation({
       setAboutMe(await getconv.json());
     }
     fetcher();
-  }, [channelSelected,members_ref]);
-
+  }, [channelSelected, members_ref]);
 
   return (
     <>
@@ -416,18 +547,24 @@ export default function ChannelConversation({
                         {aboutMe &&
                           aboutMe.role === "admin" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="selectOwnerOptions">
-                              <select name="" id="">
-                                mok
-                              </select>
+                            <div className="memberSee">
+                              <button className="Challenge-btn">
+                                <i className="ri-ping-pong-line">Challenge</i>
+                              </button>
                             </div>
                           )}
                         {/* if im an owner i can see this select option */}
                         {aboutMe &&
                           aboutMe.role === "owner" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="dropDownOwnerPermissions">
-                              
+                            <div className="memberSee">
+                              <Dropdown label="Dropdown" inline>
+                                <Dropdown.Item className="text-[12px]" onClick={()=> handleChallenge} >Challenge</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={() => handleMute(member.id)} >Mute</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={()=> handleKick(member.id)} >Kick</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={()=> handleBan(member.id)} >Ban</Dropdown.Item>
+                                {/* <Dropdown.Item className="text-[12px]">Set Admin</Dropdown.Item> */}
+                              </Dropdown>
                             </div>
                           )}
                       </div>
@@ -469,22 +606,27 @@ export default function ChannelConversation({
                         {aboutMe &&
                           aboutMe.role === "admin" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="selectOwnerOptions">
-                              <select name="" id="">
-                                mok
-                              </select>
+                            <div className="memberSee">
+                              <Dropdown label="Dropdown" inline>
+                                <Dropdown.Item className="text-[12px]" onClick={() => handleChallenge} >Challenge</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={()=> handleMute(member.id)} >Mute</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={()=> handleKick(member.id)} >Kick</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={()=>handleBan(member.id)} >Ban</Dropdown.Item>
+                              </Dropdown>
                             </div>
                           )}
                         {/* if im an owner i can see this select option */}
                         {aboutMe &&
                           aboutMe.role === "owner" &&
                           aboutMe.nickname !== member.nickname && (
-                            <div className="selectOwnerOptions">
-                              <select name="" id="">
-                                mok
-                                <option value="mok">mok</option>
-                                <option value="mok">bak</option>
-                              </select>
+                            <div className="memberSee">
+                              <Dropdown label="Dropdown" inline>
+                                <Dropdown.Item className="text-[12px]" onClick={()=> handleChallenge} >Challenge</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={()=> handleSettingAdmin(member.id)} >Set Admin</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={()=> handleMute(member.id)} >Mute</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={() => handleKick(member.id)} >Kick</Dropdown.Item>
+                                <Dropdown.Item className="text-[12px]" onClick={() => handleBan(member.id)} >Ban</Dropdown.Item>
+                              </Dropdown>
                             </div>
                           )}
                       </div>
