@@ -233,6 +233,7 @@ export default function ChannelConversation({
       }
       const data = await response.json();
       console.log(data);
+      console.log("newChannel", newChannel);
       // channelSelected_rf();
       // members_rf();
       // aboutMe_rf();
@@ -500,7 +501,7 @@ export default function ChannelConversation({
                   </Button>
                   <Modal
                     show={openModalEditChannel}
-                    size="xl"
+                    size="2xl"
                     onClose={() => setOpenModalEditChannel(false)}
                     popup
                   >
@@ -514,13 +515,14 @@ export default function ChannelConversation({
                           {/* <Label htmlFor="TypeChannel" value="Select type of channel" /> */}
                           <Dropdown
                             className=""
-                            label={`Type of Channel: ${channelSelected.type}`}
-                            dismissOnClick={false}
+                            label={`Type of Channel: ${new_typeChannel}`}
+                            dismissOnClick={true}
                           >
                             <Dropdown.Item
                               className="typeChannelSelect"
                               onClick={() => {
                                 setNew_typeChannel("PUBLIC");
+                                setUpdateChannelType({channel_id:channelSelected.id, password:new_passwordChannel, type:"PUBLIC"});
                               }}
                             >
                               Public
@@ -529,6 +531,7 @@ export default function ChannelConversation({
                               className="typeChannelSelect"
                               onClick={() => {
                                 setNew_typeChannel("PROTECTED");
+                                setUpdateChannelType({channel_id:channelSelected.id, password:new_passwordChannel, type:"PROTECTED"});
                               }}
                             >
                               Protected
@@ -544,6 +547,7 @@ export default function ChannelConversation({
                                   color="default"
                                   onChange={(pwd) => {
                                     setNew_passwordChannel(pwd.target.value);
+                                    setUpdateChannelType({channel_id:channelSelected.id, password:pwd.target.value, type:new_typeChannel});
                                   }}
                                 />
                               </div>
@@ -555,6 +559,9 @@ export default function ChannelConversation({
                             onClick={() => {
                               setUpdateChannelType({channel_id:channelSelected.id, password:new_passwordChannel, type:new_typeChannel});
                               handleEditChannel(UpdateChannelType);
+                              setNew_passwordChannel("");
+                              setNew_typeChannel("");
+                              setUpdateChannelType({channel_id:channelSelected.id, password:"", type: channelSelected.type});
                               // console.log("newChannel", newChannel);
                               // handleCreateChannel({name: new_nameChannel, password:new_passwordChannel, type:new_typeChannel});
                               // handlImageChange();

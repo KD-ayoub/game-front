@@ -544,7 +544,10 @@
 }
 
 .channelOverview {
-  border-radius: 9999px;
+  border-radius: 99999px;
+  width: 150px;
+  height: 150px;
+
 }
 
 .infoChannel .channelName {
