@@ -172,6 +172,7 @@ export default function ChannelMessaged({
   };
 
   const handleCreateChannel = async (newChannel: create_channel) => {
+    console.log("before", newChannel);
     const getChannel = await fetch(
       `http://localhost:3001/chat/create_channel`,
       {
@@ -195,7 +196,7 @@ export default function ChannelMessaged({
       setOpenModalCreacteChannel(false);
       setStatusCreateChannel(true);
     }
-    console.log(newChannel);
+    console.log("after", newChannel);
     console.log("Create Channel", getChannel);
   };
 
@@ -228,7 +229,7 @@ export default function ChannelMessaged({
   async function PutImage(formData: FormData) {
     console.log("file sent", formData);
     const response = await fetch(
-      `http://localhost:3001/chat/channel_photo/${new_nameChannel}}`,
+      `http://localhost:3001/chat/channel_photo/${new_nameChannel}`,
       {
         method: "POST",
         body: formData,
@@ -240,7 +241,7 @@ export default function ChannelMessaged({
     } else {
       console.log("success put image");
     }
-    return await response.json();
+    
   }
 
   const handleNewChannel = (newchnl: create_channel) => {
@@ -552,8 +553,8 @@ export default function ChannelMessaged({
                       variant="outlined"
                       label="Password"
                       color="default"
-                      onChange={(event) => {
-                        setNew_passwordChannel(event.target.value);
+                      onChange={(pwd) => {
+                        setNew_passwordChannel(pwd.target.value);
                         handleNewChannel({
                           name: new_nameChannel,
                           password: new_passwordChannel,
@@ -569,12 +570,11 @@ export default function ChannelMessaged({
                   className="bg-[#E95A3A]"
                   onClick={() => {
                     // console.log("newChannel", newChannel);
+
+                    handleCreateChannel({name: new_nameChannel, password:new_passwordChannel, type:new_typeChannel});
                     handlImageChange();
-                    handleCreateChannel(newChannel);
-                    
                   }}
                 >
-                  
                   {"Create"}
                 </Button>
                 <Button
