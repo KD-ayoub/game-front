@@ -44,6 +44,6 @@ export class chatGateway implements OnGatewayConnection
 		const recieversocket_id = this.appGateway.get_socketID_by_id(body.recieverId);
 
 		// if no socket found don't emit
-		this.appGateway.server.to(recieversocket_id).emit('chat',body);
+		//this.appGateway.server.to(recieversocket_id).emit('chat',body);
 	}
 }

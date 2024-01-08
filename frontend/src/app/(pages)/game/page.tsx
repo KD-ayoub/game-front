@@ -61,6 +61,10 @@ export default function Game() {
     const SocketClient = ioClient.getSocketClient();
     //SocketClient.emit("play", "40310425-c880-4890-9052-29fb2637dae7");
     SocketClient.emit("playWithFriend", {playerId: id, nickName: null});
+    //SocketClient.on('ana', () => {
+    //  console.log('cooooool');
+    //  //router.push('/game/user');
+    //})
     //SocketClient.on("popup", () => {
     //  console.log('zabiiiiiiiiiiiiiii');
     //})
@@ -68,6 +72,11 @@ export default function Game() {
     //playFriendTst();
     //setOpenMapMoadl(!openMapModal);
   }
+  //useEffect(() => {
+  //  console.log('OOOOOOOO');
+  //  ioClient;
+
+  //}, []);
 
   //useEffect(() => {
   //  const SocketClient = ioClient.getSocketClient();

@@ -6,6 +6,7 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 import { ioClient, SocketClient } from "@/app/api/instance";
 import { type Socket, io } from "socket.io-client";
 import { Manager } from "socket.io-client/debug";
+import { useRouter } from 'next/navigation';
 
 import Profilepic from "@/app/assets/svg/profile.svg";
 import Swal from "sweetalert2";
@@ -35,6 +36,7 @@ export default function UserContextProvider({
     nickName: '',
   });
 
+    const router = useRouter();
   async function fetcher() {
     const response = await fetch('http://localhost:3001/auth/getUserStatus', {
       method: 'GET',
@@ -73,6 +75,7 @@ export default function UserContextProvider({
         //console.log('then = ', res);
         if (res.hasOwnProperty('isConfirmed') && res.isConfirmed) {
           SocketClient.emit("joinPlayerGameRoom", data);
+          console.log('heee');
           // play game
         }
         else if (res.hasOwnProperty('isConfirmed') && !res.isConfirmed) {
@@ -82,6 +85,25 @@ export default function UserContextProvider({
         //router.push('/game')
       });
     });
+
+    SocketClient.on("ana", (data: { room: string }) => {
+      ioClient.room = data.room;
+      console.log("****** ", ioClient.room);
+      let color = "";
+      let colorbg = "";
+      color = "E95A3A";
+      colorbg = "F07559";
+      console.log('colooooor', color, colorbg);
+      router.push(`/game/user?color=${color}&colorbg=${colorbg}`);
+      //window.history.pushState("", "", "/game/user");
+      //window.location.href = "/game/user";
+    });
+
+    //SocketClient.on('ana', () => {
+    //  console.log('cooooool');
+    //  router.push('/game/user');
+    //  //router.push(`/game/user?color=${color}&colorbg=${colorbg}`);
+    //})
 
     // async function fetcher() {
     //   const response = await fetch('http://localhost:3001/auth/getUserStatus', {
