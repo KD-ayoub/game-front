@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { ioClient } from "@/app/api/instance";
 import {
   Header,
   SideBar,
@@ -22,64 +23,117 @@ import { ChannelChatType } from "@/app/types/ChannelChatType";
 
 export default function Chat() {
   const [isHumburgClicked, setisHumburgClicked] = useState(false);
+
   const marginbody = isHumburgClicked ? "ml-6" : "";
+
   const [option, setOption] = useState("Friends");
+
   const [messages, setMessages] = useState<string[]>([]);
+
   const [messageText, setMessageText] = useState<string>("");
+
   const [showConv, setShowConv] = useState(false); // set initial value to false
+
   const [friend_Selected, setfriend_Selected] = useState<FriendsChatType>();
+
   const [idOfChannelSelected, setIdOfChannelSelected] =
     useState<ChannelChatType>();
-  // const [friends, setFriends] = useState<FriendsChatType[]>([]);
+
+
+
+// states to refresh
   const [online_rf, setOnline_rf] = useState<boolean>(false);
-  const [friends_rf, setFriends_rf] = useState<boolean>(false);
   const [channel_rf, setChannel_rf] = useState<boolean>(false);
   const [channelSelected_rf, setChannelSelected] = useState<boolean>(false);
   const [members_rf, setmembers_ref] = useState<boolean>(false);
   const [aboutMe_rf, setAboutMe_rf] = useState<boolean>(false);
+  const [friends_rf, setFriends_rf] = useState<boolean>(false);
 
+  //console.log('Parent component state:', channel_rf);
+//////////////// friends /////////////////////////////
+	// friends list
+  const hundleFriends_rf = () => {
+    setFriends_rf(!friends_rf);
+  };
+	// friend selected
   const hundlefriend_Selected = (infoUser: FriendsChatType) => {
     setfriend_Selected(infoUser);
   };
 
+//////////////// channels /////////////////////////////
+	// channels list
+  const hundleChannel_rf = () => {
+    setChannel_rf((channel_rf)=> !channel_rf);
+  };
+	// channel selected
   const hundleIdOfChannelSelected = (infoChannel: ChannelChatType) => {
     setIdOfChannelSelected(infoChannel);
   };
 
+
+	// online list
   const hundleOnline_rf = () => {
     setOnline_rf(!online_rf);
   };
-  const hundleFriends_rf = () => {
-    setFriends_rf(!friends_rf);
-  };
-  const hundleChannel_rf = () => {
-    setChannel_rf(!channel_rf);
-  };
+
+	// channels selected  -----    i guess this one  doesn't have any purpose
   const hundleChannelSelected_rf = () => {
-    setChannelSelected(!channelSelected_rf);
+    setChannelSelected((channelSelected) => !channelSelected);
   };
+
+	// members list
   const hundleMembers_rf = () => {
-    setmembers_ref(!members_rf);
+    setmembers_ref((members_rf) => !members_rf);
   };
+
+	// about me  
   const hundleAboutMe_rf = () => {
-    setAboutMe_rf(!aboutMe_rf);
+    setAboutMe_rf((aboutMe_rf) => !aboutMe_rf);
   };
 
-  // useEffect(() => {
-  //   socket.on("message", (message: string) => {
-  //     setMessages([...messages, message]);
-  //   });
-  // }, [messages]);
+  const client = ioClient.getSocketClient();
 
-  // const sendMessage = () => {
-  //   socket.emit("sendMessage", { text: messageText });
-  //   setMessageText("");
-  // };
 
-  useEffect(() => {
-      console.log(online_rf, friends_rf, channel_rf, channelSelected_rf, members_rf, aboutMe_rf);
-  }, [online_rf]);
+// refresh channels
+useEffect(() => {
+  client.on("channels_ref", () => {
+    hundleChannel_rf();
+  })
+  return () => {
+  	client.off("channels_ref");
+  }
+}, [channel_rf]);
 
+// refresh members
+useEffect(() => {
+  client.on("members_ref", () => {
+    hundleMembers_rf();
+  })
+  return () => {
+  	client.off("members_ref");
+  }
+}, [channel_rf]);
+
+// refresh aboutme
+useEffect(() => {
+  client.on("about_ref", () => {
+    hundleAboutMe_rf();
+  })
+  return () => {
+  	client.off("about_ref");
+  }
+}, [channel_rf]);
+
+
+useEffect(() => {
+client.on("leave", () => {
+  	let data : ChannelChatType = {id: "", nameOfChannel: "", isJoined: false, photo : "", type: ""};
+	hundleIdOfChannelSelected(data);
+})
+  return () => {
+  	client.off("1");
+  }
+})
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -101,12 +155,12 @@ export default function Chat() {
           <div className="chat-left-side">
             {!showConv && (
               <OnlineNow
-                online_rf={hundleOnline_rf}
-                friends_rf={hundleFriends_rf}
-                channel_rf={hundleChannel_rf}
-                channelSelected_rf={hundleChannelSelected_rf}
-                members_rf={hundleMembers_rf}
-                aboutMe_rf={hundleAboutMe_rf}
+                online_rf={online_rf}
+                friends_rf={friends_rf}
+                channel_rf={channel_rf}
+                channelSelected_rf={channelSelected_rf}
+                members_rf={members_rf}
+                aboutMe_rf={aboutMe_rf}
               />
             )}{" "}
             {/* only render if !showConv */}
@@ -126,24 +180,24 @@ export default function Chat() {
             {option === "Friends" && !showConv && (
               <FriendsMessaged
                 onSelectFriend={hundlefriend_Selected}
-                online_rf={hundleOnline_rf}
-                friends_rf={hundleFriends_rf}
-                channel_rf={hundleChannel_rf}
-                channelSelected_rf={hundleChannelSelected_rf}
-                members_rf={hundleMembers_rf}
-                aboutMe_rf={hundleAboutMe_rf}
+                online_rf={online_rf}
+                friends_rf={friends_rf}
+                channel_rf={channel_rf}
+                channelSelected_rf={channelSelected_rf}
+                members_rf={members_rf}
+                aboutMe_rf={aboutMe_rf}
                 // onChange={(value: boolean) => setShowConv(value)}
               />
             )}
             {option === "Channels" && !showConv && (
               <ChannelMessaged
                 onSelectChannel={hundleIdOfChannelSelected}
-                online_rf={hundleOnline_rf}
-                friends_rf={hundleFriends_rf}
-                channel_rf={hundleChannel_rf}
-                channelSelected_rf={hundleChannelSelected_rf}
-                members_rf={hundleMembers_rf}
-                aboutMe_rf={hundleAboutMe_rf}
+                online_rf={online_rf}
+                friends_rf={friends_rf}
+                channel_rf={channel_rf}
+                channelSelected_rf={channelSelected_rf}
+                members_rf={members_rf}
+                aboutMe_rf={aboutMe_rf}
                 // onChange={(value: boolean) => setShowConv(value)}
               />
             )}
@@ -152,23 +206,25 @@ export default function Chat() {
           {option === "Friends" && friend_Selected && (
             <FriendConversation
               friendSelected={friend_Selected}
-              online_rf={hundleOnline_rf}
-              friends_rf={hundleFriends_rf}
-              channel_rf={hundleChannel_rf}
-              channelSelected_rf={hundleChannelSelected_rf}
-              members_rf={hundleMembers_rf}
-              aboutMe_rf={hundleAboutMe_rf}
+              online_rf={online_rf}
+              friends_rf={friends_rf}
+              channel_rf={channel_rf}
+              channelSelected_rf={channelSelected_rf}
+              members_rf={members_rf}
+              aboutMe_rf={aboutMe_rf}
             />
           )}
           {option === "Channels" && idOfChannelSelected && (
             <ChannelConversation
+           		onSelectChannel={hundleIdOfChannelSelected}
+			  blan={hundleChannelSelected_rf}
               channelSelected={idOfChannelSelected}
-              online_rf={hundleOnline_rf}
-              friends_rf={hundleFriends_rf}
-              channel_rf={hundleChannel_rf}
-              channelSelected_rf={hundleChannelSelected_rf}
-              members_rf={hundleMembers_rf}
-              aboutMe_rf={hundleAboutMe_rf}
+              online_rf={online_rf}
+              friends_rf={friends_rf}
+              channel_rf={channel_rf}
+              channelSelected_rf={channelSelected_rf}
+              members_rf={members_rf}
+              aboutMe_rf={aboutMe_rf}
             />
           )}
         </div>

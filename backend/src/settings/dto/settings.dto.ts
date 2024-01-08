@@ -3,7 +3,7 @@ import { IsBoolean, IsString, IsOptional } from 'class-validator';
 export class SettingsDto {
   @IsString()
   @IsOptional()
-  name: string;
+  full_name: string;
 
   @IsString()
   @IsOptional()

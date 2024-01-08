@@ -32,6 +32,8 @@ import { UpdateChannelType } from "@/app/types/updateChannelType";
 // const socket = io("");
 
 export default function ChannelConversation({
+  onSelectChannel,
+  blan,
   channelSelected,
   online_rf,
   friends_rf,
@@ -40,13 +42,15 @@ export default function ChannelConversation({
   members_rf,
   aboutMe_rf,
 }: {
+  onSelectChannel: (test: ChannelChatType) => void;
+  blan: () => void;
   channelSelected: ChannelChatType;
-  online_rf: () => void;
-  friends_rf: () => void;
-  channel_rf: () => void;
-  channelSelected_rf: () => void;
-  members_rf: () => void;
-  aboutMe_rf: () => void;
+  online_rf: boolean;
+  friends_rf: boolean;
+  channel_rf: boolean;
+  channelSelected_rf: boolean;
+  members_rf: boolean;
+  aboutMe_rf: boolean;
 }) {
   // const { channelSelected } = friend;
   // information about the channel conversation
@@ -89,7 +93,8 @@ export default function ChannelConversation({
   };
 
   const handleClickBtnBack = () => {
-    // showConv = false;
+  	let data : ChannelChatType = {id: "", nameOfChannel: "", isJoined: false, photo : "", type: ""};
+	onSelectChannel(data);
   };
 
   // handle send message
@@ -103,7 +108,6 @@ export default function ChannelConversation({
   };
 
   const handleChallenge = () => {
-    //console.log("challenge");
   };
 
   const handleBan = (idMember: string) => {
@@ -283,7 +287,6 @@ export default function ChannelConversation({
     const client = ioClient.getSocketClient();
     if (!channelSelected) return;
     client.on(channelSelected.id, (data) => {
-      console.log("socket sended  : ", data);
       setDataConversation((dataConversation) => [...dataConversation, data]);
     });
     return () => {
@@ -293,73 +296,72 @@ export default function ChannelConversation({
 
   useEffect(() => {
     async function fetcher() {
-      const getconv = await fetch(
-        `http://localhost:3001/chat/list_room_messsages/${channelSelected.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      if (!getconv.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const conv = await getconv.json();
-      //const conv: DataChannelConversationType[] = await getconv.json();
-      setDataConversation(conv);
+		if (channelSelected.isJoined)
+		{
+
+    	  const getconv = await fetch(
+    	    `http://localhost:3001/chat/list_room_messsages/${channelSelected.id}`,
+    	    {
+    	      method: "GET",
+    	      headers: {
+    	        "Content-Type": "application/json",
+    	      },
+    	      credentials: "include",
+    	    }
+    	  );
+    	  if (!getconv.ok) {
+    	    throw new Error("Network response was not ok");
+    	  }
+		  const conv = await getconv.json();
+    	  setDataConversation(conv);
+		}
     }
     fetcher();
   }, [channelSelected]);
 
   useEffect(() => {
-    const client = ioClient.getSocketClient();
-    client.on("members_refresh", (data) => {
-      setmembers_ref(!members_ref);
-    });
-    return () => {
-      client.off("members_refresh");
-    };
-  }, []);
-
-  useEffect(() => {
     async function fetcher() {
-      const getconv = await fetch(
-        `http://localhost:3001/chat/members/${channelSelected.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      if (!getconv.ok) {
-        throw new Error("Network response was not ok");
-      }
-      setMemberList(await getconv.json());
+		if (channelSelected.isJoined)
+		{
+    	  	const getconv = await fetch(
+    	    `http://localhost:3001/chat/members/${channelSelected.id}`,
+    	    {
+    	      method: "GET",
+    	      headers: {
+    	        "Content-Type": "application/json",
+    	      },
+    	      credentials: "include",
+    	    }
+    	  );
+    	  if (!getconv.ok) {
+    	    throw new Error("Network response was not ok");
+    	  }
+		  console.log("fetching members was done")
+    	  setMemberList(await getconv.json());
+		}
     }
     fetcher();
-  }, [channelSelected, members_ref]);
+  }, [channelSelected,members_rf]);
 
   useEffect(() => {
     async function fetcher() {
-      const getconv = await fetch(
-        `http://localhost:3001/chat/role/${channelSelected.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      // if (!getconv.ok) {
-      //   throw new Error("Network response was not ok");
-      // }
-      setAboutMe(await getconv.json());
-    }
+		if (channelSelected.isJoined)
+		{
+    	  const getconv = await fetch(
+    	    `http://localhost:3001/chat/role/${channelSelected.id}`,
+    	    {
+    	      method: "GET",
+    	      headers: {
+    	        "Content-Type": "application/json",
+    	      },
+    	      credentials: "include",
+    	    }
+    	  );
+    	   if (getconv.ok) {
+    	  		setAboutMe(await getconv.json());
+    	   }
+    	}
+	}
     fetcher();
   }, [channelSelected, members_ref]);
 
@@ -370,7 +372,7 @@ export default function ChannelConversation({
         <>
           <div className="channelConv">
             <div className="barInfo">
-              <button className="btn-back">
+              <button className="btn-back" onClick={handleClickBtnBack}>
                 <i className="ri-arrow-left-line"></i>
               </button>
               <div className="UserInfo">

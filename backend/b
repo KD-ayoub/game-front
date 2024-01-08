@@ -1,0 +1,4 @@
+listen on block / unblock   "block"
+listen on add friend / delete friend "friend"
+listen on online / in game / offline "stat"
+listen on gamehistory "gamehistory"

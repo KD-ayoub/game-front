@@ -46,12 +46,12 @@ export default function ChannelMessaged({
 }: //returnfromChannel,
 {
   onSelectChannel: (id: ChannelChatType) => void;
-  online_rf: () => void;
-  friends_rf: () => void;
-  channel_rf: () => void;
-  channelSelected_rf: () => void;
-  members_rf: () => void;
-  aboutMe_rf: () => void;
+  online_rf: boolean;
+  friends_rf: boolean;
+  channel_rf: boolean;
+  channelSelected_rf: boolean;
+  members_rf: boolean;
+  aboutMe_rf: boolean;
   //returnfromChannel: ()
 }) {
   const [channel, setChannel] = useState<ChannelChatType[]>([]);
@@ -87,7 +87,6 @@ export default function ChannelMessaged({
   };
 
   useEffect(() => {
-    console.log(openModalProtected);
   }, ["mok protcd", openModalProtected]);
 
   const filter_Search = filterSearch();
@@ -156,9 +155,7 @@ export default function ChannelMessaged({
       }
     );
     if (!getChannel.ok) {
-      console.log(getChannel.status);
-      console.log(channel_protected.password);
-      // throw new Error("Network response was not ok");
+		return ;
     }
     if (getChannel.ok) {
       setStatuspwd(true);
@@ -169,12 +166,9 @@ export default function ChannelMessaged({
       setOpenModalProtected(false);
       setOpenModalProtected(false);
     }
-
-    console.log("check password ", getChannel);
   };
 
   const handleCreateChannel = async (newChannel: create_channel) => {
-    console.log("before", newChannel);
     const getChannel = await fetch(
       `http://localhost:3001/chat/create_channel`,
       {
@@ -199,8 +193,6 @@ export default function ChannelMessaged({
       setOpenModalCreacteChannel(false);
       setStatusCreateChannel(true);
     }
-    console.log("after", newChannel);
-    console.log("Create Channel", getChannel);
   };
 
   async function handlImageChange() {
@@ -208,9 +200,7 @@ export default function ChannelMessaged({
     let checkItem: string = "";
     formData.append("file", selectedImage ?? "https://placehold.co/400");
     formData.forEach((item) => (checkItem = item.toString()));
-    console.log("checkItem", checkItem);
     if (selectedImage) {
-      console.log("shoul not enter");
       const toastId = toast.loading("Saving changes", {
         style: {
           backgroundColor: "#383546",
@@ -225,12 +215,10 @@ export default function ChannelMessaged({
           color: "white",
         },
       });
-      console.log("putted", putted);
     }
   }
 
   async function PutImage(formData: FormData) {
-    console.log("file sent", formData);
     const response = await fetch(
       `http://localhost:3001/chat/channel_photo/${new_nameChannel}`,
       {
@@ -240,9 +228,7 @@ export default function ChannelMessaged({
       }
     );
     if (!response.ok) {
-      console.log("Error ,response of put image ");
     } else {
-      console.log("success put image");
     }
   }
 
@@ -255,16 +241,6 @@ export default function ChannelMessaged({
 
   //  i need to list in sockets if i delete a channel or if i add a channel
 
-  //console.log("Channel", channel);
-  // console.log("channel li klikit 3lih", channelSelected);
-  // console.log("password li dkhalt", join_protected_channel?.password);
-  // console.log(channelSelected?.isJoined);
-  console.log(
-    new_nameChannel,
-    new_passwordChannel,
-    new_typeChannel,
-    selectedImage
-  );
 
   return (
     <>
@@ -476,22 +452,13 @@ export default function ChannelMessaged({
 
                 <div>
                   <FileInput
-                    // className="hidden"
-                    // type="file"
                     accept="image/png, image/jpeg, image/jpg"
                     id="profile-img"
-                    // ref={fileinputRef}
                     onChange={(e) => {
                       e.preventDefault();
                       if (e.target.files) {
                         const file = e.target.files[0];
                         if (e.target.files.length > 0) {
-                          // setCreateObjectURL(URL.createObjectURL(file));
-                          // setDataSettings({
-                          //   ...dataSettings,
-                          //   photo_path: ${ProfileImg.src},
-                          // });
-                          // console.log("imagechange:", createObjectURL);
                           setSelectedImage(file);
                         }
                       }

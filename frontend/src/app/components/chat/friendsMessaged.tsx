@@ -22,12 +22,12 @@ export default function FriendsMessaged({
   aboutMe_rf,
 }: {
   onSelectFriend: (friendSelected: FriendsChatType) => void;
-  online_rf: () => void;
-  friends_rf: () => void;
-  channel_rf: () => void;
-  channelSelected_rf: () => void;
-  members_rf: () => void;
-  aboutMe_rf: () => void;
+  online_rf: boolean;
+  friends_rf: boolean;
+  channel_rf: boolean;
+  channelSelected_rf: boolean;
+  members_rf: boolean;
+  aboutMe_rf: boolean;
 }) {
   const [friends, setFriends] = useState<FriendsChatType[]>([]);
   const [searching, setSearching] = useState("");

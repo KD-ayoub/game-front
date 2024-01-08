@@ -23,15 +23,12 @@ export class chatGateway implements OnGatewayConnection
 
 	private logger = new Logger('ChatGateway');
 	handleConnection(client: Socket, ...args: any[]) {
-		console.log("salina");
 	}
-
 
 	// send a message in direct messages
 	@SubscribeMessage("dm")
 	async send_message(@MessageBody() body: Direct_message, @ConnectedSocket() client : Socket)
 	{
-		//console.log(receiver_pic_name);
 
 		let sender_obj : message_history = {
 			mine: true,
@@ -48,22 +45,16 @@ export class chatGateway implements OnGatewayConnection
 			name: "you",
 			picture: "default"
 		};
-		//console.log(!body,!body.content,!body.recieverId,!body.content.message_content,!body.content.sended_at);
+
 		if (!body  || !body.recieverId || !body.message)
 			return ;
 
-		//this.logger.log(body.message);
+		this.logger.log(body.message);
 
-		// get id of user by socket id
 		const user : string = this.appGateway.get_id_by_socketId(client.id)
 
-		// get pic and name of the sender
 		if (!user)
-		{
-			console.log(client.rooms);
-			//while(1);
 			return ;
-		}
 
 		const sender_pic_name = await this.chatService.get_picture_name(user);
 		sender_obj.picture = sender_pic_name.profile.photo_path;
@@ -74,17 +65,9 @@ export class chatGateway implements OnGatewayConnection
 		if ( !( await this.chatService.create_a_direct_message(user,body,recieversocket_id,client.id) ) )
 			return false;
 
-		console.log("hahouwa ja")
-		console.log("zbi");
-		// get all connected sockets and userid
-		// this.appGateway.print();
-		// get socket id of the reciever
 
-		// if no socket found don't emit
 		this.appGateway.server.to(recieversocket_id).emit('chat',receiver_obj);
 		this.appGateway.server.to(client.id).emit('chat',sender_obj);
-
-		// if the message is the first message in the converstation emit to conversation list
 	}
 
 	// join to the socket room
@@ -102,7 +85,6 @@ export class chatGateway implements OnGatewayConnection
 	@SubscribeMessage('room')
 	async sendchannel(client: Socket, data: channel_msg)
 	{
-		console.log(data);
 		if (!data.channel_id || !data.content)
 			return ;
 		if (client.rooms.has(data.channel_id))

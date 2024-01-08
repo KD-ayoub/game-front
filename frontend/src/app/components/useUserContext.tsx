@@ -7,6 +7,8 @@ import { ioClient, SocketClient } from "@/app/api/instance";
 import { type Socket, io } from "socket.io-client";
 import { Manager } from "socket.io-client/debug";
 
+import Profilepic from "@/app/assets/svg/profile.svg";
+import Swal from "sweetalert2";
 type userType = {
   id: string;
   full_name: string;
@@ -51,6 +53,22 @@ export default function UserContextProvider({
   useEffect(() => {
     //console.log('************* profile');
     ioClient;
+    const SocketClient = ioClient.getSocketClient();
+    SocketClient.on("popup", () => {
+      console.log('llllllllll');
+            Swal.fire({
+              title: "You have lost",
+              text: "",
+              imageUrl: `${Profilepic.src}`,
+              imageWidth: 400,
+              imageHeight: 200,
+              imageAlt: "Custom image",
+              allowOutsideClick: false,
+            }).then(res => {
+              console.log('then = ', res);
+              //router.push('/game')
+            });
+    })
     // async function fetcher() {
     //   const response = await fetch('http://localhost:3001/auth/getUserStatus', {
     //     method: 'GET',

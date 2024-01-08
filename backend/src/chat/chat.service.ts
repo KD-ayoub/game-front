@@ -207,6 +207,7 @@ export class chatService {
 					is_blocked: true
 				}
 			});
+			this.appGateway.server.emit('block');
 			return true;
 
 		} catch (error) {
@@ -228,6 +229,7 @@ export class chatService {
 					is_blocked: false
 				}
 			});
+			this.appGateway.server.emit('block');
 			return true;
 
 		} catch (error) {
@@ -289,6 +291,8 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
+		// list channels
+		this.appGateway.server.emit('channels_ref','');
 		return true;
 	}
 
@@ -331,7 +335,14 @@ export class chatService {
 						{
 							ownerId: userid
 						}
-					]
+					],
+					NOT: {
+						banned: {
+							some: {
+								id:  userid
+							}
+						}
+					}
 				}
 			})
 			if (private_room)
@@ -348,7 +359,14 @@ export class chatService {
 		{
 			const rooms  = await this.prisma.room.findUnique({
 				where: {
-					id: channel.id
+					id: channel.id,
+					NOT: {
+						banned: {
+							some: {
+								id:  userid
+							}
+						}
+					}
 				},
 				select:{
 					name: true,
@@ -593,7 +611,6 @@ export class chatService {
 				return 3;
 			}
 		} catch (error) {
-			console.log(error);
 			return 2;
 		}
 		return 2;
@@ -642,7 +659,8 @@ export class chatService {
 		} catch (error) {
 			return 2;
 		}
-		this.appGateway.server.emit('members_refresh','refresh');
+		// list members -> except joiner
+		this.appGateway.server.emit('members_ref','');
 	}
 
 	async check_privileges(userid: string, member_id : string, channelid: string)
@@ -721,7 +739,10 @@ export class chatService {
 			} catch (error) {
 				return false;
 			}
-			this.appGateway.server.emit('members_refresh','refresh');
+		// list channels
+		this.appGateway.server.emit('channels_ref');
+		// list members -> except joiner
+		this.appGateway.server.emit('members_ref','');
 			return true;
 		}
 		return false;
@@ -942,7 +963,14 @@ export class chatService {
 			return false;
 		}
 		// i need to send a different event to refresh and to set the selected channel id to nothing
-		this.appGateway.server.emit('members_refresh','refresh');
+		// list channels
+		this.appGateway.server.emit('channels_ref','');
+		this.appGateway.server.emit('members_ref','');
+		this.appGateway.server.to(this.appGateway.get_socketID_by_id(channel.member_id)).emit('leave');
+		// leave socket room
+		
+		const client = this.appGateway.server.sockets.sockets.get(channel.member_id);
+		client.leave(channel.channel_id);
 		return true;
 	}
 
@@ -1024,8 +1052,15 @@ export class chatService {
 		} catch (error) {
 			return false;
 		}
-		// i need to send a different event to refresh and to set the selected channel id to nothing
-		this.appGateway.server.emit('members_refresh','refresh');
+
+		// refresh channels members and leave the member
+		this.appGateway.server.emit('channels_ref','');
+		this.appGateway.server.emit('members_ref','');
+		this.appGateway.server.to(this.appGateway.get_socketID_by_id(channel.member_id)).emit('leave');
+
+		// leave socket room
+		const client = this.appGateway.server.sockets.sockets.get(channel.member_id);
+		client.leave(channel.channel_id);
 		return true;
 	}
 
@@ -1069,6 +1104,9 @@ export class chatService {
 				obj.time = new_msg.createdAt;
 				obj.name = picture.nickName;
 			}
+			this.appGateway.server.emit('channels_ref','');
+			// list members -> except joiner
+			this.appGateway.server.emit('members_ref','');
 			return obj;
 		} catch (error) {
 			return obj;	
@@ -1103,7 +1141,13 @@ export class chatService {
 					const sockets = await this.appGateway.server.in(this.appGateway.get_socketID_by_id(userid)).fetchSockets();
 					const socket = sockets.find(socket => socket.id.toString() === this.appGateway.get_socketID_by_id(userid));
 					socket.leave(channel.channel);
-					this.appGateway.server.emit('members_refresh','refresh');
+					
+					this.appGateway.server.emit('channels_ref','');
+					this.appGateway.server.emit('members_ref','');
+					this.appGateway.server.to(this.appGateway.get_socketID_by_id(userid)).emit('leave');
+					const client = this.appGateway.server.sockets.sockets.get(userid);
+					client.leave(channel.channel);
+
 					return true;
 				} catch (error) {
 					return false;
@@ -1124,10 +1168,12 @@ export class chatService {
 					})
 					if (!room)
 						return false;
-					this.appGateway.server.socketsLeave(channel.channel);
 
+					this.appGateway.server.to(channel.channel).emit('leave');
+					this.appGateway.server.emit('channels_ref','');
+					this.appGateway.server.emit('members_ref','');
+					this.appGateway.server.socketsLeave(channel.channel);
 					// i need to send a different event to refresh and to set the selected channel id to nothing
-					this.appGateway.server.emit('members_refresh','refresh');
 					return true;
 				} catch (error) {
 					return false;
@@ -1376,6 +1422,10 @@ export class chatService {
 				})
 				if (!room)
 					return false;
+				// list channels
+				this.appGateway.server.emit('channels_ref','');
+				// list members -> except joiner
+				this.appGateway.server.emit('members_ref','');
 				return true;
 			}
 			else if (data.type == RoomType.PROTECTED)
@@ -1391,6 +1441,10 @@ export class chatService {
 				})
 				if (!room)
 					return false;
+				// list channels
+				this.appGateway.server.emit('channels_ref','');
+				// list members -> except joiner
+				this.appGateway.server.emit('members_ref','');
 				return true;
 			}
 		} catch (error) {
