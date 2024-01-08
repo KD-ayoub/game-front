@@ -142,9 +142,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		//console.log('bye = ', this.socketUser);
 	}
 
-	getKeyByValue(map: Map<any,any>,searchValue: any) {
+	getKeyByValue(searchValue: string) {
 		for (const [key, value] of this.socketUser.entries()) {
-			if (value == searchValue)
+			if (value.id == searchValue)
 				return key;
 		}
 	}
@@ -158,10 +158,11 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	get_id_by_socketId(socketid : string) {
-		return this.getKeyByValue(this.socketUser,socketid);
+		return this.getKeyByValue(socketid);
 	}
 
+
 	get_socketID_by_id(userid: string) {
-		return this.socketUser.get(userid);
+		return this.socketUser.get(userid).id;
 	}
 }
