@@ -36,7 +36,7 @@ export default function UserContextProvider({
     nickName: '',
   });
 
-    const router = useRouter();
+  const router = useRouter();
   async function fetcher() {
     const response = await fetch('http://localhost:3001/auth/getUserStatus', {
       method: 'GET',

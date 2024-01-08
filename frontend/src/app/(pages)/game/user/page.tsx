@@ -255,11 +255,20 @@ export default function RandomMatch() {
                 //SocketClient.disconnect();
                 //ioClient;
                 //Return evething to ZERO
-                playerScore = 0;
-                opponentScore = 0;
-                router.push('/profile');
+                //playerScore = 0;
+                //opponentScore = 0;
+                window.location.reload();
+                //router.push('/game');
+                //router.push({
+                //  pathname: '/game',
+                //},
+                //undefined,
+                //{ shallow: false }
+                //);
               }
             });
+                //window.location.reload();
+                router.push('/game');
             //console.log('');
             //router.push('/game');
             return ;

@@ -72,11 +72,14 @@ export default function Game() {
     //playFriendTst();
     //setOpenMapMoadl(!openMapModal);
   }
-  //useEffect(() => {
-  //  console.log('OOOOOOOO');
-  //  ioClient;
 
-  //}, []);
+  //let chk = false;
+  //useEffect(() => {
+  //  //console.log('OOOOOOOO');
+  //  //ioClient;
+  //  location.reload();
+  //  chk = true;
+  //}, [!chk]);
 
   //useEffect(() => {
   //  const SocketClient = ioClient.getSocketClient();

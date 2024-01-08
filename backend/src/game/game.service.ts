@@ -141,8 +141,13 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 		const playerSocket: Socket = this.Gateway.socketUser.get(payload.playerId);
 		const opponentSocket: Socket = this.Gateway.socketUser.get(payload.opponentId);
 		const roomName = this.generateNameGameRoom(payload.playerId, payload.opponentId);
-		console.log('lll = ', playerSocket);
-		console.log('ggg ', opponentSocket);
+		if (this.gameRoom.has(roomName)) {
+			console.log('zabiiiiiiiiiiiiiiiii');
+			this.ws.to(roomName).emit('ana', {room: roomName});
+		}
+
+		//console.log('lll = ', playerSocket);
+		//console.log('ggg ', opponentSocket);
 		playerSocket.join(roomName);
 		opponentSocket.join(roomName);
 		//console.log(playerSocket);
@@ -228,7 +233,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			//thatRoomGame[1].emit = false;
 			//console.log('zzzz');
 			for (let i: number = 0; i != 2; i++) {
-				await this.switchPlayerStatus(thatRoomGame[i].playerId, "at game");
+				//await this.switchPlayerStatus(thatRoomGame[i].playerId, "at game");
 				thatRoomGame[i].emit = false;
 			}
 			//console.log('play all');
@@ -267,7 +272,6 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			//const roomName: string = this.generateNameGameRoom() + ' ' + this.a.toString;
 			const roomName: string = this.generateNameGameRoom(
 				this.pendingPlayer[0].playerId, this.pendingPlayer[1].playerId);
-			//console.log('room = ', roomName);
 			//this.a++;
 			this.setDataToBothPlayer(this.pendingPlayer.slice(0, 2));
 			this.pendingPlayer[0].socket.join(roomName);
@@ -425,44 +429,73 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 
 		//thatRoomGame[i].emit = true;
 		thatRoomGame[i].emit = true;
-		console.log('gg = ', 0, '  ', thatRoomGame[0].emit);
-		console.log('gg = ', 1, '  ', thatRoomGame[1].emit);
+		//console.log('gg = ', 0, '  ', thatRoomGame[0].emit);
+		//console.log('gg = ', 1, '  ', thatRoomGame[1].emit);
 		//if (thatRoomGame[0].emit || thatRoomGame[1].emit) {
 		if (thatRoomGame[0].emit && thatRoomGame[1].emit) {
 			console.log('done with the game');
-			for (let i: number = 0; i != 2; i++)
-				thatRoomGame[i].emit = false;
-			await this.addGameHistory([thatRoomGame[0].playerId, thatRoomGame[1].playerId],
-				(thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes) ? 0 : 1);
-			await this.addPlayerLevelXp((thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes)
-				? thatRoomGame[0].playerId
-				: thatRoomGame[1].playerId);
+			//for (let i: number = 0; i != 2; i++)
+			//	thatRoomGame[i].emit = false;
+			//await this.addGameHistory([thatRoomGame[0].playerId, thatRoomGame[1].playerId],
+			//	(thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes) ? 0 : 1);
+			//await this.addPlayerLevelXp((thatRoomGame[0].paddle.winTimes > thatRoomGame[1].paddle.winTimes)
+			//	? thatRoomGame[0].playerId
+			//	: thatRoomGame[1].playerId);
+			this.resetGameData(thatRoomGame);
+
+		const sight = thatRoomGame[0].ball.calculeBallSight();
+		for (let i = 0; i != 2; i++) {
+			thatRoomGame[i].ball.setBallSight(sight);
+			thatRoomGame[i].ball.xpos = 50;
+			thatRoomGame[i].ball.ypos = 50;
+			thatRoomGame[i].paddle.pos = 50;
+			thatRoomGame[i].paddle.win = false;
+			thatRoomGame[i].paddle.winTimes = 0;
+		}
+
+			console.log('aaa ', thatRoomGame);
+			console.log('aaa ', thatRoomGame[0].ball);
+			console.log('aaa ', thatRoomGame[0].paddle);
+			console.log('aaa ', thatRoomGame[1].ball);
+			console.log('aaa ', thatRoomGame[1].paddle);
 			for (let i: number = 0; i != 2; i++) {
-				await this.switchPlayerStatus(thatRoomGame[i].playerId, "online");
-				thatRoomGame[i].socket.leave(payload.room);
+				//here if he was online
+				//await this.switchPlayerStatus(thatRoomGame[i].playerId, "online");
+				//thatRoomGame[i].socket.leave(payload.room);
 				console.log('shrek');
 				//let clientSocket = this.ws.sockets.sockets.get(thatRoomGame[i].socket.id);
 				//clientSocket.disconnect();
 			}
-			console.log(".....", payload.room);
-			console.log('atna2a map = ', this.gameRoom);
-			this.gameRoom.delete(payload.room);
+			//console.log(".....", payload.room);
+			//console.log('atna2a map = ', this.gameRoom);
+			//this.gameRoom.delete(payload.room);
+			//this.gameRoom.delete(payload.room);
+			//this.gameRoom;
 			console.log('hadi map = ', this.gameRoom);
 		}
 	}
 
 	@SubscribeMessage('moveBall')
-	moveBall(@ConnectedSocket() client: Socket, @MessageBody() payload: any) {
+	moveBall(@ConnectedSocket() client: Socket, @MessageBody() payload: { delta: number, room: string, firstTime: boolean}) {
 		//console.log('moveBall');
 			//console.log("************ moveBall    ", payload.room, "    *****************");
+		//console.log('**** paload = ', payload);
+		//if (!payload || !payload.delta || !payload.room || !payload.firstTime) {
+		if (!payload) {
+			console.log('payload is empty');
+			return ;
+		}
 		let thatRoomGame = this.gameRoom.get(payload.room);
+		console.log('1');
 		let i = thatRoomGame[0].socketId === client.id ? 0 : 1;
+		console.log('2');
 		const data = {
 			upPos:
 				(thatRoomGame[0].paddle.sight === "TOP") ? thatRoomGame[0].paddle.pos : thatRoomGame[1].paddle.pos,
 			downPos:
 				(thatRoomGame[0].paddle.sight === "BOTTOM") ? thatRoomGame[0].paddle.pos : thatRoomGame[1].paddle.pos
 		};
+		//console.log('3');
 		//here check if someone win
 		if ((!thatRoomGame[0].paddle.win && !thatRoomGame[1].paddle.win) &&
 				!thatRoomGame[i].ball.updateBall(payload.delta, data)) {
@@ -477,12 +510,14 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 				upPos.paddle.winTimes++;
 			}
 		}
+		console.log('4');
 		thatRoomGame[i].emit = true;
 		if (thatRoomGame[0].emit && thatRoomGame[1].emit) {
 			//hitwall add to the player
 			if (thatRoomGame[0].paddle.win || thatRoomGame[1].paddle.win) {
 				//this.resetGameData(thatRoomGame);
 				//if ((thatRoomGame[0].paddle.winTimes === 5) || (thatRoomGame[1].paddle.winTimes === 5)) {
+		console.log('5');
 				if ((thatRoomGame[0].paddle.winTimes + thatRoomGame[1].paddle.winTimes) === 5) {
 					console.log('finish game');
 					//******here i will send the data of the winnign and losing players
@@ -493,6 +528,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 						thatRoomGame[i].paddle.win = false;
 					}
 
+		//console.log('6');
 					this.ws.to(payload.room).emit("incrementScore",
 						[
 							thatRoomGame[0].paddle.getData(thatRoomGame[0].socketId),
@@ -500,12 +536,14 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 						]
 					);
 
+		//console.log('7');
       //this.ws.off('drawGameAssets');
       //this.ws.off('movePaddle');
-      this.ws.removeAllListeners();
+      //this.ws.removeAllListeners();
 					console.log('0 = ', thatRoomGame[0].emit);
 					console.log('1 = ', thatRoomGame[1].emit);
 					console.log('bye here');
+		//console.log('8');
 					return ;
 
 					//await this.addGameHistory([thatRoomGame[0].playerId, thatRoomGame[1].playerId],
@@ -524,6 +562,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 			}
 			for (let i: number = 0; i != 2; i++)
 				thatRoomGame[i].emit = false;
+		//console.log('9');
 			this.ws.to(payload.room).emit("drawGameAssets",
 				[
 					thatRoomGame[0].ball.getData(thatRoomGame[0].socketId),
@@ -534,6 +573,7 @@ export class GameService implements OnGatewayConnection, OnGatewayDisconnect {
 					thatRoomGame[1].paddle.getData(thatRoomGame[1].socketId)
 				],
 			);
+		//console.log('10');
 			for (let i: number = 0; i != 2; i++) {
 				//thatRoomGame[i].emit = false;
 				thatRoomGame[i].paddle.win = false;
