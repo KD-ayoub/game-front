@@ -21,8 +21,6 @@ export class ChatController{
 	@Get('history/:id')
 	async history(@Session() session: Record<string,any>,@Param('id') id : string)
 	{
-		//console.log(session.passport.user.id);
-		//console.log(id);
 		let all_messages : message_history[]  = await this.chatService.get_all_dm_history(session.passport.user.id,id);
 		return all_messages;
 	}
@@ -214,7 +212,6 @@ export class ChatController{
 	@Get('role/:id')
 	async user_role(@Session() session: Record<string,any>,@Param('id') channel_id : string)
 	{
-		//console.log(session.passport.user);
 		if (await this.chatService.is_admin(session.passport.user.id,channel_id))
 			return {"role": "admin" , "nickname" : session.passport.user.nickName, "id" : session.passport.user.id};
 		else if (await this.chatService.is_member(session.passport.user.id,channel_id))
