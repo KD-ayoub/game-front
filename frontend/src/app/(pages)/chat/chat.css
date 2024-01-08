@@ -102,6 +102,7 @@
 .msgSelect select:active {
   background-color: #15131D;
 }
+
 /* end option select friends or channel */
 
 /* start friends list */
@@ -135,8 +136,11 @@
 }
 
 .listFriends img {
-  height: 45px;
-  width: 45px;
+  min-height: 45px;
+  min-width: 45px;
+  max-height: 45px;
+  max-width: 45px;
+  border-radius: 50%;
 }
 
 .isJoined {
@@ -231,12 +235,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  
+
   font-size: 9px;
   border-radius: 999px;
   text-align: center;
   margin: 0 10px 0 auto;
-  
+
 }
 
 .optionUserDiv:hover .optionsUserSelect {
@@ -255,23 +259,24 @@
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   /* z-index: 1; */
 }
+
 .optionsUserSelect option {
-  padding:0 30px 0 10px;
-  min-height:40px;
-  display:flex;
-  align-items:center;
-  background:#252134;
-  border-top:#252134 solid 1px;
-  position:absolute;
-  top:0;
+  padding: 0 30px 0 10px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  background: #252134;
+  border-top: #252134 solid 1px;
+  position: absolute;
+  top: 0;
   width: 100%;
-  pointer-events:none;
-  order:2;
-  z-index:1;
-  transition:background .4s ease-in-out;
-  box-sizing:border-box;
-  overflow:hidden;
-  white-space:nowrap;
+  pointer-events: none;
+  order: 2;
+  z-index: 1;
+  transition: background .4s ease-in-out;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 
@@ -311,8 +316,9 @@
 .pictureUser {
   min-width: 45px;
   min-height: 45px;
-  width: 50px;
-  border-radius: 9999px;
+  max-width: 45px;
+  max-height: 45px;
+  border-radius: 50%;
   /* padding-top: 5px; */
 }
 
@@ -544,9 +550,11 @@
 }
 
 .channelOverview {
-  border-radius: 99999px;
-  width: 150px;
-  height: 150px;
+  border-radius: 50%;
+  min-width: 150px;
+  min-height: 150px;
+  max-width: 150px;
+  max-height: 150px;
 
 }
 
@@ -571,7 +579,7 @@
 .infoMembersOfChannel {
   display: flex;
   flex-direction: column;
-  
+
   width: 90%;
   max-height: 45%;
 }
@@ -591,9 +599,11 @@
 }
 
 .memberPhoto {
-  border-radius: 9999px;
-  width: 30px;
-  height: 30px;
+  border-radius: 50%;
+  min-width: 30px;
+  min-height: 30px;
+  max-width: 30px;
+  max-height: 30px;
 }
 
 .ownerBox {
@@ -611,7 +621,7 @@
 
   max-height: 50%;
   min-height: 15%;
-  
+
 }
 
 .infoMembersOfChannel .listMembersOfChannel {
@@ -687,7 +697,7 @@
   line-height: normal;
 
   padding: 5px 10px;
-  margin: 15px 0 0 0 ;
+  margin: 15px 0 0 0;
 }
 
 .leave-btn:hover {
@@ -706,7 +716,7 @@
   border-radius: 12.5px;
   border: 1px solid #383546;
   background-color: #E95A3A;
-  
+
   color: #FFF;
   font-size: 11px;
   font-style: normal;
@@ -763,16 +773,17 @@
 
   /* width: 866px; */
 
+
 }
 
-.createChannel{
+.createChannel {
   display: flex;
   height: 10%;
   justify-content: center;
   align-items: center;
-  padding:15%;
+  padding: 15%;
   /* background: #717273; */
-  
+
 }
 
 /* .typeChannelSelect:active {

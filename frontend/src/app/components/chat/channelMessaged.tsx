@@ -118,7 +118,9 @@ export default function ChannelMessaged({
     fetcher();
   }, [channel_rf]);
 
-  const joinPublicChannel = async (channel_id: string) => {
+  const joinPublicChannel = async (channel_id: string, name: string) => {
+    console.log("channel_id", channel_id);
+    console.log("name", name);
     const getChannel = await fetch(
       `http://localhost:3001/chat/join_public/${channel_id}`,
       {
@@ -242,7 +244,6 @@ export default function ChannelMessaged({
     } else {
       console.log("success put image");
     }
-    
   }
 
   const handleNewChannel = (newchnl: create_channel) => {
@@ -262,7 +263,7 @@ export default function ChannelMessaged({
     new_nameChannel,
     new_passwordChannel,
     new_typeChannel,
-    selectedImage,
+    selectedImage
   );
 
   return (
@@ -314,12 +315,17 @@ export default function ChannelMessaged({
                         className="isJoined"
                         onClick={() => {
                           {
-                            if (channel.type === "PUBLIC")
+                            if (channel.type === "PUBLIC") {
+                              joinPublicChannel(
+                                channel.id,
+                                channel.nameOfChannel
+                              );
+
                               setOpenModalPublic(true);
-                            else if (channel.type === "PROTECTED")
+                            } else if (channel.type === "PROTECTED")
                               setOpenModalProtected(true);
                           }
-                          onSelectChannel(channel);
+                          // onSelectChannel(channel);
                         }}
                       >
                         Join
@@ -336,26 +342,19 @@ export default function ChannelMessaged({
                             <div className="text-center">
                               {/* <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" /> */}
                               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                                Are you sure you want to join this channel?
+                                {`You have joined the channel: `}
+                                <span className="text-[#E95A3A]">
+                                  {channel.nameOfChannel}
+                                </span>
                               </h3>
-                              <div className="flex justify-center gap-4">
+                              <div className="flex justify-center gap-10 mt-5">
                                 <Button
-                                  // color="failure"
                                   className="bg-[#E95A3A]"
                                   onClick={() => {
-                                    joinPublicChannel(channel.id);
                                     setOpenModalPublic(false);
-                                    onSelectChannel(channel);
-                                    // onSelectChannel(channel);
                                   }}
                                 >
-                                  {"Yes, I'm sure"}
-                                </Button>
-                                <Button
-                                  color="gray"
-                                  onClick={() => setOpenModalPublic(false)}
-                                >
-                                  No, cancel
+                                  {"Ok"}
                                 </Button>
                               </div>
                             </div>
@@ -572,7 +571,11 @@ export default function ChannelMessaged({
                   onClick={() => {
                     // console.log("newChannel", newChannel);
 
-                    handleCreateChannel({name: new_nameChannel, password:new_passwordChannel, type:new_typeChannel});
+                    handleCreateChannel({
+                      name: new_nameChannel,
+                      password: new_passwordChannel,
+                      type: new_typeChannel,
+                    });
                     handlImageChange();
                   }}
                 >

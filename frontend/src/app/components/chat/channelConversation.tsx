@@ -69,6 +69,7 @@ export default function ChannelConversation({
   // information about me if im an owner or admin or member
   const [aboutMe, setAboutMe] = useState<aboutMe>();
   const [openModalEditChannel, setOpenModalEditChannel] = useState(false);
+  const [openModalInvite, setOpenModalInvite] = useState(false);
   const [UpdateChannelType, setUpdateChannelType] = useState<UpdateChannelType>(
     {
       password: "",
@@ -215,14 +216,17 @@ export default function ChannelConversation({
 
   const handleEditChannel = (newChannel: UpdateChannelType) => {
     const editChannel = async () => {
-      const response = await fetch(`http://localhost:3001/chat/channel_password`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newChannel),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `http://localhost:3001/chat/channel_password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newChannel),
+          credentials: "include",
+        }
+      );
       if (!response.ok) {
         console.log("Edit channel not ok");
       } else {
@@ -492,7 +496,7 @@ export default function ChannelConversation({
               {/* hna 5asni n3ref wessh ana admin wla owner bach n affichi select options wla bach n affichi ghi p "channel private or public or protected" */}
               <p className="channelType">Channel {channelSelected.type}</p>
               {aboutMe && aboutMe.role === "owner" && (
-                <>
+                <div className="flex">
                   <Button
                     onClick={() => setOpenModalEditChannel(true)}
                     className="bg-[#E95A3A] mt-2"
@@ -522,7 +526,11 @@ export default function ChannelConversation({
                               className="typeChannelSelect"
                               onClick={() => {
                                 setNew_typeChannel("PUBLIC");
-                                setUpdateChannelType({channel_id:channelSelected.id, password:new_passwordChannel, type:"PUBLIC"});
+                                setUpdateChannelType({
+                                  channel_id: channelSelected.id,
+                                  password: new_passwordChannel,
+                                  type: "PUBLIC",
+                                });
                               }}
                             >
                               Public
@@ -531,7 +539,11 @@ export default function ChannelConversation({
                               className="typeChannelSelect"
                               onClick={() => {
                                 setNew_typeChannel("PROTECTED");
-                                setUpdateChannelType({channel_id:channelSelected.id, password:new_passwordChannel, type:"PROTECTED"});
+                                setUpdateChannelType({
+                                  channel_id: channelSelected.id,
+                                  password: new_passwordChannel,
+                                  type: "PROTECTED",
+                                });
                               }}
                             >
                               Protected
@@ -547,7 +559,11 @@ export default function ChannelConversation({
                                   color="default"
                                   onChange={(pwd) => {
                                     setNew_passwordChannel(pwd.target.value);
-                                    setUpdateChannelType({channel_id:channelSelected.id, password:pwd.target.value, type:new_typeChannel});
+                                    setUpdateChannelType({
+                                      channel_id: channelSelected.id,
+                                      password: pwd.target.value,
+                                      type: new_typeChannel,
+                                    });
                                   }}
                                 />
                               </div>
@@ -557,11 +573,19 @@ export default function ChannelConversation({
                           <Button
                             className="bg-[#E95A3A]"
                             onClick={() => {
-                              setUpdateChannelType({channel_id:channelSelected.id, password:new_passwordChannel, type:new_typeChannel});
+                              setUpdateChannelType({
+                                channel_id: channelSelected.id,
+                                password: new_passwordChannel,
+                                type: new_typeChannel,
+                              });
                               handleEditChannel(UpdateChannelType);
                               setNew_passwordChannel("");
                               setNew_typeChannel("");
-                              setUpdateChannelType({channel_id:channelSelected.id, password:"", type: channelSelected.type});
+                              setUpdateChannelType({
+                                channel_id: channelSelected.id,
+                                password: "",
+                                type: channelSelected.type,
+                              });
                               // console.log("newChannel", newChannel);
                               // handleCreateChannel({name: new_nameChannel, password:new_passwordChannel, type:new_typeChannel});
                               // handlImageChange();
@@ -586,7 +610,49 @@ export default function ChannelConversation({
                       </div>
                     </Modal.Body>
                   </Modal>
-                </>
+
+                  <Button
+                    className="bg-[#383546] mt-2"
+                    onClick={() => setOpenModalInvite(true)}
+                  >
+                    Add Member
+                  </Button>
+                  <Modal
+                    show={openModalInvite}
+                    size="md"
+                    onClose={() => setOpenModalInvite(false)}
+                    popup
+                  >
+                    <Modal.Header />
+                    <Modal.Body>
+                      <div className="text-center">
+                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                          Add your friend!
+                        </h3>
+                        <div className="grid grid-flow-col justify-stretch space-x-4">
+                          <FloatingLabel variant="filled" label="Nickname" />
+                        </div>
+
+                        <div className="flex justify-center gap-4">
+                          <Button
+                            // color="failure"
+                            className="bg-[#E95A3A] mt-2"
+                            onClick={() => setOpenModalInvite(false)}
+                          >
+                            {"Add member"}
+                          </Button>
+                          <Button
+                            color="gray"
+                            className="mt-2"
+                            onClick={() => setOpenModalInvite(false)}
+                          >
+                            No, cancel
+                          </Button>
+                        </div>
+                      </div>
+                    </Modal.Body>
+                  </Modal>
+                </div>
               )}
             </div>
             {/* start list members of channel with their roles */}
