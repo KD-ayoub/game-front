@@ -43,13 +43,13 @@ export default function Chat() {
 
 // states to refresh
   const [online_rf, setOnline_rf] = useState<boolean>(false);
-  const [channel_rf, setChannel_rf] = useState<boolean>(true);
+  const [channel_rf, setChannel_rf] = useState<boolean>(false);
   const [channelSelected_rf, setChannelSelected] = useState<boolean>(false);
   const [members_rf, setmembers_ref] = useState<boolean>(false);
   const [aboutMe_rf, setAboutMe_rf] = useState<boolean>(false);
   const [friends_rf, setFriends_rf] = useState<boolean>(false);
 
-  console.log('Parent component state:', channel_rf);
+  //console.log('Parent component state:', channel_rf);
 //////////////// friends /////////////////////////////
 	// friends list
   const hundleFriends_rf = () => {
@@ -63,7 +63,7 @@ export default function Chat() {
 //////////////// channels /////////////////////////////
 	// channels list
   const hundleChannel_rf = () => {
-    setChannel_rf(!channel_rf);
+    setChannel_rf((channel_rf)=> !channel_rf);
   };
 	// channel selected
   const hundleIdOfChannelSelected = (infoChannel: ChannelChatType) => {
@@ -78,71 +78,62 @@ export default function Chat() {
 
 	// channels selected  -----    i guess this one  doesn't have any purpose
   const hundleChannelSelected_rf = () => {
-    setChannelSelected(!channelSelected_rf);
+    setChannelSelected((channelSelected) => !channelSelected);
   };
 
 	// members list
   const hundleMembers_rf = () => {
-    setmembers_ref(!members_rf);
+    setmembers_ref((members_rf) => !members_rf);
   };
 
 	// about me  
   const hundleAboutMe_rf = () => {
-    setAboutMe_rf(!aboutMe_rf);
+    setAboutMe_rf((aboutMe_rf) => !aboutMe_rf);
   };
 
-  // useEffect(() => {
-  //   socket.on("message", (message: string) => {
-  //     setMessages([...messages, message]);
-  //   });
-  // }, [messages]);
+  const client = ioClient.getSocketClient();
 
-  // const sendMessage = () => {
-  //   socket.emit("sendMessage", { text: messageText });
-  //   setMessageText("");
-  // };
 
-  useEffect(() => {
-  // online list	
-  }, []);
+// refresh channels
+useEffect(() => {
+  client.on("channels_ref", () => {
+    hundleChannel_rf();
+  })
+  return () => {
+  	client.off("channels_ref");
+  }
+}, [channel_rf]);
 
-  useEffect(() => {
-  // channels list	
-  	const client = ioClient.getSocketClient();
-	client.on("channels_ref",()=>{
-		console.log("refresh channels");
-		if (!channel_rf)
-		{
-			console.log("false");
-			setChannel_rf(true);
-		}
-		else
-		{
-			console.log("true");
-			setChannel_rf(false);
-		}
-	})
-	return () => {
-	client.off("channels_ref");
-	}
-  }, []);
+// refresh members
+useEffect(() => {
+  client.on("members_ref", () => {
+    hundleMembers_rf();
+  })
+  return () => {
+  	client.off("members_ref");
+  }
+}, [channel_rf]);
 
-  useEffect(() => {
-  	const client = ioClient.getSocketClient();
-	client.on("members_ref",()=>{
-		hundleMembers_rf();
-	})
-	return () => {
-	client.off("members_ref");
-	}
+// refresh aboutme
+useEffect(() => {
+  client.on("about_ref", () => {
+    hundleAboutMe_rf();
+  })
+  return () => {
+  	client.off("about_ref");
+  }
+}, [channel_rf]);
 
-  // members list	
-  }, []);
 
-  useEffect(() => {
-  // channel selected	
-  }, []);
-
+useEffect(() => {
+client.on("leave", () => {
+  	let data : ChannelChatType = {id: "", nameOfChannel: "", isJoined: false, photo : "", type: ""};
+	hundleIdOfChannelSelected(data);
+})
+  return () => {
+  	client.off("1");
+  }
+})
 
   return (
     <main className="h-screen bg-[#0B0813] relative w-full max-w-[5120px] flex">
@@ -225,6 +216,8 @@ export default function Chat() {
           )}
           {option === "Channels" && idOfChannelSelected && (
             <ChannelConversation
+           		onSelectChannel={hundleIdOfChannelSelected}
+			  blan={hundleChannelSelected_rf}
               channelSelected={idOfChannelSelected}
               online_rf={online_rf}
               friends_rf={friends_rf}

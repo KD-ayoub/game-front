@@ -32,6 +32,8 @@ import { UpdateChannelType } from "@/app/types/updateChannelType";
 // const socket = io("");
 
 export default function ChannelConversation({
+  onSelectChannel,
+  blan,
   channelSelected,
   online_rf,
   friends_rf,
@@ -40,6 +42,8 @@ export default function ChannelConversation({
   members_rf,
   aboutMe_rf,
 }: {
+  onSelectChannel: (test: ChannelChatType) => void;
+  blan: () => void;
   channelSelected: ChannelChatType;
   online_rf: boolean;
   friends_rf: boolean;
@@ -88,7 +92,8 @@ export default function ChannelConversation({
   };
 
   const handleClickBtnBack = () => {
-    // showConv = false;
+  	let data : ChannelChatType = {id: "", nameOfChannel: "", isJoined: false, photo : "", type: ""};
+	onSelectChannel(data);
   };
 
   // handle send message
@@ -311,20 +316,9 @@ export default function ChannelConversation({
   }, [channelSelected]);
 
   useEffect(() => {
-    const client = ioClient.getSocketClient();
-    client.on("members_refresh", (data) => {
-      setmembers_ref(!members_ref);
-    });
-    return () => {
-      client.off("members_refresh");
-    };
-  }, []);
-
-  useEffect(() => {
     async function fetcher() {
 		if (channelSelected.isJoined)
 		{
-			console.log("----------------------------- fetching members ------------------------");
     	  	const getconv = await fetch(
     	    `http://localhost:3001/chat/members/${channelSelected.id}`,
     	    {
@@ -374,7 +368,7 @@ export default function ChannelConversation({
         <>
           <div className="channelConv">
             <div className="barInfo">
-              <button className="btn-back">
+              <button className="btn-back" onClick={handleClickBtnBack}>
                 <i className="ri-arrow-left-line"></i>
               </button>
               <div className="UserInfo">

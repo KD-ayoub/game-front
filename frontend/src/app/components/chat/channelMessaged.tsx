@@ -87,7 +87,6 @@ export default function ChannelMessaged({
   };
 
   useEffect(() => {
-    console.log(openModalProtected);
   }, ["mok protcd", openModalProtected]);
 
   const filter_Search = filterSearch();
@@ -95,7 +94,6 @@ export default function ChannelMessaged({
   // Here we fetch channels from server and set them to state:
   useEffect(() => {
     const client = ioClient.getSocketClient();
-	console.log("refresh channel : ",channel_rf);
     async function fetcher() {
       const getChannel = await fetch(
         "http://localhost:3001/chat/list_channels",
@@ -155,9 +153,7 @@ export default function ChannelMessaged({
       }
     );
     if (!getChannel.ok) {
-      console.log(getChannel.status);
-      console.log(channel_protected.password);
-      // throw new Error("Network response was not ok");
+		return ;
     }
     if (getChannel.ok) {
       setStatuspwd(true);
@@ -168,12 +164,9 @@ export default function ChannelMessaged({
       setOpenModalProtected(false);
       setOpenModalProtected(false);
     }
-
-    console.log("check password ", getChannel);
   };
 
   const handleCreateChannel = async (newChannel: create_channel) => {
-    console.log("before", newChannel);
     const getChannel = await fetch(
       `http://localhost:3001/chat/create_channel`,
       {
@@ -205,7 +198,6 @@ export default function ChannelMessaged({
     formData.append("file", selectedImage ?? "https://placehold.co/400");
     formData.forEach((item) => (checkItem = item.toString()));
     if (selectedImage) {
-      console.log("shoul not enter");
       const toastId = toast.loading("Saving changes", {
         style: {
           backgroundColor: "#383546",
@@ -220,12 +212,10 @@ export default function ChannelMessaged({
           color: "white",
         },
       });
-      console.log("putted", putted);
     }
   }
 
   async function PutImage(formData: FormData) {
-    console.log("file sent", formData);
     const response = await fetch(
       `http://localhost:3001/chat/channel_photo/${new_nameChannel}`,
       {
@@ -235,9 +225,7 @@ export default function ChannelMessaged({
       }
     );
     if (!response.ok) {
-      console.log("Error ,response of put image ");
     } else {
-      console.log("success put image");
     }
     
   }
@@ -548,8 +536,6 @@ export default function ChannelMessaged({
                 <Button
                   className="bg-[#E95A3A]"
                   onClick={() => {
-                    // console.log("newChannel", newChannel);
-
                     handleCreateChannel({name: new_nameChannel, password:new_passwordChannel, type:new_typeChannel});
                     handlImageChange();
                   }}
