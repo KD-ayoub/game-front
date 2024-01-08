@@ -41,7 +41,8 @@ export class SocketClient {
     });
 
     this.ioClient.on("disconnect", () => {
-      console.log("disconnected", this.ioClient.id);
+      console.log("DDDDDDDDDDDDDDDDD disconnected", this.ioClient.id);
+      //this.ioClient.reconnect();
     });
   }
 

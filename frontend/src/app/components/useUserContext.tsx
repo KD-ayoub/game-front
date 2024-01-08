@@ -6,6 +6,7 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 import { ioClient, SocketClient } from "@/app/api/instance";
 import { type Socket, io } from "socket.io-client";
 import { Manager } from "socket.io-client/debug";
+import { useRouter } from 'next/navigation';
 
 import Profilepic from "@/app/assets/svg/profile.svg";
 import Swal from "sweetalert2";
@@ -35,6 +36,7 @@ export default function UserContextProvider({
     nickName: '',
   });
 
+    const router = useRouter();
   async function fetcher() {
     const response = await fetch('http://localhost:3001/auth/getUserStatus', {
       method: 'GET',
@@ -50,25 +52,59 @@ export default function UserContextProvider({
     setUserData(await response.json());
   }
 
+  //take off
   useEffect(() => {
     //console.log('************* profile');
     ioClient;
     const SocketClient = ioClient.getSocketClient();
-    SocketClient.on("popup", () => {
+    SocketClient.on("inviteThePlayer", (data: {playerNickname: string, playerId: string, opponentId: string}) => {
       console.log('llllllllll');
-            Swal.fire({
-              title: "You have lost",
-              text: "",
-              imageUrl: `${Profilepic.src}`,
-              imageWidth: 400,
-              imageHeight: 200,
-              imageAlt: "Custom image",
-              allowOutsideClick: false,
-            }).then(res => {
-              console.log('then = ', res);
-              //router.push('/game')
-            });
-    })
+      Swal.fire({
+        title: `${data.playerNickname} invite you to play with him`,
+        text: "",
+        imageUrl: `${Profilepic.src}`,
+        imageWidth: 400,
+        imageHeight: 200,
+        imageAlt: "Custom image",
+        allowOutsideClick: false,
+        showCancelButton: true,
+        confirmButtonText: 'this confirm',
+        cancelButtonText: 'this cancel',
+      })
+      .then(res => {
+        //console.log('then = ', res);
+        if (res.hasOwnProperty('isConfirmed') && res.isConfirmed) {
+          SocketClient.emit("joinPlayerGameRoom", data);
+          console.log('heee');
+          // play game
+        }
+        else if (res.hasOwnProperty('isConfirmed') && !res.isConfirmed) {
+          SocketClient.emit('didNotAcceptInvite');
+          //sed socket , mayetra walo
+        }
+        //router.push('/game')
+      });
+    });
+
+    SocketClient.on("ana", (data: { room: string }) => {
+      ioClient.room = data.room;
+      console.log("****** ", ioClient.room);
+      let color = "";
+      let colorbg = "";
+      color = "E95A3A";
+      colorbg = "F07559";
+      console.log('colooooor', color, colorbg);
+      router.push(`/game/user?color=${color}&colorbg=${colorbg}`);
+      //window.history.pushState("", "", "/game/user");
+      //window.location.href = "/game/user";
+    });
+
+    //SocketClient.on('ana', () => {
+    //  console.log('cooooool');
+    //  router.push('/game/user');
+    //  //router.push(`/game/user?color=${color}&colorbg=${colorbg}`);
+    //})
+
     // async function fetcher() {
     //   const response = await fetch('http://localhost:3001/auth/getUserStatus', {
     //     method: 'GET',

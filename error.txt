@@ -39,3 +39,6 @@ TypeError: Cannot read properties of null (reading 'full_name')
     at SessionSerializer.deserializeUser (/goinfre/hkaddour/transcendence/backend/src/auth/utils/Serializer.t
 s:22:22)
 *** Some error 'photo_path'
+**** add more rounds
+**** sometimes the score get incremented by 2 when trying to play second time the problem in moveBall maybe it get stuck with that event
+***** in front protect game and shitt
